@@ -22,8 +22,17 @@
 		{
 			"Name": "ProcEnemies",
 			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		},
+		{
+			"Name": "DamageSystem",
+			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
+		
 	],
 	"Plugins": [
 		{

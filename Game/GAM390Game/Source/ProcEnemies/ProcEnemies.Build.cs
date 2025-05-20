@@ -8,6 +8,6 @@ public class ProcEnemies : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "GeneralUtilities", "VariableStores"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "GeneralUtilities", "VariableStores", "DamageSystem"});
 	}
 }
