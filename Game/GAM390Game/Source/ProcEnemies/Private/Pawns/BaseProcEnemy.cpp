@@ -32,7 +32,7 @@ void ABaseProcEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Archetype = Archetypes[FMath::RandRange(0, Archetypes.Num())];
+	Archetype = Cast<UBaseArchetype>(Archetypes[FMath::RandRange(0, Archetypes.Num())]);
 
 	if (Archetype->CheckCompleteBodyPossible())
 	{

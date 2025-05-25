@@ -193,7 +193,7 @@ protected:
 	FName RightArmSocketName;
 
 	UPROPERTY(EditAnywhere)
-	TArray<UBaseArchetype*> Archetypes;
+	TArray<TSubclassOf<UBaseArchetype>> Archetypes;
 
 	UPROPERTY(EditAnywhere)
 	FVector2D ThreatRange;
