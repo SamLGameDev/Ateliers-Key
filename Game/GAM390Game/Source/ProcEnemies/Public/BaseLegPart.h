@@ -4,23 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "BaseBodyPart.h"
-#include "BaseArmPart.generated.h"
+#include "BaseLegPart.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class PROCENEMIES_API ABaseArmPart : public ABaseBodyPart
+class PROCENEMIES_API ABaseLegPart : public ABaseBodyPart
 {
 	GENERATED_BODY()
 
 public:
 
+	virtual void AttatchPart(ABaseProcEnemy* Enemy) override;
 
 protected:
+	virtual void PostLoad() override;
 
 	UPROPERTY(EditAnywhere)
-	int	Damage;
-	
-	
+	int	Speed;
 };

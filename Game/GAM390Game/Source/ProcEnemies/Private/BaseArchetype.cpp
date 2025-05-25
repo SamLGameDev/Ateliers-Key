@@ -3,4 +3,4 @@
 
 #include "BaseArchetype.h"
 #include "BaseBodyPart.h"
-
+#include "BehaviorTree/BehaviorTree.h"

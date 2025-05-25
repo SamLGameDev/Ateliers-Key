@@ -8,6 +8,7 @@
 #include "BaseBodyPart.generated.h"
 
 class UBaseArchetype;
+class ABaseProcEnemy;
 /**
  * 
  */
@@ -30,6 +31,15 @@ public:
 	}
 
 	virtual void TakeDamage_Implementation(const int Damage) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void AttatchPart(ABaseProcEnemy* Enemy) {};
+
+	UFUNCTION(BlueprintCallable)
+	virtual const int GetCost() const
+	{
+		return PartCost;
+	}
 
 protected:
 	

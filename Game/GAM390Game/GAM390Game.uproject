@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.4",
+	"EngineAssociation": "5.5",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -24,7 +24,8 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine"
+				"Engine",
+				"AIModule"
 			]
 		},
 		{
@@ -32,7 +33,6 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
-		
 	],
 	"Plugins": [
 		{

@@ -3,6 +3,7 @@
 
 #include "BaseBodyPart.h"
 #include "BaseArchetype.h"
+#include "Pawns/BaseProcEnemy.h"
 
 ABaseBodyPart::ABaseBodyPart()
 {

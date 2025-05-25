@@ -7,7 +7,7 @@
 #include "BaseArchetype.generated.h"
 
 class ABaseBodyPart;
-
+class UBehaviorTree;
 /**
  * 
  */
@@ -37,11 +37,22 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE TArray<ABaseBodyPart*> GetArmParts() const
+	FORCEINLINE TArray<ABaseBodyPart*> GetLeftArmParts() const
 	{
-		return ArmParts;
+		return LeftArmParts;
 	}
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE TArray<ABaseBodyPart*> GetRightArmParts() const
+	{
+		return RightArmParts;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE UBehaviorTree* GetBehaviorTree()
+	{
+		return Behavior;
+	}
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void RegisterHeadPart(ABaseBodyPart* Part)
@@ -62,23 +73,47 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void RegisterArmPart(ABaseBodyPart* Part)
+	FORCEINLINE void RegisterLeftArmPart(ABaseBodyPart* Part)
 	{
-		ArmParts.Add(Part);
+		LeftArmParts.Add(Part);
+	}
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void RegisterRightArmPart(ABaseBodyPart* Part)
+	{
+		RightArmParts.Add(Part);
+	}
+
+	UFUNCTION(BlueprintCallable)
+	virtual bool CheckCompleteBodyPossible()
+	{
+		return !(
+			HeadParts.IsEmpty() ||
+			TorsoParts.IsEmpty() ||
+			LegParts.IsEmpty() ||
+			LeftArmParts.IsEmpty() ||
+			RightArmParts.IsEmpty()
+			);
 	}
 
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<ABaseBodyPart*> HeadParts;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<ABaseBodyPart*> TorsoParts;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<ABaseBodyPart*> LegParts;
 
-	UPROPERTY()
-	TArray<ABaseBodyPart*> ArmParts;
+	UPROPERTY(VisibleAnywhere)
+	TArray<ABaseBodyPart*> LeftArmParts;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<ABaseBodyPart*> RightArmParts;
+
+	UPROPERTY(EditAnywhere)
+	UBehaviorTree* Behavior;
 
 	
 };
