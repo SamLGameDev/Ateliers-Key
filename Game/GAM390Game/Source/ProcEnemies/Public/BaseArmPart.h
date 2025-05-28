@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS()
 class PROCENEMIES_API ABaseArmPart : public ABaseBodyPart
 {
 	GENERATED_BODY()

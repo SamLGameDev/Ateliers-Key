@@ -7,20 +7,37 @@
 
 void ABaseTorsoPart::AttatchPart(ABaseProcEnemy* Enemy)
 {
-	Enemy->SetTorso(this);
-	const FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, true);
+	ABaseTorsoPart* Part = Cast<ABaseTorsoPart>(Enemy->GetWorld()->SpawnActor(GetClass()));
+	Enemy->SetTorso(Part);
+	const FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true);
 
-	AttachToActor(Enemy, Rules, Enemy->GetHeadSocketName());
+	Part->AttachToComponent(Enemy->GetMeshComp(), Rules, Enemy->GetTorsoSocketName());
 }
 
-void ABaseTorsoPart::PostLoad()
+void ABaseTorsoPart::RemoveFromAllOldArchetypes()
 {
-	Super::PostLoad();
+	if (!OldArchetypes.IsEmpty())
+	{
+		for (UBaseArchetype* Archetype : OldArchetypes)
+		{
+			if (Archetype)
+			{
+				Archetype->RemoveFromTorso(GetClass());
+			}
+		}
+	}
+}
+
+void ABaseTorsoPart::AddToAllCurrentArchetypes()
+{
 	if (!Archetypes.IsEmpty())
 	{
 		for (UBaseArchetype* Archetype : Archetypes)
 		{
-			Archetype->RegisterTorsoPart(this);
+			if (Archetype)
+			{
+				Archetype->RegisterTorsoPart(GetClass());
+			}
 		}
 	}
 }

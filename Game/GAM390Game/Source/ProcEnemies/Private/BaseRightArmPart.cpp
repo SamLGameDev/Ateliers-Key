@@ -7,20 +7,37 @@
 
 void ABaseRightArmPart::AttatchPart(ABaseProcEnemy* Enemy)
 {
-	Enemy->SetRightArm(this);
-	const FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, true);
+	ABaseRightArmPart* Part = Cast<ABaseRightArmPart>(Enemy->GetWorld()->SpawnActor(GetClass()));
+	Enemy->SetRightArm(Part);
+	const FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true);
 
-	AttachToActor(Enemy, Rules, Enemy->GetHeadSocketName());
+	Part->AttachToComponent(Enemy->GetMeshComp(), Rules, Enemy->GetRightArmSocketName());
 }
 
-void ABaseRightArmPart::PostLoad()
+void ABaseRightArmPart::RemoveFromAllOldArchetypes()
 {
-	Super::PostLoad();
+	if (!OldArchetypes.IsEmpty())
+	{
+		for (UBaseArchetype* Archetype : OldArchetypes)
+		{
+			if (Archetype)
+			{
+				Archetype->RemoveFromRightArm(GetClass());
+			}
+		}
+	}
+}
+
+void ABaseRightArmPart::AddToAllCurrentArchetypes()
+{
 	if (!Archetypes.IsEmpty())
 	{
 		for (UBaseArchetype* Archetype : Archetypes)
 		{
-			Archetype->RegisterRightArmPart(this);
+			if (Archetype)
+			{
+				Archetype->RegisterRightArmPart(GetClass());
+			}
 		}
 	}
 }

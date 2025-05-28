@@ -20,7 +20,9 @@ public:
 
 protected:
 
-	virtual void PostLoad() override;
+	virtual void RemoveFromAllOldArchetypes() override;
+
+	virtual void AddToAllCurrentArchetypes() override;
 
 	
 };

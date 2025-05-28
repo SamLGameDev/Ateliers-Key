@@ -29,10 +29,8 @@ public:
 
 
 	UFUNCTION()
-	virtual void SetHead(ABaseHeadPart* InHead)
-	{
-		Head = InHead;
-	}
+	virtual void SetHead(ABaseHeadPart* InHead);
+
 
 	UFUNCTION()
 	virtual void SetTorso(ABaseTorsoPart* InTorso)
@@ -147,6 +145,13 @@ public:
 	{
 		return RightArmSocketName;
 	}
+
+	UFUNCTION(BlueprintCallable)
+	USkeletalMeshComponent* GetMeshComp()
+	{
+		return Mesh;
+	}
+
 #pragma endregion
 
 protected:
@@ -193,7 +198,7 @@ protected:
 	FName RightArmSocketName;
 
 	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<UBaseArchetype>> Archetypes;
+	TArray<UBaseArchetype*> Archetypes;
 
 	UPROPERTY(EditAnywhere)
 	FVector2D ThreatRange;
@@ -218,7 +223,7 @@ protected:
 			ABaseBodyPart* InLegs,
 			ABaseBodyPart* InLeftArm,
 			ABaseBodyPart* InRightArm
-		) : Head(InLeftArm), Torso(InTorso), Legs(InLegs), LeftArm(InLeftArm), RightArm(InRightArm) {};
+		) : Head(InHead), Torso(InTorso), Legs(InLegs), LeftArm(InLeftArm), RightArm(InRightArm) {};
 	};
 
 	virtual void GetAllPossibleCombinationsOfParts(TArray<FCompleteBody>& PossibleComs, int HeadIndex, int TorsoIndex, int LegsIndex, int LeftArmIndex, int RightArmIndex);

@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS()
 class PROCENEMIES_API ABaseTorsoPart : public ABaseBodyPart
 {
 	GENERATED_BODY()
@@ -19,7 +19,10 @@ public:
 	virtual void AttatchPart(ABaseProcEnemy* Enemy) override;
 
 protected:
-	virtual void PostLoad() override;
+
+	virtual void RemoveFromAllOldArchetypes() override;
+
+	virtual void AddToAllCurrentArchetypes() override;
 
 	UPROPERTY(EditAnywhere)
 	int	Armour;

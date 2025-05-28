@@ -12,7 +12,7 @@ class ABaseProcEnemy;
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS()
 class PROCENEMIES_API ABaseBodyPart : public AActor, public IDamageable
 {
 	GENERATED_BODY()
@@ -42,9 +42,19 @@ public:
 	}
 
 protected:
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
+	virtual void RemoveFromAllOldArchetypes() {};
+
+	virtual void AddToAllCurrentArchetypes() {};
 	
 	UPROPERTY(EditAnywhere)
 	TArray<UBaseArchetype*> Archetypes;
+
+	TArray<UBaseArchetype*> OldArchetypes;
 
 	UPROPERTY(EditAnywhere)
 	USceneComponent* Root;

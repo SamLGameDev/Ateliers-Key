@@ -27,14 +27,20 @@ ABaseProcEnemy::ABaseProcEnemy()
 	Sensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Sensor"));
 }
 
+void ABaseProcEnemy::SetHead(ABaseHeadPart* InHead)
+{
+	Head = InHead;
+	
+}
+
  //Called when the game starts or when spawned
 void ABaseProcEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Archetype = Cast<UBaseArchetype>(Archetypes[FMath::RandRange(0, Archetypes.Num())]);
+	Archetype = Cast<UBaseArchetype>(Archetypes[FMath::RandRange(0, Archetypes.Num()-1)]);
 
-	if (Archetype->CheckCompleteBodyPossible())
+	if (!Archetype->CheckCompleteBodyPossible())
 	{
 		return;
 	}
@@ -48,13 +54,13 @@ void ABaseProcEnemy::BeginPlay()
 		return;
 	}
 
-	FCompleteBody* Body = &possibleParts[FMath::RandRange(0, possibleParts.Num())];
+	FCompleteBody* Body = &possibleParts[FMath::RandRange(0, possibleParts.Num() - 1)];
 
-	SetHead(Cast<ABaseHeadPart>(Body->Head));
-	SetTorso(Cast<ABaseTorsoPart>(Body->Torso));
-	SetLegs(Cast<ABaseLegPart>(Body->Legs));
-	SetLeftArm(Cast<ABaseLeftArmPart>(Body->LeftArm));
-	SetRightArm(Cast<ABaseRightArmPart>(Body->RightArm));
+	Body->Head->AttatchPart(this);
+	Body->Torso->AttatchPart(this);
+	Body->Legs->AttatchPart(this);
+	Body->LeftArm->AttatchPart(this);
+	Body->RightArm->AttatchPart(this);
 
 	Cast<ABaseProcEnemyController>(GetController())->SetUp(Archetype->GetBehaviorTree());
 
@@ -62,11 +68,11 @@ void ABaseProcEnemy::BeginPlay()
 
 void ABaseProcEnemy::GetAllPossibleCombinationsOfParts(TArray<FCompleteBody>& PossibleComs, int HeadIndex, int TorsoIndex, int LegsIndex, int LeftArmIndex, int RightArmIndex)
 {
-	ABaseBodyPart* head = Archetype->GetHeadParts()[HeadIndex];
-	ABaseBodyPart* torso = Archetype->GetTorsoParts()[TorsoIndex];
-	ABaseBodyPart* legs = Archetype->GetLegParts()[LegsIndex];
-	ABaseBodyPart* leftArm = Archetype->GetLeftArmParts()[LeftArmIndex];
-	ABaseBodyPart* rightArm = Archetype->GetRightArmParts()[RightArmIndex];
+	ABaseBodyPart* head = Cast<ABaseBodyPart>(Archetype->GetHeadParts().Array()[HeadIndex].GetDefaultObject());
+	ABaseBodyPart* torso = Cast<ABaseBodyPart>(Archetype->GetTorsoParts().Array()[TorsoIndex].GetDefaultObject());
+	ABaseBodyPart* legs = Cast<ABaseBodyPart>(Archetype->GetLegParts().Array()[LegsIndex].GetDefaultObject());
+	ABaseBodyPart* leftArm = Cast<ABaseBodyPart>(Archetype->GetLeftArmParts().Array()[LeftArmIndex].GetDefaultObject());
+	ABaseBodyPart* rightArm = Cast<ABaseBodyPart>(Archetype->GetRightArmParts().Array()[RightArmIndex].GetDefaultObject());
 	
 	int cost = head->GetCost() + torso->GetCost() + legs->GetCost() + leftArm->GetCost() + rightArm->GetCost();
 

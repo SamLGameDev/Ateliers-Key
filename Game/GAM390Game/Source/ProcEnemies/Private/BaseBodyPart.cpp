@@ -18,6 +18,7 @@ ABaseBodyPart::ABaseBodyPart()
 
 void ABaseBodyPart::ExecuteAbility()
 {
+
 }
 
 void ABaseBodyPart::TakeDamage_Implementation(const int Damage)
@@ -29,6 +30,23 @@ void ABaseBodyPart::TakeDamage_Implementation(const int Damage)
 	}
 
 }
+
+#if WITH_EDITOR
+void ABaseBodyPart::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	const FName propertyName = PropertyChangedEvent.GetPropertyName();
+
+	if (propertyName == GET_MEMBER_NAME_CHECKED(ABaseBodyPart, Archetypes)) 
+	{
+		RemoveFromAllOldArchetypes();
+		AddToAllCurrentArchetypes();
+		OldArchetypes = Archetypes;
+	}
+
+}
+#endif
 
 void ABaseBodyPart::Destroy()
 {

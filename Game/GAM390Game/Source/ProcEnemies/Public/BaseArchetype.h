@@ -11,7 +11,7 @@ class UBehaviorTree;
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS()
 class PROCENEMIES_API UBaseArchetype : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -19,31 +19,31 @@ class PROCENEMIES_API UBaseArchetype : public UPrimaryDataAsset
 public:
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE TArray<ABaseBodyPart*> GetHeadParts() const
+	FORCEINLINE TSet<TSubclassOf<ABaseBodyPart>> GetHeadParts() const
 	{
 		return HeadParts;
 	}
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE TArray<ABaseBodyPart*> GetTorsoParts() const
+	FORCEINLINE TSet<TSubclassOf<ABaseBodyPart>> GetTorsoParts() const
 	{
 		return TorsoParts;
 	}
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE TArray<ABaseBodyPart*> GetLegParts() const
+	FORCEINLINE TSet<TSubclassOf<ABaseBodyPart>> GetLegParts() const
 	{
 		return LegParts;
 	}
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE TArray<ABaseBodyPart*> GetLeftArmParts() const
+	FORCEINLINE TSet<TSubclassOf<ABaseBodyPart>> GetLeftArmParts() const
 	{
 		return LeftArmParts;
 	}
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE TArray<ABaseBodyPart*> GetRightArmParts() const
+	FORCEINLINE TSet<TSubclassOf<ABaseBodyPart>> GetRightArmParts() const
 	{
 		return RightArmParts;
 	}
@@ -55,34 +55,33 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void RegisterHeadPart(ABaseBodyPart* Part)
-	{
-		HeadParts.Add(Part);
-	}
+	void RegisterHeadPart(TSubclassOf<ABaseBodyPart> Part);
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void RegisterTorsoPart(ABaseBodyPart* Part)
-	{
-		TorsoParts.Add(Part);
-	}
+	void RegisterTorsoPart(TSubclassOf<ABaseBodyPart> Part);
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void RegisterLegPart(ABaseBodyPart* Part)
-	{
-		LegParts.Add(Part);
-	}
+	void RegisterLegPart(TSubclassOf<ABaseBodyPart> Part);
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void RegisterLeftArmPart(ABaseBodyPart* Part)
-	{
-		LeftArmParts.Add(Part);
-	}
+	void RegisterLeftArmPart(TSubclassOf<ABaseBodyPart> Part);
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void RegisterRightArmPart(ABaseBodyPart* Part)
-	{
-		RightArmParts.Add(Part);
-	}
+	void RegisterRightArmPart(TSubclassOf<ABaseBodyPart> Part);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveFromHead(TSubclassOf<ABaseBodyPart> Part);
+	UFUNCTION(BlueprintCallable)
+	void RemoveFromTorso(TSubclassOf<ABaseBodyPart> Part);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveFromLeftArm(TSubclassOf<ABaseBodyPart> Part);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveFromRightArm(TSubclassOf<ABaseBodyPart> Part);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveFromLegs(TSubclassOf<ABaseBodyPart> Part);
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool CheckCompleteBodyPossible()
@@ -97,20 +96,20 @@ public:
 	}
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-	TArray<ABaseBodyPart*> HeadParts;
+	UPROPERTY(EditAnywhere)
+	TSet<TSubclassOf<ABaseBodyPart>> HeadParts;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<ABaseBodyPart*> TorsoParts;
+	TSet<TSubclassOf<ABaseBodyPart>> TorsoParts;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<ABaseBodyPart*> LegParts;
+	TSet<TSubclassOf<ABaseBodyPart>> LegParts;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<ABaseBodyPart*> LeftArmParts;
+	TSet<TSubclassOf<ABaseBodyPart>> LeftArmParts;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<ABaseBodyPart*> RightArmParts;
+	TSet<TSubclassOf<ABaseBodyPart>> RightArmParts;
 
 	UPROPERTY(EditAnywhere)
 	UBehaviorTree* Behavior;
