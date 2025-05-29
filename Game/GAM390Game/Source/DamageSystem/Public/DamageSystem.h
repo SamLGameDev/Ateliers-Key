@@ -26,11 +26,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDeath OnDeath;
 
 	float Heal(float amount);
 
-	void TakeDamage(FDamageInfo& DamageInfo);
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(const FDamageInfo& DamageInfo);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;
@@ -42,7 +44,7 @@ public:
 	bool IsBlocking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float Health;
+	float CurrentHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;

@@ -10,6 +10,7 @@ UDamageSystem::UDamageSystem()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+
 	// ...
 }
 
@@ -21,6 +22,7 @@ void UDamageSystem::BeginPlay()
 
 	// ...
 	
+	CurrentHealth = MaxHealth;
 }
 
 
@@ -34,23 +36,23 @@ void UDamageSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 float UDamageSystem::Heal(float amount) {
 	if (!IsDead) {
-		Health += amount;
+		CurrentHealth += amount;
 
-		Health = FMath::Clamp(Health, 0.0f, MaxHealth);
+		CurrentHealth = FMath::Clamp(CurrentHealth, 0.0f, MaxHealth);
 	}
 
-	return Health;
+	return CurrentHealth;
 }
 
-void UDamageSystem::TakeDamage(FDamageInfo& DamageInfo) {
+void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo) {
 	if (DamageInfo.CanBeBlocked && IsBlocking) {
 		return;
 	}
 
 	if (!IsBlocking || !IsInvincible || !IsDead) {
-		Health -= DamageInfo.Amount;
+		CurrentHealth -= DamageInfo.Amount;
 
-		if (Health <= 0.0f) {
+		if (CurrentHealth <= 0.0f) {
 			OnDeath.Broadcast();
 		}
 	}
@@ -58,10 +60,13 @@ void UDamageSystem::TakeDamage(FDamageInfo& DamageInfo) {
 
 void UDamageSystem::CallOnDeath(AActor* DamagedActor) {
 	DamagedActor->Destroy();
+
+	UE_LOG(LogTemp, Log, TEXT("Ded"));
+
 	return;
 }
 
 void UDamageSystem::CallOnDamageResponse(const FDamageInfo& DamageResponse) {
-	Health -= DamageResponse.Amount;
+	CurrentHealth -= DamageResponse.Amount;
 }
 
