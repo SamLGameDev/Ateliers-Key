@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DamageResponse.h"
+#include "DamageTransmitter.h"
 #include "DamageInfo.generated.h"
 
 /**
@@ -18,11 +20,23 @@ public:
 	float Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	EDamageTransmitter DamageType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	EDamageResponse DamageResponse;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
 	bool ShouldDamageInvincible;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
 	bool CanBeBlocked;
 
-	FDamageInfo():Amount(0), ShouldDamageInvincible(false), CanBeBlocked(false){}
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	bool CanBeParried;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	bool ShouldForceInterrupt;
+
+	FDamageInfo():Amount(0), ShouldDamageInvincible(false), CanBeBlocked(false), CanBeParried(false), ShouldForceInterrupt(false){}
 	
 };

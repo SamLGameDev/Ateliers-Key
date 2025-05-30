@@ -46,6 +46,7 @@ float UDamageSystem::Heal(float amount) {
 
 void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo) {
 	if (DamageInfo.CanBeBlocked && IsBlocking) {
+		OnBlocked.Broadcast();
 		return;
 	}
 
@@ -54,6 +55,9 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo) {
 
 		if (CurrentHealth <= 0.0f) {
 			OnDeath.Broadcast();
+		}
+		else {
+			OnDamageResponse.Broadcast(DamageInfo.DamageResponse);
 		}
 	}
 }

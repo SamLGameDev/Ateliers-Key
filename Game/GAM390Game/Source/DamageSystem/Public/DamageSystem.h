@@ -8,6 +8,8 @@
 #include "DamageSystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBlocked);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, EDamageResponse, DamageResponse);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DAMAGESYSTEM_API UDamageSystem : public UActorComponent
@@ -28,6 +30,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDeath OnDeath;
+
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnBlocked OnBlocked;
+
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnDamageResponse OnDamageResponse;
 
 	float Heal(float amount);
 
