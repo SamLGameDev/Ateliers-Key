@@ -36,6 +36,13 @@
 				"CoreUObject",
 				"Engine"
 			]
+		},
+		{
+			"Name": "UserSettings",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+			]
 		}
 	],
 	"Plugins": [
