@@ -40,9 +40,23 @@
 		{
 			"Name": "UserSettings",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-			]
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "LevelManagers",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+
+		},
+		{
+			"Name": "Subtitles",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "Menus",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

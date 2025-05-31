@@ -10,7 +10,7 @@
  * 
  */
 UCLASS(Abstract)
-class GENERALUTILITIES_API UAUW_BaseMenuWidget : public UUserWidget
+class MENUS_API UAUW_BaseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

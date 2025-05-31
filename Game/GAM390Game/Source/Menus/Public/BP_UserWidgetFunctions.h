@@ -12,7 +12,7 @@ class UAUW_BaseMenuWidget;
  * 
  */
 UCLASS()
-class GENERALUTILITIES_API UBP_UserWidgetFunctions : public UBlueprintFunctionLibrary
+class MENUS_API UBP_UserWidgetFunctions : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	
