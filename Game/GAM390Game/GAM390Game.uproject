@@ -7,7 +7,10 @@
 		{
 			"Name": "GAM390Game",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		},
 		{
 			"Name": "GeneralUtilities",
@@ -46,7 +49,6 @@
 			"Name": "LevelManagers",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
-
 		},
 		{
 			"Name": "Subtitles",
@@ -57,6 +59,15 @@
 			"Name": "Menus",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "Hacking",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"UMG",
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [

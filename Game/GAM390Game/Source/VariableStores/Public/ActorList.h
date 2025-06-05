@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RunTimeSet|ActorList")
 	virtual void DeregisterObject(AActor* Object) override { BaseRunTimeSet<AActor*>::DeregisterObject(Object); };
+
+	UFUNCTION(BlueprintCallable, Category = "RunTimeSet|ActorList")
+	virtual void Clear() override { BaseRunTimeSet<AActor*>::Clear(); };
 };
