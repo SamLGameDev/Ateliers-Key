@@ -44,6 +44,14 @@ protected:
 
 	void DisableHackableObjectsHighlight();
 
+	DECLARE_MULTICAST_DELEGATE(FOnTickSignature);
+	FOnTickSignature OnTick;
+
+	UFUNCTION()
+	void DisplayViewedHackableObject();
+
+	FDelegateHandle HackingTraceHandle;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

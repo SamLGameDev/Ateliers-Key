@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "ActorList.h"
 #include "HackableActor.h"
+#include "BP_GeneralFunctions.h"
 
 // Sets default values
 ABP_Player::ABP_Player()
@@ -30,6 +31,7 @@ void ABP_Player::StartHacking()
 	SwitchToHackingMap();
 	GetWorld()->GetWorldSettings()->SetTimeDilation(0.01f);
 	EnableHackableObjectsHighlight();
+	HackingTraceHandle = OnTick.AddUFunction(this, NAMEOF(DisplayViewedHackableObject));
 }
 
 void ABP_Player::StopHacking()
@@ -37,6 +39,7 @@ void ABP_Player::StopHacking()
 	SwitchToGameplayMap();
 	GetWorld()->GetWorldSettings()->SetTimeDilation(1);
 	DisableHackableObjectsHighlight();
+	OnTick.Remove(HackingTraceHandle);
 }
 
 void ABP_Player::EnableHackableObjectsHighlight()
@@ -57,11 +60,33 @@ void ABP_Player::DisableHackableObjectsHighlight()
 	}
 }
 
+void ABP_Player::DisplayViewedHackableObject()
+{
+	FHitResult Result;
+
+	APlayerCameraManager* CManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager.Get();
+
+	FVector Start = CManager->GetCameraLocation();
+
+	FVector Forward = CManager->GetActorForwardVector() * 2500;
+
+	FCollisionObjectQueryParams Oparams;
+	Oparams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel1);
+
+	FCollisionQueryParams params;
+
+	bool bhit = GetWorld()->LineTraceSingleByObjectType(Result, Start, Start + Forward, Oparams, params);
+	if (bhit)
+	{
+		Print("Hit");
+	}
+}
+
 // Called every frame
 void ABP_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	OnTick.Broadcast();
 }
 
 // Called to bind functionality to input
