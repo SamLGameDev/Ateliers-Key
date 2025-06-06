@@ -23,12 +23,4 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void GetActorsInRadius(UObject* World, FVector Origin, float Radius, TArray<AActor*>& OutActors);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-	UParticleSystem* VFX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Array")
-	TArray<AActor*> FoundActors;
-
 };

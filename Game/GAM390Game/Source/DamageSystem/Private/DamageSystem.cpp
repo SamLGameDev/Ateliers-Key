@@ -34,14 +34,12 @@ void UDamageSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	// ...
 }
 
-float UDamageSystem::Heal(float amount) {
+void UDamageSystem::Heal(float amount) {
 	if (!IsDead) {
 		CurrentHealth += amount;
 
 		CurrentHealth = FMath::Clamp(CurrentHealth, 0.0f, MaxHealth);
 	}
-
-	return CurrentHealth;
 }
 
 void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo) {

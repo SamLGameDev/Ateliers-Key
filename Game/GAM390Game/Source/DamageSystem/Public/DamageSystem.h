@@ -37,7 +37,8 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDamageResponse OnDamageResponse;
 
-	float Heal(float amount);
+	UFUNCTION(BlueprintCallable)
+	void Heal(float amount);
 
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(const FDamageInfo& DamageInfo);
