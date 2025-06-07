@@ -8,6 +8,7 @@
 
 class UDecalComponent;
 class UActorList;
+class UHackEffect;
 
 UCLASS()
 class HACKING_API AHackableActor : public AActor
@@ -24,6 +25,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DisableHighlight();
 
+	UFUNCTION(BlueprintCallable)
+	TArray<UHackEffect*>& GetHacks()
+	{
+		return AvailableHacks;
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,6 +46,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UMaterialInstance* HackableObejctOutline;
+
+	UPROPERTY(EditAnywhere)
+	TArray<UHackEffect*> AvailableHacks;
 
 
 public:	

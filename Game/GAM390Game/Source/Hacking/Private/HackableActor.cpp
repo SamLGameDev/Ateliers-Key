@@ -3,6 +3,7 @@
 
 #include "HackableActor.h"
 #include "Components/DecalComponent.h"
+#include "Hacks/HackEffect.h"
 #include "ActorList.h"
 
 // Sets default values

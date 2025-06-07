@@ -9,7 +9,7 @@
 #define NAMEOF(name) #name
 
 #if UE_BUILD_DEBUG || WITH_EDITOR
-#define Print(message) UE_LOG(LogTemp, Warning, TEXT(message));
+#define Print(message, ...) UE_LOG(LogTemp, Warning, TEXT(message), __VA_ARGS__);
 #endif
 
 /**

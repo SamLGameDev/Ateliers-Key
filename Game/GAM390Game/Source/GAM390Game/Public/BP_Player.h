@@ -10,6 +10,7 @@ class UInputMappingContext;
 class UEnhancedInputLocalPlayerSubsystem;
 class UInputAction;
 class UActorList;
+class UGUI_HackingMenu;
 
 UCLASS()
 class GAM390GAME_API ABP_Player : public ACharacter
@@ -51,6 +52,12 @@ protected:
 	void DisplayViewedHackableObject();
 
 	FDelegateHandle HackingTraceHandle;
+
+	UPROPERTY()
+	UGUI_HackingMenu* HackingMenu;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGUI_HackingMenu> BPHackingMenu;
 
 public:	
 	// Called every frame

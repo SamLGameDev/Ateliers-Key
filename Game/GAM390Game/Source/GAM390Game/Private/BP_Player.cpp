@@ -9,6 +9,8 @@
 #include "ActorList.h"
 #include "HackableActor.h"
 #include "BP_GeneralFunctions.h"
+#include "GUI_HackingMenu.h"
+#include "Hacks/HackEffect.h"
 
 // Sets default values
 ABP_Player::ABP_Player()
@@ -23,11 +25,14 @@ void ABP_Player::BeginPlay()
 {
 	Super::BeginPlay();
 	SwitchToGameplayMap();
+	HackingMenu = CreateWidget<UGUI_HackingMenu>(GetWorld(), BPHackingMenu, "HackingMenu");
+
 }
 
 
 void ABP_Player::StartHacking()
 {
+	HackingMenu->AddToViewport();
 	SwitchToHackingMap();
 	GetWorld()->GetWorldSettings()->SetTimeDilation(0.01f);
 	EnableHackableObjectsHighlight();
@@ -36,6 +41,7 @@ void ABP_Player::StartHacking()
 
 void ABP_Player::StopHacking()
 {
+	HackingMenu->RemoveFromParent();
 	SwitchToGameplayMap();
 	GetWorld()->GetWorldSettings()->SetTimeDilation(1);
 	DisableHackableObjectsHighlight();
@@ -78,7 +84,11 @@ void ABP_Player::DisplayViewedHackableObject()
 	bool bhit = GetWorld()->LineTraceSingleByObjectType(Result, Start, Start + Forward, Oparams, params);
 	if (bhit)
 	{
-		Print("Hit");
+		AHackableActor* Hackable = Cast<AHackableActor>(Result.GetActor());
+		for (UHackEffect* Hack : Hackable->GetHacks())
+		{
+			Hack->ExecuteHack(Hackable);
+		}
 	}
 }
 
