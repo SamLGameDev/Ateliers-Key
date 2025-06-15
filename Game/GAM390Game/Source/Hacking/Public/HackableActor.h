@@ -9,6 +9,7 @@
 class UDecalComponent;
 class UActorList;
 class UHackEffect;
+class UWidgetComponent;
 
 UCLASS()
 class HACKING_API AHackableActor : public AActor
@@ -31,6 +32,12 @@ public:
 		return AvailableHacks;
 	}
 
+	void SetLoadingBarProgress(const float Percent);
+
+	void EnableLoadingBar();
+
+	void DisableLoadingBar();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,6 +57,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<UHackEffect*> AvailableHacks;
 
+	UPROPERTY(EditAnyWhere)
+	UWidgetComponent* LoadingBar;
 
 public:	
 	// Called every frame

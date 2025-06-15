@@ -19,6 +19,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float TimeToHack;
 
+	UPROPERTY(EditAnywhere)
+	FText DisplayText;
+
 	UFUNCTION(BlueprintCallable)
 	virtual void ExecuteHack(UObject* HackedObject) 
 	{

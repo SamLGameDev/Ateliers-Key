@@ -5,6 +5,8 @@
 #include "Components/DecalComponent.h"
 #include "Hacks/HackEffect.h"
 #include "ActorList.h"
+#include "Components/WidgetComponent.h"
+#include "GUI_HackProgress.h"
 
 // Sets default values
 AHackableActor::AHackableActor()
@@ -18,7 +20,12 @@ AHackableActor::AHackableActor()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
+	LoadingBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("LoadingBar"));
+	LoadingBar->SetupAttachment(Mesh);
+
 	DisableHighlight();
+
+	DisableLoadingBar();
 }
 
 void AHackableActor::EnableHighlight()
@@ -29,6 +36,21 @@ void AHackableActor::EnableHighlight()
 void AHackableActor::DisableHighlight()
 {
 	Mesh->SetOverlayMaterial(nullptr);
+}
+
+void AHackableActor::SetLoadingBarProgress(const float Percent)
+{
+	Cast<UGUI_HackProgress>(LoadingBar->GetWidget())->SetFill(Percent);
+}
+
+void AHackableActor::EnableLoadingBar()
+{
+	LoadingBar->SetVisibility(true);
+}
+
+void AHackableActor::DisableLoadingBar()
+{
+	LoadingBar->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned

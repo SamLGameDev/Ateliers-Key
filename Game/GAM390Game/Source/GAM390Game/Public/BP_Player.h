@@ -11,6 +11,7 @@ class UEnhancedInputLocalPlayerSubsystem;
 class UInputAction;
 class UActorList;
 class UGUI_HackingMenu;
+class UEnhancedInputComponent;
 
 UCLASS()
 class GAM390GAME_API ABP_Player : public ACharacter
@@ -33,6 +34,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	const UInputAction* StartHackingAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	const UInputAction* NextHack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	const UInputAction* PrevHack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	const UInputAction* TriggerHack;
 
 	void StartHacking();
 
@@ -58,6 +68,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGUI_HackingMenu> BPHackingMenu;
+
+	UEnhancedInputComponent* InputComp;
+
 
 public:	
 	// Called every frame

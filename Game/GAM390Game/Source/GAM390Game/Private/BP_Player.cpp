@@ -26,12 +26,18 @@ void ABP_Player::BeginPlay()
 	Super::BeginPlay();
 	SwitchToGameplayMap();
 	HackingMenu = CreateWidget<UGUI_HackingMenu>(GetWorld(), BPHackingMenu, "HackingMenu");
-
+	InputComp->BindAction(NextHack, ETriggerEvent::Started, HackingMenu, &UGUI_HackingMenu::FocusNextHackButton);
+	InputComp->BindAction(PrevHack, ETriggerEvent::Started, HackingMenu, &UGUI_HackingMenu::FocusPreviousHackButton);
+	InputComp->BindAction(TriggerHack, ETriggerEvent::Started, HackingMenu, &UGUI_HackingMenu::TriggerHack);
 }
 
 
 void ABP_Player::StartHacking()
 {
+	if (!HackingMenu)
+	{
+		return;
+	}
 	HackingMenu->AddToViewport();
 	SwitchToHackingMap();
 	GetWorld()->GetWorldSettings()->SetTimeDilation(0.01f);
@@ -61,6 +67,10 @@ void ABP_Player::DisableHackableObjectsHighlight()
 {
 	for (AActor* Object : HackableObjects->GetRegisteredObjects())
 	{
+		if(!Object)
+		{
+			return;
+		}
 		AHackableActor* HObject = Cast<AHackableActor>(Object);
 		HObject->DisableHighlight();
 	}
@@ -85,10 +95,12 @@ void ABP_Player::DisplayViewedHackableObject()
 	if (bhit)
 	{
 		AHackableActor* Hackable = Cast<AHackableActor>(Result.GetActor());
-		for (UHackEffect* Hack : Hackable->GetHacks())
-		{
-			Hack->ExecuteHack(Hackable);
-		}
+		HackingMenu->UpdateButtonDisplay(Hackable->GetHacks());
+		HackingMenu->SetFocusedObject(Hackable);
+	}
+	else
+	{
+		HackingMenu->DisableHackButtons();
 	}
 }
 
@@ -103,11 +115,11 @@ void ABP_Player::Tick(float DeltaTime)
 void ABP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	UEnhancedInputComponent* enhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-	if(enhancedInput)
+	InputComp = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if(InputComp)
 	{
-		enhancedInput->BindAction(StartHackingAction, ETriggerEvent::Started, this, &ABP_Player::StartHacking);
-		enhancedInput->BindAction(StartHackingAction, ETriggerEvent::Completed, this, &ABP_Player::StopHacking);
+		InputComp->BindAction(StartHackingAction, ETriggerEvent::Started, this, &ABP_Player::StartHacking);
+		InputComp->BindAction(StartHackingAction, ETriggerEvent::Completed, this, &ABP_Player::StopHacking);
 	}
 }
 

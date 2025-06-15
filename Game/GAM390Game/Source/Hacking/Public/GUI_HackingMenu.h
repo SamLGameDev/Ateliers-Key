@@ -7,6 +7,8 @@
 #include "GUI_HackingMenu.generated.h"
 
 class UScrollBox;
+class UGUB_HackingButton;
+class UHackEffect;
 
 /**
  * 
@@ -16,12 +18,55 @@ class HACKING_API UGUI_HackingMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+
+	UFUNCTION()
+	void FocusNextHackButton();
+
+	UFUNCTION()
+	void FocusPreviousHackButton();
+
+	void UpdateButtonDisplay(TArray<UHackEffect*>& Hacks);
+
+	void DisableHackButtons();
+
+	void SetFocusedObject(UObject* Object)
+	{
+		FocusedObject = Object;
+	}
+
+	void TriggerHack();
+
 private:
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UGUB_HackingButton* HackingButton1;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UGUB_HackingButton* HackingButton2;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UGUB_HackingButton* HackingButton3;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UGUB_HackingButton* HackingButton4;
 	
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UScrollBox* AvailableHacksDisplay;
 
 	virtual void NativeConstruct() override;
+
+	virtual void NativeDestruct() override;
+
+	int CurrentlyFocused = 0;
+
+	int EnabledButtons;
+
+	UObject* FocusedObject;
+
+	TArray<UGUB_HackingButton*> HackingButtons;
+
+
 
 
 
