@@ -9,6 +9,8 @@
 class UScrollBox;
 class UGUB_HackingButton;
 class UHackEffect;
+class UTextBlock;
+class UBorder;
 
 /**
  * 
@@ -50,9 +52,15 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UGUB_HackingButton* HackingButton4;
-	
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UGUB_HackingButton* HackingButton5;
+
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
-	UScrollBox* AvailableHacksDisplay;
+	UTextBlock* HackDescription;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UBorder* HackDescriptionParent;
 
 	virtual void NativeConstruct() override;
 

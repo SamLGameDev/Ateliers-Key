@@ -8,15 +8,17 @@
 #include "Hacks/HackEffect.h"
 #include "BP_GeneralFunctions.h"
 #include "HackableActor.h"
+#include "Components/Border.h"
 
 void UGUB_HackingButton::SetFocused()
 {
-	Clickable->SetStyle(FocusedStyle);
+	Parent->SetBrushColor(BorderStyle);
 }
 
 void UGUB_HackingButton::SetUnFocused()
 {
 	Clickable->SetStyle(UnFocusedStyle);
+	Parent->SetBrushColor(FLinearColor::Transparent);
 }
 
 void UGUB_HackingButton::SetHack(UHackEffect* Hack)
@@ -38,6 +40,11 @@ void UGUB_HackingButton::StartHack(UObject* HackedObject)
 	HackDel.BindUFunction(this, "ProgressHack", Object, LoadedEffect->TimeToHack);
 
 	GetWorld()->GetTimerManager().SetTimerForNextTick(HackDel);
+}
+
+FText UGUB_HackingButton::GetDescription()
+{
+	return LoadedEffect->Description;
 }
 
 void UGUB_HackingButton::ProgressHack(AHackableActor* HackedObject, float TimeRemaining)

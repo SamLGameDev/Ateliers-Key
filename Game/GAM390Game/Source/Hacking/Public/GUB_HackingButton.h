@@ -11,6 +11,7 @@ class UTextBlock;
 struct FButtonStyle;
 class UHackEffect;
 class AHackableActor;
+class UBorder;
 
 /**
  * 
@@ -21,6 +22,9 @@ class HACKING_API UGUB_HackingButton : public UUserWidget
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadWrite)
+	UBorder* Parent;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadWrite)
 	UButton* Clickable;
@@ -36,17 +40,23 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FButtonStyle FocusedStyle;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor BorderStyle;
 	
 	UPROPERTY(EditAnywhere)
 	FButtonStyle UnFocusedStyle;
 
 	void StartHack(UObject* HackedObject);
 
+	FText GetDescription();
+
+
+private:
+	UHackEffect* LoadedEffect;
+
 	UFUNCTION()
 	void ProgressHack(AHackableActor* HackedObject, float TimeRemaining);
 
 	void TriggerHack(AHackableActor* HackedObject);
-
-private:
-	UHackEffect* LoadedEffect;
 };

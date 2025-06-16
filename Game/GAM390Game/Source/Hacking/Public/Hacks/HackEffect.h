@@ -27,5 +27,7 @@ public:
 	{
 
 	};
-	
+
+	UPROPERTY(EditAnywhere)
+	FText Description;
 };

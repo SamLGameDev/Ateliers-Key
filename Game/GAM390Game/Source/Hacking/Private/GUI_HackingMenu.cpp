@@ -5,6 +5,8 @@
 #include "Components/ScrollBox.h"
 #include "GUB_HackingButton.h"
 #include "Hacks/HackEffect.h"
+#include "Components/TextBlock.h"
+#include "Components/Border.h"
 
 void UGUI_HackingMenu::FocusNextHackButton()
 {
@@ -13,6 +15,7 @@ void UGUI_HackingMenu::FocusNextHackButton()
 		HackingButtons[CurrentlyFocused]->SetUnFocused();
 		CurrentlyFocused++;
 		HackingButtons[CurrentlyFocused]->SetFocused();
+		HackDescription->SetText(HackingButtons[CurrentlyFocused]->GetDescription());
 	}
 
 }
@@ -24,6 +27,7 @@ void UGUI_HackingMenu::FocusPreviousHackButton()
 		HackingButtons[CurrentlyFocused]->SetUnFocused();
 		CurrentlyFocused--;
 		HackingButtons[CurrentlyFocused]->SetFocused();
+		HackDescription->SetText(HackingButtons[CurrentlyFocused]->GetDescription());
 	}
 }
 
@@ -34,6 +38,8 @@ void UGUI_HackingMenu::UpdateButtonDisplay(TArray<UHackEffect*>& Hacks)
 		HackingButtons[i]->SetHack(Hacks[i]);
 	}
 	EnabledButtons = Hacks.Num() -1;
+	HackDescriptionParent->SetVisibility(ESlateVisibility::Visible);
+	HackDescription->SetText(HackingButtons[CurrentlyFocused]->GetDescription());
 }
 
 void UGUI_HackingMenu::DisableHackButtons()
@@ -42,8 +48,12 @@ void UGUI_HackingMenu::DisableHackButtons()
 	{
 		Button->SetVisibility(ESlateVisibility::Hidden);
 	}
+	HackingButtons[CurrentlyFocused]->SetUnFocused();
 	EnabledButtons = 0;
+	CurrentlyFocused = 0;
+	HackingButtons[CurrentlyFocused]->SetFocused();
 	FocusedObject = nullptr;
+	HackDescriptionParent->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UGUI_HackingMenu::TriggerHack()
@@ -63,8 +73,10 @@ void UGUI_HackingMenu::NativeConstruct()
 	HackingButtons.Add(HackingButton2);
 	HackingButtons.Add(HackingButton3);
 	HackingButtons.Add(HackingButton4);
+	HackingButtons.Add(HackingButton5);
 
 	HackingButtons[0]->SetFocused();
+	HackDescriptionParent->SetVisibility(ESlateVisibility::Hidden);
 
 }
 
