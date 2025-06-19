@@ -35,6 +35,7 @@ public:
 
 	virtual void RegisterObjects(TArray<T> Set);
 
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)
