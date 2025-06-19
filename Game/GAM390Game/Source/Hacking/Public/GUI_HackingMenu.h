@@ -39,6 +39,15 @@ public:
 
 	void TriggerHack();
 
+	const bool IsHacking() const
+	{
+		return bIsHacking;
+	}
+
+	void SetHackingStarted();
+
+	void SetHackingEnded();
+
 private:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -61,6 +70,8 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UBorder* HackDescriptionParent;
+
+	bool bIsHacking = false;
 
 	virtual void NativeConstruct() override;
 

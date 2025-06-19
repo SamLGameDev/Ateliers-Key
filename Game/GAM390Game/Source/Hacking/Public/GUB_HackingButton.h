@@ -12,6 +12,7 @@ struct FButtonStyle;
 class UHackEffect;
 class AHackableActor;
 class UBorder;
+class UGUI_HackingMenu;
 
 /**
  * 
@@ -43,7 +44,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FLinearColor BorderStyle;
-	
+
 	UPROPERTY(EditAnywhere)
 	FButtonStyle UnFocusedStyle;
 
@@ -51,9 +52,34 @@ public:
 
 	FText GetDescription();
 
+	void SetHackingMenu(UGUI_HackingMenu* Menu)
+	{
+		HackingMenu = Menu;
+	}
+
+	void SetDisplayDisabled();
+
+	void SetDisplayEnabled();
+
+
 
 private:
 	UHackEffect* LoadedEffect;
+
+	UGUI_HackingMenu* HackingMenu;
+
+	UPROPERTY(EditAnywhere)
+	FButtonStyle DisabledStyle;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor BorderDisabledColor;
+
+	UPROPERTY(EditAnywhere)
+	FSlateColor TextDisabledColor;
+
+
+	UPROPERTY(EditAnywhere)
+	FSlateColor TextColor;
 
 	UFUNCTION()
 	void ProgressHack(AHackableActor* HackedObject, float TimeRemaining);

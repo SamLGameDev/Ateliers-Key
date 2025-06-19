@@ -58,22 +58,57 @@ void UGUI_HackingMenu::DisableHackButtons()
 
 void UGUI_HackingMenu::TriggerHack()
 {
-	if (!FocusedObject)
+	if (!FocusedObject || IsHacking())
 	{
 		return;
 	}
+	SetHackingStarted();
+
+}
+
+void UGUI_HackingMenu::SetHackingStarted()
+{
+	bIsHacking = true;
 	HackingButtons[CurrentlyFocused]->StartHack(FocusedObject);
+	for (UGUB_HackingButton* Button : HackingButtons)
+	{
+		Button->SetDisplayDisabled();
+	}
+	HackingButtons[CurrentlyFocused]->SetFocused();
+}
+
+void UGUI_HackingMenu::SetHackingEnded()
+{
+	bIsHacking = false;
+	for (UGUB_HackingButton* Button : HackingButtons)
+	{
+		Button->SetDisplayEnabled();
+	}
+	HackingButtons[CurrentlyFocused]->SetFocused();
 }
 
 void UGUI_HackingMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	HackingButtons.Add(HackingButton1);
-	HackingButtons.Add(HackingButton2);
-	HackingButtons.Add(HackingButton3);
-	HackingButtons.Add(HackingButton4);
-	HackingButtons.Add(HackingButton5);
+
+	//we do this as HackingButtons we be added the the array every time it is added to the viewport if not,
+	// and we cant empty the array, as some functions need access to the buttons even when not active
+	if (HackingButtons.IsEmpty())
+	{
+		HackingButtons.Add(HackingButton1);
+		HackingButtons.Add(HackingButton2);
+		HackingButtons.Add(HackingButton3);
+		HackingButtons.Add(HackingButton4);
+		HackingButtons.Add(HackingButton5);
+	}
+
+
+
+	for (UGUB_HackingButton* Button : HackingButtons)
+	{
+		Button->SetHackingMenu(this);
+	}
 
 	HackingButtons[0]->SetFocused();
 	HackDescriptionParent->SetVisibility(ESlateVisibility::Hidden);
@@ -86,7 +121,6 @@ void UGUI_HackingMenu::NativeDestruct()
 
 	HackingButtons[CurrentlyFocused]->SetUnFocused();
 	CurrentlyFocused = 0;
-	HackingButtons.Empty();
 
 }
 

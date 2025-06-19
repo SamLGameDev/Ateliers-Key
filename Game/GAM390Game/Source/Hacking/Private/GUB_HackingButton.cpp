@@ -9,15 +9,16 @@
 #include "BP_GeneralFunctions.h"
 #include "HackableActor.h"
 #include "Components/Border.h"
+#include "GUI_HackingMenu.h"
 
 void UGUB_HackingButton::SetFocused()
 {
-	Parent->SetBrushColor(BorderStyle);
+	Parent->SetBrushColor(HackingMenu->IsHacking() ? BorderDisabledColor : BorderStyle);
 }
 
 void UGUB_HackingButton::SetUnFocused()
 {
-	Clickable->SetStyle(UnFocusedStyle);
+	Clickable->SetStyle(HackingMenu->IsHacking() ? DisabledStyle: UnFocusedStyle);
 	Parent->SetBrushColor(FLinearColor::Transparent);
 }
 
@@ -47,6 +48,18 @@ FText UGUB_HackingButton::GetDescription()
 	return LoadedEffect->Description;
 }
 
+void UGUB_HackingButton::SetDisplayDisabled()
+{
+	Clickable->SetStyle(DisabledStyle);
+	DisplayText->SetColorAndOpacity(TextDisabledColor);
+}
+
+void UGUB_HackingButton::SetDisplayEnabled()
+{
+	Clickable->SetStyle(FocusedStyle);
+	DisplayText->SetColorAndOpacity(TextColor);
+}
+
 void UGUB_HackingButton::ProgressHack(AHackableActor* HackedObject, float TimeRemaining)
 {
 	TimeRemaining -= GetWorld()->GetDeltaSeconds();
@@ -72,6 +85,7 @@ void UGUB_HackingButton::ProgressHack(AHackableActor* HackedObject, float TimeRe
 
 void UGUB_HackingButton::TriggerHack(AHackableActor* HackedObject)
 {
+	HackingMenu->SetHackingEnded();
 	HackedObject->DisableLoadingBar();
 	LoadedEffect->ExecuteHack(HackedObject);
 }
