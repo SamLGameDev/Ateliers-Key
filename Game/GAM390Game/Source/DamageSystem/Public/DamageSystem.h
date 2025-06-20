@@ -37,11 +37,20 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDamageResponse OnDamageResponse;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	int32 AttackTokensCount;
+
 	UFUNCTION(BlueprintCallable)
 	void Heal(float amount);
 
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(const FDamageInfo& DamageInfo);
+
+	UFUNCTION(BlueprintCallable)
+	bool ReserveAttackToken(int32 Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void ReturnAttackToken(int32 Amount);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;
