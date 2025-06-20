@@ -21,8 +21,9 @@ void UDamageSystem::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 	CurrentHealth = MaxHealth;
+	
 }
 
 
