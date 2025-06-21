@@ -12,6 +12,8 @@ class UInputAction;
 class UActorList;
 class UGUI_HackingMenu;
 class UEnhancedInputComponent;
+class UHackEffectStore;
+class UGUI_HackSelector;
 
 UCLASS()
 class GAM390GAME_API ABP_Player : public ACharacter
@@ -26,27 +28,57 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void SetUpInputActions();
+
+	void SetUpHackSelectionActions();
+
+	void SetUpHackingActions();
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
 	const UInputMappingContext* GameplayMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
 	const UInputMappingContext* HackingMap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
+	const UInputMappingContext* HackSelctionMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Hacking")
 	const UInputAction* StartHackingAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Hacking")
 	const UInputAction* NextHack;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Hacking")
 	const UInputAction* PrevHack;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Hacking")
 	const UInputAction* TriggerHack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
+	const UInputAction* NextSlot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
+	const UInputAction* PreviousSlot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
+	const UInputAction* AddToSlot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
+	const UInputAction* NextAvailableHack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
+	const UInputAction* PreviousAvailableHack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
+	const UInputAction* ExitSelection;
+
 
 	void StartHacking();
 
 	void StopHacking();
+
+	void StopHackSelecton();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hacking")
 	UActorList* HackableObjects;
@@ -69,7 +101,21 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGUI_HackingMenu> BPHackingMenu;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGUI_HackSelector> BPHackSelector;
+
+	UPROPERTY()
+	UGUI_HackSelector* HackSelector;
+
 	UEnhancedInputComponent* InputComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UHackEffectStore* AvailableHacks;
+
+	UPROPERTY(EditDefaultsOnly)
+	UHackEffectStore* LoadedHacks;
+
+	virtual void BeginDestroy() override;
 
 
 public:	
@@ -82,6 +128,11 @@ public:
 	void SwitchToGameplayMap();
 
 	void SwitchToHackingMap();
+
+	void SwitchToHackingSelection();
+
+	UFUNCTION(BlueprintCallable)
+	void StartHackSelection();
 
 	void SwitchMap(const UInputMappingContext* Map, UEnhancedInputLocalPlayerSubsystem* Input);
 

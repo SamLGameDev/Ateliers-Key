@@ -26,12 +26,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DisableHighlight();
 
-	UFUNCTION(BlueprintCallable)
-	TArray<UHackEffect*>& GetHacks()
-	{
-		return AvailableHacks;
-	}
-
 	void SetLoadingBarProgress(const float Percent);
 
 	void EnableLoadingBar();
@@ -53,9 +47,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UMaterialInstance* HackableObejctOutline;
-
-	UPROPERTY(EditAnywhere)
-	TArray<UHackEffect*> AvailableHacks;
 
 	UPROPERTY(EditAnyWhere)
 	UWidgetComponent* LoadingBar;

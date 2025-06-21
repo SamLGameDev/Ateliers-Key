@@ -2,10 +2,11 @@
 
 
 #include "GUI_HackSelector.h"
-#include "GUB_HackingButton.h"
+#include "GUB_HackSelectionButton.h"
 #include "HackEffectStore.h"
 #include "Hacks/HackEffect.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/ScrollBoxSlot.h"
 
 
 void UGUI_HackSelector::FocusNextSlot()
@@ -34,6 +35,16 @@ void UGUI_HackSelector::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	if (ButtonSlots.IsEmpty())
+	{
+		ButtonSlots.Add(HackingButton1);
+		ButtonSlots.Add(HackingButton2);
+		ButtonSlots.Add(HackingButton3);
+		ButtonSlots.Add(HackingButton4);
+		ButtonSlots.Add(HackingButton5);
+
+	}
+
 	if (!AvailableHacks)
 	{
 		return;
@@ -41,9 +52,9 @@ void UGUI_HackSelector::NativeConstruct()
 
 	for (int i = 0; i < AvailableHacks->GetRegisteredObjects().Num(); i++)
 	{
-		UGUB_HackingButton* hackButton = WidgetTree->ConstructWidget<UGUB_HackingButton>
+		UGUB_HackSelectionButton* hackButton = WidgetTree->ConstructWidget<UGUB_HackSelectionButton>
 			(
-				UGUB_HackingButton::StaticClass(),
+				BPHackingButton,
 				FName("HackButton" + FString::FromInt(i))
 			);
 
@@ -51,7 +62,39 @@ void UGUI_HackSelector::NativeConstruct()
 
 		AvailableHackButtons.Add(hackButton);
 
+		Cast<UScrollBoxSlot>(hackButton->Slot)->SetPadding(15);
+
 		hackButton->SetHack(AvailableHacks->GetRegisteredObjects()[i]);
+	}
+
+	for (int i = 0; i < ButtonSlots.Num(); i++)
+	{
+		if (LoadedHacks->GetRegisteredObjects().IsValidIndex(i))
+		{
+			ButtonSlots[i]->SetHack(LoadedHacks->GetRegisteredObjects()[i]);
+
+			for (UGUB_HackSelectionButton* Button : AvailableHackButtons)
+			{
+				if (Button->GetHack() == LoadedHacks->GetRegisteredObjects()[i])
+				{
+					ButtonSlots[i]->SetLoadedButton(Button);
+					Button->SetLoadedEnabled();
+					break;
+				}
+			}
+			continue;
+		}
+		ButtonSlots[i]->SetDisplayText(FText::FromString("Empty"));
+	}
+
+
+	ButtonSlots[0]->SetFocused();
+	SlotHackDescription->SetText(ButtonSlots[0]->GetDescription());
+
+	if (!AvailableHackButtons.IsEmpty())
+	{
+		AvailableHackButtons[0]->SetFocused();
+		PotentialHackDescription->SetText(AvailableHackButtons[0]->GetDescription());
 	}
 
 
@@ -59,23 +102,67 @@ void UGUI_HackSelector::NativeConstruct()
 
 void UGUI_HackSelector::FocusNextAvailableHack()
 {
-	if (CurrentButtonSlot < AvailableHackButtons.Num() - 1)
+	if (CurrentAvailableHack < AvailableHackButtons.Num() - 1)
 	{
 		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
 		CurrentAvailableHack++;
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
+		AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);
 		PotentialHackDescription->SetText(AvailableHackButtons[CurrentAvailableHack]->GetDescription());
 	}
 }
 
 void UGUI_HackSelector::FocusPreviousAvailableHack()
 {
-	if (CurrentButtonSlot > 0)
+	if (CurrentAvailableHack > 0)
 	{
 		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
 		CurrentAvailableHack--;
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
+		AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);
 		PotentialHackDescription->SetText(AvailableHackButtons[CurrentAvailableHack]->GetDescription());
 	}
 }
- 
+
+void UGUI_HackSelector::LoadSelectedToSlot()
+{
+	if (AvailableHackButtons[CurrentAvailableHack]->IsLoaded())
+	{
+		return;
+	}
+
+	if (LoadedHacks)
+	{
+		LoadedHacks->DeregisterObject(ButtonSlots[CurrentButtonSlot]->GetHack());
+		LoadedHacks->RegisterObject(AvailableHackButtons[CurrentAvailableHack]->GetHack());
+	}
+	
+	AvailableHackButtons[CurrentAvailableHack]->SetLoadedEnabled();
+
+	UGUB_HackSelectionButton* loadedButton = ButtonSlots[CurrentButtonSlot]->GetLoadedButton();
+	if (loadedButton)
+	{
+		loadedButton->SetLoadedDisabled();
+	}
+
+	ButtonSlots[CurrentButtonSlot]->SetLoadedButton(AvailableHackButtons[CurrentAvailableHack]);
+
+	ButtonSlots[CurrentButtonSlot]->SetHack(AvailableHackButtons[CurrentAvailableHack]->GetHack());
+
+	SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
+}
+
+void UGUI_HackSelector::Exit()
+{
+	ButtonSlots[CurrentButtonSlot]->SetUnFocused();
+	RemoveFromViewport();
+	CurrentAvailableHack = 0;
+	CurrentButtonSlot = 0;
+
+	for (int i = 0; i < AvailableHackButtons.Num(); i++)
+	{
+		AvailableHackButtons[i]->RemoveFromParent();
+	}
+
+	AvailableHackButtons.Empty();
+}

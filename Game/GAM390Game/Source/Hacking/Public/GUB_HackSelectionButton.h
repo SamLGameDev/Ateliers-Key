@@ -4,24 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "GUB_HackingButton.generated.h"
+#include "GUB_HackSelectionButton.generated.h"
+
+
 
 class UButton;
 class UTextBlock;
 struct FButtonStyle;
 class UHackEffect;
-class AHackableActor;
 class UBorder;
-class UGUI_HackingMenu;
 
 /**
  * 
  */
 UCLASS()
-class HACKING_API UGUB_HackingButton : public UUserWidget
+class HACKING_API UGUB_HackSelectionButton : public UUserWidget
 {
 	GENERATED_BODY()
-
 public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadWrite)
@@ -53,44 +52,47 @@ public:
 	UPROPERTY(EditAnywhere)
 	FButtonStyle UnFocusedStyle;
 
-	void StartHack(UObject* HackedObject);
-
 	FText GetDescription();
 
-	void SetHackingMenu(UGUI_HackingMenu* Menu)
-	{
-		HackingMenu = Menu;
-	}
+	void SetSelectedDisplayDisabled();
 
-	void SetDisplayDisabled();
-
-	void SetDisplayEnabled();
+	void SetSelectedDisplayEnabled();
 
 	void SetDisplayText(FText Text);
 
+	void SetLoadedDisabled();
 
+	void SetLoadedEnabled();
+
+	bool IsLoaded()
+	{
+		return bIsLoaded;
+	}
+
+	void SetLoadedButton(UGUB_HackSelectionButton* Button);
+
+	UGUB_HackSelectionButton* GetLoadedButton()
+	{
+		return LoadedButton;
+	}
 
 private:
 	UHackEffect* LoadedEffect;
 
-	UGUI_HackingMenu* HackingMenu;
+	UPROPERTY(EditAnywhere)
+	FButtonStyle LoadedStyle;
 
 	UPROPERTY(EditAnywhere)
-	FButtonStyle DisabledStyle;
+	FLinearColor BorderLoadedColor;
 
 	UPROPERTY(EditAnywhere)
-	FLinearColor BorderDisabledColor;
+	FSlateColor TextLoadedColor;
 
-	UPROPERTY(EditAnywhere)
-	FSlateColor TextDisabledColor;
-
+	UGUB_HackSelectionButton* LoadedButton;
 
 	UPROPERTY(EditAnywhere)
 	FSlateColor TextColor;
 
+	bool bIsLoaded;
 
-	UFUNCTION()
-	void ProgressHack(AHackableActor* HackedObject, float TimeRemaining);
-
-	void TriggerHack(AHackableActor* HackedObject);
 };

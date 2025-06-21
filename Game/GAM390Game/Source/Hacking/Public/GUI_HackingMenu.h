@@ -28,7 +28,7 @@ public:
 	UFUNCTION()
 	void FocusPreviousHackButton();
 
-	void UpdateButtonDisplay(TArray<UHackEffect*>& Hacks);
+	void UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks);
 
 	void DisableHackButtons();
 

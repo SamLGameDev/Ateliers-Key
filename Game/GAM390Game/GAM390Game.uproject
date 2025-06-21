@@ -68,6 +68,14 @@
 				"UMG",
 				"Engine"
 			]
+		},
+		{
+			"Name": "EnchancedInputAdditions",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"EnhancedInput"
+			]
 		}
 	],
 	"Plugins": [

@@ -31,11 +31,23 @@ void UGUI_HackingMenu::FocusPreviousHackButton()
 	}
 }
 
-void UGUI_HackingMenu::UpdateButtonDisplay(TArray<UHackEffect*>& Hacks)
+void UGUI_HackingMenu::UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks)
 {
-	for (int i = 0; i < Hacks.Num(); i++)
+	if (Hacks.IsEmpty())
 	{
-		HackingButtons[i]->SetHack(Hacks[i]);
+		return;
+	}
+
+	for (int i = 0; i < HackingButtons.Num(); i++)
+	{
+		if (Hacks.IsValidIndex(i))
+		{
+			HackingButtons[i]->SetHack(Hacks[i]);
+			HackingButtons[i]->SetVisibility(ESlateVisibility::Visible);
+			continue;
+		}
+		HackingButtons[i]->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 	EnabledButtons = Hacks.Num() -1;
 	HackDescriptionParent->SetVisibility(ESlateVisibility::Visible);

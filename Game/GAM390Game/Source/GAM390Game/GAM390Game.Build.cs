@@ -8,7 +8,7 @@ public class GAM390Game : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GeneralUtilities", "VariableStores", "ProcEnemies", "DamageSystem", "LevelManagers", "Subtitles", "Menus", "Hacking", "UMG", "Slate", "SlateCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GeneralUtilities", "VariableStores", "ProcEnemies", "DamageSystem", "LevelManagers", "Subtitles", "Menus", "Hacking", "UMG", "Slate", "SlateCore", "EnchancedInputAdditions" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

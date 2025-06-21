@@ -24,7 +24,7 @@ void UGUB_HackingButton::SetUnFocused()
 
 void UGUB_HackingButton::SetHack(UHackEffect* Hack)
 {
-	DisplayText->SetText(Hack->DisplayText);
+	SetDisplayText(Hack->DisplayText);
 	SetVisibility(ESlateVisibility::Visible);
 	LoadedEffect = Hack;
 }
@@ -58,6 +58,11 @@ void UGUB_HackingButton::SetDisplayEnabled()
 {
 	Clickable->SetStyle(FocusedStyle);
 	DisplayText->SetColorAndOpacity(TextColor);
+}
+
+void UGUB_HackingButton::SetDisplayText(FText Text)
+{
+	DisplayText->SetText(Text);
 }
 
 void UGUB_HackingButton::ProgressHack(AHackableActor* HackedObject, float TimeRemaining)
