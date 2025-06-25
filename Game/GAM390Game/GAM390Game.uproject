@@ -85,6 +85,10 @@
 			"TargetAllowList": [
 				"Editor"
 			]
+		},
+		{
+			"Name": "CodeView",
+			"Enabled": true
 		}
 	]
 }
