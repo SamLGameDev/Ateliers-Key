@@ -4,10 +4,12 @@
 #include "GI_Accessibility.h"
 
 #include "UBaseGameUserSettings.h"
+#include "SoundManager.h"
 
 void UGI_SanctumSettings::Init()
 {
 	SyncSubtitlesSettings();
+	USoundManager::SetSoundTable(SoundTable);
 }
 
 void UGI_SanctumSettings::SyncSubtitlesSettings()

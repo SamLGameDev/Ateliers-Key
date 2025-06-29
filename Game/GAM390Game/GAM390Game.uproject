@@ -76,6 +76,14 @@
 			"AdditionalDependencies": [
 				"EnhancedInput"
 			]
+		},
+		{
+			"Name": "SoundManagement",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [

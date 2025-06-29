@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float m_Brightness;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* SoundTable;
+
 	virtual void Init() override;
 
 	void SyncSubtitlesSettings();
