@@ -14,6 +14,7 @@ class UGUI_HackingMenu;
 class UEnhancedInputComponent;
 class UHackEffectStore;
 class UGUI_HackSelector;
+class UTimeDialationToken;
 
 UCLASS()
 class GAM390GAME_API ABP_Player : public ACharacter
@@ -72,6 +73,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
 	const UInputAction* ExitSelection;
+
+	UPROPERTY();
+	UTimeDialationToken* HackingDialation;
 
 
 	void StartHacking();

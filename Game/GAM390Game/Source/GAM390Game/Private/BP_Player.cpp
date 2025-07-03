@@ -13,6 +13,8 @@
 #include "Hacks/HackEffect.h"
 #include "HackEffectStore.h"
 #include "GUI_HackSelector.h"
+#include "TimeManager.h"
+#include "TimeDialationToken.h"
 
 // Sets default values
 ABP_Player::ABP_Player()
@@ -75,7 +77,7 @@ void ABP_Player::StartHacking()
 	}
 	HackingMenu->AddToViewport();
 	SwitchToHackingMap();
-	GetWorld()->GetWorldSettings()->SetTimeDilation(0.01f);
+	HackingDialation = UTimeManager::SetTimeDialation(this, 0.01);
 	EnableHackableObjectsHighlight();
 	HackingTraceHandle = OnTick.AddUFunction(this, NAMEOF(DisplayViewedHackableObject));
 	HackingMenu->DisableHackButtons();
@@ -85,7 +87,9 @@ void ABP_Player::StopHacking()
 {
 	HackingMenu->RemoveFromParent();
 	SwitchToGameplayMap();
-	GetWorld()->GetWorldSettings()->SetTimeDilation(1);
+
+	HackingDialation->StopDialation();
+
 	DisableHackableObjectsHighlight();
 	OnTick.Remove(HackingTraceHandle);
 }
