@@ -12,20 +12,38 @@ class UGUI_DamageLocationIndicator;
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class GAM390GAME_API UC_DangerDirectionIndicator : public UC_BaseHardwareAbility
 {
 	GENERATED_BODY()
 
 public:
 
+	UFUNCTION(BlueprintCallable)
 	virtual void EnableAbility() override;
 
-	virtual void StartDamageIndicator(EDamageResponse Response, AActor* Source);
+	UFUNCTION()
+	virtual void StartDamageIndicator(EDamageResponse DamageResponse, AActor* Source);
+
+	UFUNCTION()
+	void CalculateDirection(AActor* Source);
+
+	UFUNCTION()
+	virtual void HideIndicator();
 
 protected:
-	 
+	
+	UPROPERTY()
+	FTimerHandle FadeHandle;
+
+	UPROPERTY()
+	FTimerHandle TickHandle;
+
 	UPROPERTY(EditDefaultsOnly)
+	float FadeTime;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGUI_DamageLocationIndicator> DIClass;
 	UGUI_DamageLocationIndicator* DamageIndicator;
 	
 };

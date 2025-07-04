@@ -17,7 +17,14 @@ class GAM390GAME_API UGUI_DamageLocationIndicator : public UUserWidget
 
 public:
 
-	virtual void RotateToFace(const FVector Direction);
+	UFUNCTION()
+	virtual void RotateToFace(const FVector Direction, const FVector ForwardDir, const FVector UpDir);
+
+	UFUNCTION()
+	virtual void SetHidden();
+
+	UFUNCTION()
+	virtual void SetVisible();
 private:
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UCanvasPanel* Canvas;

@@ -7,7 +7,7 @@
 #include "C_BaseHardwareAbility.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Abstract)
 class GAM390GAME_API UC_BaseHardwareAbility : public UActorComponent
 {
 	GENERATED_BODY()
