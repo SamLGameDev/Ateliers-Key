@@ -62,7 +62,7 @@ void AFrag_GrenadeExplosion::GetActorsInRadius(UObject* WorldContext, FVector Or
             damageInfo.CanBeParried = false;
             damageInfo.ShouldForceInterrupt = false;
 
-            HitActor->FindComponentByClass<UDamageSystem>()->TakeDamage(damageInfo);
+            HitActor->FindComponentByClass<UDamageSystem>()->TakeDamage(damageInfo, GetOwner());
 
             // Print actor name to screen
             if (GEngine)

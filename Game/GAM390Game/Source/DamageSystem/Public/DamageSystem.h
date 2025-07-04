@@ -9,7 +9,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBlocked);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, EDamageResponse, DamageResponse);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageResponse, EDamageResponse, DamageResponse, AActor*, Source);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DAMAGESYSTEM_API UDamageSystem : public UActorComponent
@@ -41,7 +41,7 @@ public:
 	void Heal(float amount);
 
 	UFUNCTION(BlueprintCallable)
-	void TakeDamage(const FDamageInfo& DamageInfo);
+	void TakeDamage(const FDamageInfo& DamageInfo, AActor* Source);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;

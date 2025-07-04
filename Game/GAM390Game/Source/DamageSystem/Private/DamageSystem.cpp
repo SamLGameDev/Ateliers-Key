@@ -42,7 +42,7 @@ void UDamageSystem::Heal(float amount) {
 	}
 }
 
-void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo) {
+void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 	if (DamageInfo.CanBeBlocked && IsBlocking) {
 		OnBlocked.Broadcast();
 		return;
@@ -55,7 +55,7 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo) {
 			OnDeath.Broadcast();
 		}
 		else {
-			OnDamageResponse.Broadcast(DamageInfo.DamageResponse);
+			OnDamageResponse.Broadcast(DamageInfo.DamageResponse, Source);
 		}
 	}
 }
