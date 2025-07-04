@@ -21,8 +21,9 @@ void UDamageSystem::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 	CurrentHealth = MaxHealth;
+	
 }
 
 
@@ -58,6 +59,26 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 			OnDamageResponse.Broadcast(DamageInfo.DamageResponse, Source);
 		}
 	}
+}
+
+bool UDamageSystem::ReserveAttackToken(int32 Amount) {
+	if (AttackTokensCount >= Amount) {
+		AttackTokensCount -= Amount;
+
+		if (GEngine) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Attack Tokens Count: TRUE"));
+		}
+		return true;
+	}
+
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Attack Tokens Count: FALSE"));
+	}
+	return false;
+}
+
+void UDamageSystem::ReturnAttackToken(int32 Amount) {
+	AttackTokensCount += Amount;
 }
 
 void UDamageSystem::CallOnDeath(AActor* DamagedActor) {
