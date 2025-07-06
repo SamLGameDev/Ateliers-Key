@@ -25,6 +25,20 @@ public:
 
 	UFUNCTION()
 	virtual void SetVisible();
+
+	UFUNCTION()
+	virtual void StartRotation(const AActor* Source, const AActor* Hit, TArray<UGUI_DamageLocationIndicator*>& UnusedIndicators, const float FadeTime);
+
+	UFUNCTION()
+
+	void TickRotation(const AActor* Source, const AActor* Hit);
+
+	UFUNCTION()
+	virtual void EndRotation(TArray<UGUI_DamageLocationIndicator*>& UnusedIndicators);
+
+	FTimerHandle TickHandle;
+
+	FTimerHandle FadeHandle;
 private:
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UCanvasPanel* Canvas;

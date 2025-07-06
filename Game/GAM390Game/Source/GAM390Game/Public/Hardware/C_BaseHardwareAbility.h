@@ -15,7 +15,8 @@ class GAM390GAME_API UC_BaseHardwareAbility : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UC_BaseHardwareAbility();
-
+	
+	UFUNCTION(BlueprintCallable)
 	virtual void EnableAbility();
 
 protected:

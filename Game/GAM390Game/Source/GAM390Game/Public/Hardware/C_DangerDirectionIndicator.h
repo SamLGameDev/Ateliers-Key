@@ -18,32 +18,28 @@ class GAM390GAME_API UC_DangerDirectionIndicator : public UC_BaseHardwareAbility
 	GENERATED_BODY()
 
 public:
-
-	UFUNCTION(BlueprintCallable)
 	virtual void EnableAbility() override;
 
 	UFUNCTION()
 	virtual void StartDamageIndicator(EDamageResponse DamageResponse, AActor* Source);
 
-	UFUNCTION()
-	void CalculateDirection(AActor* Source);
 
-	UFUNCTION()
-	virtual void HideIndicator();
 
 protected:
-	
-	UPROPERTY()
-	FTimerHandle FadeHandle;
 
-	UPROPERTY()
-	FTimerHandle TickHandle;
+	virtual UGUI_DamageLocationIndicator* GetIndicator();
+
+
+	UPROPERTY(EditDefaultsOnly)
+	uint8 NumberOfIndicators;
 
 	UPROPERTY(EditDefaultsOnly)
 	float FadeTime;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGUI_DamageLocationIndicator> DIClass;
-	UGUI_DamageLocationIndicator* DamageIndicator;
+
+	TArray<UGUI_DamageLocationIndicator*> UnusedIndicators;
+	TArray<UGUI_DamageLocationIndicator*> ActiveIndicators;
 	
 };

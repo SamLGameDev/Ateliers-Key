@@ -6,65 +6,55 @@
 #include "DamageResponse.h"
 #include "Hardware/GUI_DamageLocationIndicator.h"
 #include "BP_GeneralFunctions.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 
 void UC_DangerDirectionIndicator::EnableAbility()
 {
 	GetOwner()->GetComponentByClass<UDamageSystem>()->OnDamageResponse.AddDynamic(this, &UC_DangerDirectionIndicator::StartDamageIndicator);
-	DamageIndicator = CreateWidget<UGUI_DamageLocationIndicator>(GetWorld(), DIClass, "DamageIndicator");
-	DamageIndicator->AddToViewport();
-	DamageIndicator->SetHidden();
+	
+	for (uint8 i = 0; i < NumberOfIndicators; i++)
+	{
+		UGUI_DamageLocationIndicator* DamageIndicator = CreateWidget<UGUI_DamageLocationIndicator>(GetWorld(), DIClass, FName("DamageIndicator" + FString::FromInt(i)));
+		DamageIndicator->AddToViewport();
+		DamageIndicator->SetHidden();
+		UnusedIndicators.Add(DamageIndicator);
+	}
 }
 
 void UC_DangerDirectionIndicator::StartDamageIndicator(EDamageResponse DamageResponse, AActor* Source)
 {
-	UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(Source->GetComponentByClass(UPrimitiveComponent::StaticClass()));
+	const UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(Source->GetComponentByClass(UPrimitiveComponent::StaticClass()));
 
-	if (Prim && Prim->WasRecentlyRendered(0.1f))
+	const float lastRenderTime = Prim->GetLastRenderTimeOnScreen();
+
+	const float TimeSinceRender = GetWorld()->GetTime().GetWorldTimeSeconds() - lastRenderTime;
+
+	if (!(lastRenderTime < 0 || TimeSinceRender >= 1))
 	{
 		return;
 	}
-	DamageIndicator->SetVisible();
 
-	CalculateDirection(Source);
+	UGUI_DamageLocationIndicator* DamageIndicator = GetIndicator();
 
-	FTimerDelegate TickDel;
-
-	TickDel.BindUFunction(this, NAMEOF(CalculateDirection), Source);
-
-	GetWorld()->GetTimerManager().ClearTimer(TickHandle);
-
-	GetWorld()->GetTimerManager().SetTimer(TickHandle, TickDel, 0.01f, true, -1);
-
-	FTimerDelegate FadeDel;
-
-	FadeDel.BindUFunction(this, NAMEOF(HideIndicator), TickHandle);
-
-	GetWorld()->GetTimerManager().ClearTimer(FadeHandle);
-
-	GetWorld()->GetTimerManager().SetTimer(FadeHandle, FadeDel, FadeTime, false, -1);
+	DamageIndicator->StartRotation(Source, this->GetOwner(), UnusedIndicators, FadeTime);
 
 }
 
-void UC_DangerDirectionIndicator::CalculateDirection(AActor* Source)
+UGUI_DamageLocationIndicator* UC_DangerDirectionIndicator::GetIndicator()
 {
-	const FVector dirToDealer = (Source->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
-	const FVector forwardDir = GetOwner()->GetActorForwardVector();
-	const FVector upDir = GetOwner()->GetActorRightVector();
-
-	Print("%0.5f %0.5f dir why", forwardDir.X, forwardDir.Y);
-
-
-	
-
-	DamageIndicator->RotateToFace(dirToDealer, forwardDir, upDir);
-
-
-}
-
-void UC_DangerDirectionIndicator::HideIndicator()
-{
-	DamageIndicator->SetHidden();
-
-	GetWorld()->GetTimerManager().ClearTimer(TickHandle);
+	UGUI_DamageLocationIndicator* DamageIndicator;
+	if (!UnusedIndicators.IsEmpty())
+	{
+		DamageIndicator = UnusedIndicators[0];
+		UnusedIndicators.RemoveAt(0);
+		ActiveIndicators.Add(DamageIndicator);
+		return DamageIndicator;
+	}
+	DamageIndicator = ActiveIndicators[0];
+	GetWorld()->GetTimerManager().ClearTimer(DamageIndicator->TickHandle);
+	GetWorld()->GetTimerManager().ClearTimer(DamageIndicator->FadeHandle);
+	ActiveIndicators.RemoveAt(0);
+	ActiveIndicators.Add(DamageIndicator);
+	return DamageIndicator;
 }
