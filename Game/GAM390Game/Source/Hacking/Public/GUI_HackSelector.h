@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
+#include "uInt8Store.h"
 #include "GUI_HackSelector.generated.h"
 
 class UGUB_HackSelectionButton;
@@ -87,7 +88,8 @@ private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* PotentialHackDescription;
 
-
+	UPROPERTY(EditAnywhere)
+	UuInt8Store* UnlockedHackSlots;
 
 	UPROPERTY(EditDefaultsOnly)
 	UHackEffectStore* LoadedHacks;

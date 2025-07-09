@@ -11,7 +11,7 @@
 
 void UGUI_HackSelector::FocusNextSlot()
 {
-	if (CurrentButtonSlot < ButtonSlots.Num() - 1)
+	if (CurrentButtonSlot < UnlockedHackSlots->GetRegisteredObject() - 1)
 	{
 		ButtonSlots[CurrentButtonSlot]->SetUnFocused();
 		CurrentButtonSlot++;
@@ -43,6 +43,16 @@ void UGUI_HackSelector::NativeConstruct()
 		ButtonSlots.Add(HackingButton4);
 		ButtonSlots.Add(HackingButton5);
 
+	}
+
+	for (uint8 i = 0; i < ButtonSlots.Num(); i++)
+	{
+		if (i < UnlockedHackSlots->GetRegisteredObject())
+		{
+			ButtonSlots[i]->SetVisibility(ESlateVisibility::Visible);
+			continue;
+		}
+		ButtonSlots[i]->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	if (!AvailableHacks)
@@ -126,7 +136,7 @@ void UGUI_HackSelector::FocusPreviousAvailableHack()
 
 void UGUI_HackSelector::LoadSelectedToSlot()
 {
-	if (AvailableHackButtons[CurrentAvailableHack]->IsLoaded())
+	if (AvailableHacks->GetRegisteredObjects().IsEmpty() || AvailableHackButtons[CurrentAvailableHack]->IsLoaded())
 	{
 		return;
 	}
@@ -155,7 +165,7 @@ void UGUI_HackSelector::LoadSelectedToSlot()
 void UGUI_HackSelector::Exit()
 {
 	ButtonSlots[CurrentButtonSlot]->SetUnFocused();
-	RemoveFromViewport();
+	RemoveFromParent();
 	CurrentAvailableHack = 0;
 	CurrentButtonSlot = 0;
 
