@@ -10,7 +10,7 @@ class UButton;
 class UTextBlock;
 struct FButtonStyle;
 class UHackEffect;
-class AHackableActor;
+class AHackable;
 class UBorder;
 class UGUI_HackingMenu;
 
@@ -90,7 +90,8 @@ private:
 
 
 	UFUNCTION()
-	void ProgressHack(AHackableActor* HackedObject, float TimeRemaining);
+	void ProgressHack(AHackable* HackedObject, float TimeRemaining);
 
-	void TriggerHack(AHackableActor* HackedObject);
+	UFUNCTION()
+	void TriggerHack(AHackable* HackedObject);
 };

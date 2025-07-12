@@ -7,7 +7,7 @@
 #include "Styling/SlateTypes.h"
 #include "Hacks/HackEffect.h"
 #include "BP_GeneralFunctions.h"
-#include "HackableActor.h"
+#include "Hackable.h"
 #include "Components/Border.h"
 #include "GUI_HackingMenu.h"
 
@@ -31,7 +31,7 @@ void UGUB_HackingButton::SetHack(UHackEffect* Hack)
 
 void UGUB_HackingButton::StartHack(UObject* HackedObject)
 {
-	AHackableActor* Object = Cast<AHackableActor>(HackedObject);
+	AHackable* Object = Cast<AHackable>(HackedObject);
 
 	Object->EnableLoadingBar();
 
@@ -65,7 +65,7 @@ void UGUB_HackingButton::SetDisplayText(FText Text)
 	DisplayText->SetText(Text);
 }
 
-void UGUB_HackingButton::ProgressHack(AHackableActor* HackedObject, float TimeRemaining)
+void UGUB_HackingButton::ProgressHack(AHackable* HackedObject, float TimeRemaining)
 {
 	TimeRemaining -= GetWorld()->GetDeltaSeconds();
 
@@ -88,7 +88,7 @@ void UGUB_HackingButton::ProgressHack(AHackableActor* HackedObject, float TimeRe
 
 }
 
-void UGUB_HackingButton::TriggerHack(AHackableActor* HackedObject)
+void UGUB_HackingButton::TriggerHack(AHackable* HackedObject)
 {
 	HackingMenu->SetHackingEnded();
 	HackedObject->DisableLoadingBar();

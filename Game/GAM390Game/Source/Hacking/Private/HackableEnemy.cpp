@@ -1,23 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HackableActor.h"
+#include "HackableEnemy.h"
 #include "Components/DecalComponent.h"
 #include "Hacks/HackEffect.h"
-#include "ActorList.h"
-#include "Components/WidgetComponent.h"
 #include "GUI_HackProgress.h"
 
 // Sets default values
-AHackableActor::AHackableActor()
+AHackableEnemy::AHackableEnemy()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
 	LoadingBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("LoadingBar"));
@@ -28,25 +26,34 @@ AHackableActor::AHackableActor()
 	DisableHighlight();
 
 	DisableLoadingBar();
+
 }
 
+
 // Called when the game starts or when spawned
-void AHackableActor::BeginPlay()
+void AHackableEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
 	BaseMesh = Mesh;
-
-	if(HackableObjects)
+	if (HackableObjects)
 	{
 		HackableObjects->RegisterObject(this);
 	}
+	
 }
 
 // Called every frame
-void AHackableActor::Tick(float DeltaTime)
+void AHackableEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+// Called to bind functionality to input
+void AHackableEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 

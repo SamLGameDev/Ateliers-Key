@@ -15,6 +15,8 @@
 #include "GUI_HackSelector.h"
 #include "TimeManager.h"
 #include "TimeDialationToken.h"
+#include "HackableEnemy.h"
+#include "Hackable.h"
 
 // Sets default values
 ABP_Player::ABP_Player()
@@ -104,22 +106,20 @@ void ABP_Player::EnableHackableObjectsHighlight()
 {
 	for (AActor* Object : HackableObjects->GetRegisteredObjects())
 	{
-		AHackableActor* HObject = Cast<AHackableActor>(Object);
+		AHackable* HObject = Cast<AHackable>(Object);
 		HObject->EnableHighlight();
 	}
+
 }
 
 void ABP_Player::DisableHackableObjectsHighlight()
 {
 	for (AActor* Object : HackableObjects->GetRegisteredObjects())
 	{
-		if(!Object)
-		{
-			return;
-		}
-		AHackableActor* HObject = Cast<AHackableActor>(Object);
+		AHackable* HObject = Cast<AHackable>(Object);
 		HObject->DisableHighlight();
 	}
+
 }
 
 void ABP_Player::DisplayViewedHackableObject()
@@ -140,7 +140,8 @@ void ABP_Player::DisplayViewedHackableObject()
 	bool bhit = GetWorld()->LineTraceSingleByObjectType(Result, Start, Start + Forward, Oparams, params);
 	if (bhit)
 	{
-		AHackableActor* Hackable = Cast<AHackableActor>(Result.GetActor());
+		Print("Hello", nullptr);
+		AHackable* Hackable = Cast<AHackable>(Result.GetActor());
 
 		const TArray<UHackEffect*>& hacks = LoadedHacks->GetRegisteredObjects();
 

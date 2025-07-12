@@ -136,7 +136,7 @@ void UGUI_HackSelector::FocusPreviousAvailableHack()
 
 void UGUI_HackSelector::LoadSelectedToSlot()
 {
-	if (AvailableHacks->GetRegisteredObjects().IsEmpty() || AvailableHackButtons[CurrentAvailableHack]->IsLoaded())
+	if (AvailableHacks->GetRegisteredObjects().IsEmpty() || AvailableHackButtons[CurrentAvailableHack]->IsLoaded() || UnlockedHackSlots->GetRegisteredObject() == 0)
 	{
 		return;
 	}
