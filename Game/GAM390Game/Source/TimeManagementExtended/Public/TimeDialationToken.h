@@ -16,7 +16,28 @@ class TIMEMANAGEMENTEXTENDED_API UTimeDialationToken : public UObject
 	
 public:
 
-	void Initialise(const float InDialation, const float InLifeTime);
+	void Initialise(const float InDialation, const float InLifeTime, const float InitialStartDelay);
+
+	void StartInitialDelay(const float InitialStartDelay, const float InLifeSpan);
+
+	UFUNCTION()
+	void SetUpDilation(const float InDialation);
+
+	void StartLifeSpan(const float InLifeTime);
+
+	const bool IsCurrentlyDelayed() const
+	{
+		return GetWorld()->GetTimerManager().IsTimerActive(DelayHandle);
+	}
+
+
+	/// <summary>
+	/// starts the dilation, only if a delay isnt ongoing. returns -1 if it is, else the current dilation rate
+	/// </summary>
+	/// <param name="InLifeTime"></param>
+	/// <returns></returns>
+	UFUNCTION()
+	void StartDilation(const float InLifeTime);
 
 	UFUNCTION(BlueprintCallable)
 	void StopDialation();
@@ -38,6 +59,9 @@ public:
 
 
 private:
+
+	FTimerHandle DelayHandle;
+
 
 	float Dialation;
 

@@ -5,11 +5,37 @@
 #include "TimeManager.h"
 #include "Kismet/GameplayStatics.h"
 
-void UTimeDialationToken::Initialise(const float InDialation, const float InLifeTime)
+void UTimeDialationToken::Initialise(const float InDialation, const float InLifeTime, const float InitialStartDelay)
+{
+
+	SetUpDilation(InDialation);
+
+	if (InitialStartDelay > 0)
+	{
+		StartInitialDelay(InitialStartDelay, InLifeTime);
+		return;
+	}
+
+	StartDilation(InLifeTime);
+
+
+}
+
+void UTimeDialationToken::StartInitialDelay(const float InitialStartDelay, const float InLifeSpan)
+{
+	FTimerDelegate DelayDel;
+	DelayDel.BindUFunction(this, "StartDilation", InLifeSpan);
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, DelayDel, InitialStartDelay, false, -1);
+}
+
+void UTimeDialationToken::SetUpDilation(const float InDialation)
 {
 	Dialation = InDialation;
+}
 
-	if(InLifeTime >= 0)
+void UTimeDialationToken::StartLifeSpan(const float InLifeTime)
+{
+	if (InLifeTime >= 0)
 	{
 		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UTimeDialationToken::LifetimeTick);
 		LifeTime = InLifeTime;
@@ -17,11 +43,26 @@ void UTimeDialationToken::Initialise(const float InDialation, const float InLife
 	}
 }
 
+void UTimeDialationToken::StartDilation(const float InLifeTime)
+{
+	
+	if (GetWorld()->GetTimerManager().GetTimerRemaining(DelayHandle) > 0.0000001)
+	{
+		return;
+	}
+	StartLifeSpan(InLifeTime);
+	UTimeManager::SetTokenActive(this);
+	GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
+
+}
+
 void UTimeDialationToken::StopDialation()
 {
 	UTimeManager::RemoveToken(this);
 
 	LifeTime = 0;
+
+	GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
 }
 
 void UTimeDialationToken::LifetimeTick()

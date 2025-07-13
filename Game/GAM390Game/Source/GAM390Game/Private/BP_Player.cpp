@@ -140,7 +140,6 @@ void ABP_Player::DisplayViewedHackableObject()
 	bool bhit = GetWorld()->LineTraceSingleByObjectType(Result, Start, Start + Forward, Oparams, params);
 	if (bhit)
 	{
-		Print("Hello", nullptr);
 		AHackable* Hackable = Cast<AHackable>(Result.GetActor());
 
 		const TArray<UHackEffect*>& hacks = LoadedHacks->GetRegisteredObjects();
