@@ -5,5 +5,7 @@
 
 void USelfDestruct::ExecuteHack(UObject* HackedObject)
 {
+	Super::ExecuteHack(HackedObject);
+
 	Cast<AActor>(HackedObject)->Destroy();
 }

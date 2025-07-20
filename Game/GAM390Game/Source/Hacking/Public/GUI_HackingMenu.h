@@ -11,6 +11,9 @@ class UGUB_HackingButton;
 class UHackEffect;
 class UTextBlock;
 class UBorder;
+class UHackEffectVariable;
+class UHackEffectStore;
+
 
 /**
  * 
@@ -30,8 +33,6 @@ public:
 
 	void UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks);
 
-	void DisableHackButtons();
-
 	void SetFocusedObject(UObject* Object)
 	{
 		FocusedObject = Object;
@@ -39,14 +40,12 @@ public:
 
 	void TriggerHack();
 
+	void SetLoadedHack();
+
 	const bool IsHacking() const
 	{
 		return bIsHacking;
 	}
-
-	void SetHackingStarted();
-
-	void SetHackingEnded();
 
 private:
 
@@ -70,6 +69,13 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UBorder* HackDescriptionParent;
+
+	UPROPERTY(EditAnywhere, Category = "Hacking")
+	UHackEffectVariable* LoadedHack;
+
+
+	UPROPERTY(EditDefaultsOnly)
+	UHackEffectStore* LoadedHacks;
 
 	bool bIsHacking = false;
 

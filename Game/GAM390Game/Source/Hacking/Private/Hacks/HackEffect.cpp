@@ -3,3 +3,6 @@
 
 #include "Hacks/HackEffect.h"
 
+void UHackEffect::ExecuteHack(UObject* HackedObject)
+{
+}

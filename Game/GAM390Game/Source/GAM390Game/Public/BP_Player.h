@@ -94,9 +94,6 @@ protected:
 	DECLARE_MULTICAST_DELEGATE(FOnTickSignature);
 	FOnTickSignature OnTick;
 
-	UFUNCTION()
-	void DisplayViewedHackableObject();
-
 	FDelegateHandle HackingTraceHandle;
 
 	UPROPERTY()

@@ -6,6 +6,8 @@
 #include "GUB_HackingButton.h"
 #include "Hacks/HackEffect.h"
 #include "Components/TextBlock.h"
+#include "HackEffectVariable.h"
+#include "HackEffectStore.h"
 #include "Components/Border.h"
 
 void UGUI_HackingMenu::FocusNextHackButton()
@@ -35,6 +37,10 @@ void UGUI_HackingMenu::UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks)
 {
 	if (Hacks.IsEmpty())
 	{
+		for (UGUB_HackingButton* Button : HackingButtons)
+		{
+			Button->SetVisibility(ESlateVisibility::Hidden);
+		}
 		return;
 	}
 
@@ -54,49 +60,25 @@ void UGUI_HackingMenu::UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks)
 	HackDescription->SetText(HackingButtons[CurrentlyFocused]->GetDescription());
 }
 
-void UGUI_HackingMenu::DisableHackButtons()
-{
-	for (UGUB_HackingButton* Button : HackingButtons)
-	{
-		Button->SetVisibility(ESlateVisibility::Hidden);
-	}
-	HackingButtons[CurrentlyFocused]->SetUnFocused();
-	EnabledButtons = 0;
-	CurrentlyFocused = 0;
-	HackingButtons[CurrentlyFocused]->SetFocused();
-	FocusedObject = nullptr;
-	HackDescriptionParent->SetVisibility(ESlateVisibility::Hidden);
-}
 
 void UGUI_HackingMenu::TriggerHack()
 {
-	if (!FocusedObject || IsHacking())
-	{
-		return;
-	}
-	SetHackingStarted();
+	SetLoadedHack();
 
 }
 
-void UGUI_HackingMenu::SetHackingStarted()
+void UGUI_HackingMenu::SetLoadedHack()
 {
-	bIsHacking = true;
-	HackingButtons[CurrentlyFocused]->StartHack(FocusedObject);
-	for (UGUB_HackingButton* Button : HackingButtons)
-	{
-		Button->SetDisplayDisabled();
-	}
+	LoadedHack->SetObject(HackingButtons[CurrentlyFocused]->GetHack());
 	HackingButtons[CurrentlyFocused]->SetFocused();
-}
 
-void UGUI_HackingMenu::SetHackingEnded()
-{
-	bIsHacking = false;
 	for (UGUB_HackingButton* Button : HackingButtons)
 	{
-		Button->SetDisplayEnabled();
+		Button->SetSelectedDisplayUnLoaded();
 	}
-	HackingButtons[CurrentlyFocused]->SetFocused();
+
+	HackingButtons[CurrentlyFocused]->SetSelectedDisplayLoaded();
+
 }
 
 void UGUI_HackingMenu::NativeConstruct()
@@ -113,6 +95,10 @@ void UGUI_HackingMenu::NativeConstruct()
 		HackingButtons.Add(HackingButton3);
 		HackingButtons.Add(HackingButton4);
 		HackingButtons.Add(HackingButton5);
+		for (UGUB_HackingButton* Button : HackingButtons)
+		{
+			Button->SetUpButton();
+		}
 	}
 
 
@@ -124,6 +110,8 @@ void UGUI_HackingMenu::NativeConstruct()
 
 	HackingButtons[0]->SetFocused();
 	HackDescriptionParent->SetVisibility(ESlateVisibility::Hidden);
+
+	UpdateButtonDisplay(LoadedHacks->GetRegisteredObjects());
 
 }
 

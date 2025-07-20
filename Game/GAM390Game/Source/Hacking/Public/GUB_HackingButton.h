@@ -44,16 +44,12 @@ public:
 		return LoadedEffect;
 	}
 
-	UPROPERTY(EditAnywhere)
-	FButtonStyle FocusedStyle;
 
 	UPROPERTY(EditAnywhere)
 	FLinearColor BorderStyle;
 
 	UPROPERTY(EditAnywhere)
 	FButtonStyle UnFocusedStyle;
-
-	void StartHack(UObject* HackedObject);
 
 	FText GetDescription();
 
@@ -62,36 +58,41 @@ public:
 		HackingMenu = Menu;
 	}
 
-	void SetDisplayDisabled();
-
-	void SetDisplayEnabled();
-
 	void SetDisplayText(FText Text);
 
+	void SetSelectedDisplayLoaded();
+
+	void SetSelectedDisplayUnLoaded();
+
+	void SetUpButton();
 
 
 private:
+
+	FButtonStyle CurrentUnFocusedStyle = UnFocusedStyle;
+
+	FLinearColor CurrentBorderColor;
+
+	UPROPERTY(EditAnywhere)
+	FButtonStyle LoadedStyle;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor BorderLoadedColor;
+
+	UPROPERTY(EditAnywhere)
+	FSlateColor TextLoadedColor;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor BorderUnLoadedColor;
+
+	UPROPERTY(EditAnywhere)
+	FSlateColor TextUnLoadedColor;
+
 	UHackEffect* LoadedEffect;
 
 	UGUI_HackingMenu* HackingMenu;
 
 	UPROPERTY(EditAnywhere)
-	FButtonStyle DisabledStyle;
-
-	UPROPERTY(EditAnywhere)
-	FLinearColor BorderDisabledColor;
-
-	UPROPERTY(EditAnywhere)
-	FSlateColor TextDisabledColor;
-
-
-	UPROPERTY(EditAnywhere)
 	FSlateColor TextColor;
 
-
-	UFUNCTION()
-	void ProgressHack(AHackable* HackedObject, float TimeRemaining);
-
-	UFUNCTION()
-	void TriggerHack(AHackable* HackedObject);
 };

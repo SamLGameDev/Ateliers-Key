@@ -23,10 +23,7 @@ public:
 	FText DisplayText;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void ExecuteHack(UObject* HackedObject) 
-	{
-
-	};
+	virtual void ExecuteHack(UObject* HackedObject);
 
 	UPROPERTY(EditAnywhere)
 	FText Description;

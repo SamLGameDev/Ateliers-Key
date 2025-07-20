@@ -8,6 +8,8 @@
 #include "ActorList.h"
 #include "Hackable.generated.h"
 
+class UHackEffect;
+
 /**
  * 
  */
@@ -30,6 +32,15 @@ public:
 	void EnableLoadingBar();
 
 	void DisableLoadingBar();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void StartHack(UHackEffect* Hack);
+
+	UFUNCTION()
+	void ProgressHack(UHackEffect* Hack, float TimeRemaining);
+
+	UFUNCTION()
+	void EndHack(UHackEffect* Hack);
 
 	/// <summary>
 	/// need base mesh so we can change the mesh overlay regardless of if it is a skeletal mesh or static mesh

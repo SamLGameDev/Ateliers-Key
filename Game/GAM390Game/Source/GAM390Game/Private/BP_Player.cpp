@@ -81,8 +81,6 @@ void ABP_Player::StartHacking()
 	SwitchToHackingMap();
 	HackingDialation = UTimeManager::SetTimeDialation(this, 0.01);
 	EnableHackableObjectsHighlight();
-	HackingTraceHandle = OnTick.AddUFunction(this, NAMEOF(DisplayViewedHackableObject));
-	HackingMenu->DisableHackButtons();
 }
 
 void ABP_Player::StopHacking()
@@ -93,7 +91,6 @@ void ABP_Player::StopHacking()
 	HackingDialation->StopDialation();
 
 	DisableHackableObjectsHighlight();
-	OnTick.Remove(HackingTraceHandle);
 }
 
 void ABP_Player::StopHackSelecton()
@@ -120,37 +117,6 @@ void ABP_Player::DisableHackableObjectsHighlight()
 		HObject->DisableHighlight();
 	}
 
-}
-
-void ABP_Player::DisplayViewedHackableObject()
-{
-	FHitResult Result;
-
-	APlayerCameraManager* CManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager.Get();
-
-	FVector Start = CManager->GetCameraLocation();
-
-	FVector Forward = CManager->GetActorForwardVector() * 2500;
-
-	FCollisionObjectQueryParams Oparams;
-	Oparams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel1);
-
-	FCollisionQueryParams params;
-
-	bool bhit = GetWorld()->LineTraceSingleByObjectType(Result, Start, Start + Forward, Oparams, params);
-	if (bhit)
-	{
-		AHackable* Hackable = Cast<AHackable>(Result.GetActor());
-
-		const TArray<UHackEffect*>& hacks = LoadedHacks->GetRegisteredObjects();
-
-		HackingMenu->UpdateButtonDisplay(hacks);
-		HackingMenu->SetFocusedObject(Hackable);
-	}
-	else
-	{
-		HackingMenu->DisableHackButtons();
-	}
 }
 
 void ABP_Player::BeginDestroy()
