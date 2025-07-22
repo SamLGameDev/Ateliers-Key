@@ -7,6 +7,8 @@
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
 #include "uInt8Store.h"
+#include "Components/CanvasPanel.h"
+#include "Components/Image.h"
 #include "GUI_HackSelector.generated.h"
 
 class UGUB_HackSelectionButton;
@@ -105,6 +107,40 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* CurrentBulletsDisplay;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* ChamberParent;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* ChamberBullet1;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* ChamberBullet2;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* ChamberBullet3;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* ChamberBullet4;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* ChamberBullet5;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* ChamberBullet6;
+
+	TArray<UImage*> ChamberBullets;
+
+	FTimerHandle MovingChamberHandle;
+
+	float LatestRotationGoal = 0;
+
+	UFUNCTION()
+	void RotateToLatestChamberPos();
+
+	UPROPERTY(EditDefaultsOnly)
+	float ChamberRotationSpeed;
+
 
 	
 };

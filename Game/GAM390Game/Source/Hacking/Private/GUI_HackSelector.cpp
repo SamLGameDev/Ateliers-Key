@@ -6,6 +6,7 @@
 #include "HackEffectStore.h"
 #include "Hacks/HackEffect.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Components/ScrollBoxSlot.h"
 
 
@@ -14,9 +15,51 @@ void UGUI_HackSelector::FocusNextSlot()
 	if (CurrentButtonSlot < UnlockedHackSlots->GetRegisteredObject() - 1)
 	{
 		ButtonSlots[CurrentButtonSlot]->SetUnFocused();
+
+		UImage* LastBullet = ChamberBullets[CurrentButtonSlot];
+
 		CurrentButtonSlot++;
 		ButtonSlots[CurrentButtonSlot]->SetFocused();
 		SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
+
+		UImage* CurrentBullet = ChamberBullets[CurrentButtonSlot];
+
+		UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(CurrentBullet->Slot);
+
+		UCanvasPanelSlot* ParentSlot = Cast<UCanvasPanelSlot>(ChamberParent->Slot);
+
+		FVector2D CurrentPos = CurrentSlot->GetPosition();
+
+		FVector2D target = Cast<UCanvasPanelSlot>(LastBullet->Slot)->GetPosition();
+
+		FVector2D center = (ParentSlot->GetSize() / 2) - (CurrentSlot->GetSize()/2);
+
+		FVector2D dirToCenterFromCurrent = CurrentPos - center;
+
+		FVector2D dirToCenterFromTarget = target - center;
+
+		UE_LOG(LogTemp, Warning, TEXT("Current: %0.5f, %0.5f"), dirToCenterFromCurrent.X, dirToCenterFromCurrent.Y);
+		UE_LOG(LogTemp, Warning, TEXT("Target: %0.5f, %0.5f"), dirToCenterFromTarget.X, dirToCenterFromTarget.Y);
+		UE_LOG(LogTemp, Warning, TEXT("Center: %0.5f, %0.5f"), center.X, center.Y);
+
+		float angleRad = FMath::Atan2(dirToCenterFromTarget.Y, dirToCenterFromTarget.X) - FMath::Atan2(dirToCenterFromCurrent.Y, dirToCenterFromCurrent.X);
+
+		UE_LOG(LogTemp, Warning, TEXT("Rad: %0.5f"), angleRad);
+
+
+		LatestRotationGoal = FMath::RadiansToDegrees(angleRad) + LatestRotationGoal;
+
+		if (GetWorld()->GetTimerManager().IsTimerActive(MovingChamberHandle))
+		{
+			return;
+		}
+
+		FTimerDelegate MovingChamberDel;
+		MovingChamberDel.BindUFunction(this, "RotateToLatestChamberPos");
+
+		MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
+
+
 	}
 }
 
@@ -42,6 +85,12 @@ void UGUI_HackSelector::NativeConstruct()
 		ButtonSlots.Add(HackingButton3);
 		ButtonSlots.Add(HackingButton4);
 		ButtonSlots.Add(HackingButton5);
+
+		ChamberBullets.Add(ChamberBullet1);
+		ChamberBullets.Add(ChamberBullet2);
+		ChamberBullets.Add(ChamberBullet3);
+		ChamberBullets.Add(ChamberBullet4);
+		ChamberBullets.Add(ChamberBullet5);
 
 	}
 
@@ -110,6 +159,22 @@ void UGUI_HackSelector::NativeConstruct()
 
 	UpdateRemainingBullets();
 
+
+}
+
+void UGUI_HackSelector::RotateToLatestChamberPos()
+{
+	ChamberParent->SetRenderTransformAngle(ChamberParent->GetRenderTransformAngle() - (ChamberRotationSpeed * GetWorld()->GetDeltaSeconds()));
+
+	if (ChamberParent->GetRenderTransformAngle() <= LatestRotationGoal)
+	{
+		ChamberParent->SetRenderTransformAngle(LatestRotationGoal);
+		return;
+	}
+	FTimerDelegate MovingChamberDel;
+	MovingChamberDel.BindUFunction(this, "RotateToLatestChamberPos");
+
+	MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
 
 }
 
