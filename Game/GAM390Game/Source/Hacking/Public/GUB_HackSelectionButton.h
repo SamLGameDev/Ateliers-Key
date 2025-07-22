@@ -38,6 +38,8 @@ public:
 
 	void SetHack(UHackEffect* Hack);
 
+	void ClearLoadedHack();
+
 	UHackEffect* const GetHack() const
 	{
 		return LoadedEffect;
@@ -74,6 +76,15 @@ public:
 	UGUB_HackSelectionButton* GetLoadedButton()
 	{
 		return LoadedButton;
+	}
+
+	const bool IsEmpty() const
+	{
+		if (LoadedEffect)
+		{
+			return false;
+		}
+		return true;
 	}
 
 private:

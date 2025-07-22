@@ -95,6 +95,7 @@ void UGUI_HackSelector::NativeConstruct()
 			continue;
 		}
 		ButtonSlots[i]->SetDisplayText(FText::FromString("Empty"));
+		ButtonSlots[i]->ClearLoadedHack();
 	}
 
 
@@ -106,6 +107,8 @@ void UGUI_HackSelector::NativeConstruct()
 		AvailableHackButtons[0]->SetFocused();
 		PotentialHackDescription->SetText(AvailableHackButtons[0]->GetDescription());
 	}
+
+	UpdateRemainingBullets();
 
 
 }
@@ -141,6 +144,11 @@ void UGUI_HackSelector::LoadSelectedToSlot()
 		return;
 	}
 
+	if (CurrentHackBullets->GetRegisteredObject() == 0)
+	{
+		return;
+	}
+
 	if (LoadedHacks)
 	{
 		LoadedHacks->DeregisterObject(ButtonSlots[CurrentButtonSlot]->GetHack());
@@ -155,11 +163,35 @@ void UGUI_HackSelector::LoadSelectedToSlot()
 		loadedButton->SetLoadedDisabled();
 	}
 
+	ReduceBulletsIfNeeded(ButtonSlots[CurrentButtonSlot]);
+
 	ButtonSlots[CurrentButtonSlot]->SetLoadedButton(AvailableHackButtons[CurrentAvailableHack]);
 
 	ButtonSlots[CurrentButtonSlot]->SetHack(AvailableHackButtons[CurrentAvailableHack]->GetHack());
 
 	SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
+}
+
+void UGUI_HackSelector::ReduceBulletsIfNeeded(UGUB_HackSelectionButton* loadedButton)
+{
+	if (loadedButton->IsEmpty())
+	{
+		ReduceRemainngBullets();
+	}
+}
+
+void UGUI_HackSelector::ReduceRemainngBullets()
+{
+	CurrentHackBullets->SetObject(CurrentHackBullets->GetRegisteredObject() - 1);
+
+	UpdateRemainingBullets();
+}
+
+void UGUI_HackSelector::UpdateRemainingBullets()
+{
+	FString RemainingBulletsText = "RemainingBullets: " + FString::FromInt(CurrentHackBullets->GetRegisteredObject());
+
+	CurrentBulletsDisplay->SetText(FText::FromString((RemainingBulletsText)));
 }
 
 void UGUI_HackSelector::Exit()

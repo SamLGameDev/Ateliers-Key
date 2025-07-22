@@ -9,9 +9,6 @@ AHackable::AHackable()
 {
 }
 
-AHackable::~AHackable()
-{
-}
 void AHackable::EnableHighlight()
 {
 	BaseMesh->SetOverlayMaterial(HackableObejctOutline);
@@ -77,5 +74,15 @@ void AHackable::EndHack(UHackEffect* Hack)
 {
 	DisableLoadingBar();
 	Hack->ExecuteHack(this);
+}
+
+void AHackable::BeginDestroy()
+{
+	Super::BeginDestroy();
+	if (HackableObjects)
+	{
+		HackableObjects->DeregisterObject(this);
+	}
+
 }
 

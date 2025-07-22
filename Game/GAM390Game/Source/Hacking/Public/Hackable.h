@@ -20,7 +20,6 @@ class HACKING_API AHackable : public APawn
 
 public:
 	AHackable();
-	~AHackable();
 
 	void EnableHighlight();
 
@@ -46,6 +45,8 @@ public:
 	/// need base mesh so we can change the mesh overlay regardless of if it is a skeletal mesh or static mesh
 	/// </summary>
 	UMeshComponent* BaseMesh;
+
+	virtual void BeginDestroy() override;
 
 protected:
 

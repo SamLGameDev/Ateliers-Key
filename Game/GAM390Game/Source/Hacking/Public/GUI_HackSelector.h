@@ -39,6 +39,12 @@ public:
 	UFUNCTION()
 	void LoadSelectedToSlot();
 
+	void ReduceBulletsIfNeeded(UGUB_HackSelectionButton* loadedButton);
+
+	void ReduceRemainngBullets();
+
+	void UpdateRemainingBullets();
+
 
 	UFUNCTION()
 	void Exit();
@@ -93,6 +99,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UHackEffectStore* LoadedHacks;
+
+	UPROPERTY(EditDefaultsOnly)
+	UuInt8Store* CurrentHackBullets;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* CurrentBulletsDisplay;
 
 	
 };

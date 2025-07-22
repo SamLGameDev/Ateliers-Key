@@ -27,6 +27,13 @@ void UGUB_HackSelectionButton::SetHack(UHackEffect* Hack)
 	LoadedEffect = Hack;
 }
 
+void UGUB_HackSelectionButton::ClearLoadedHack()
+{
+	LoadedEffect = nullptr;
+	SetLoadedDisabled();
+	LoadedButton = nullptr;
+}
+
 FText UGUB_HackSelectionButton::GetDescription()
 {
 	if (!LoadedEffect)
