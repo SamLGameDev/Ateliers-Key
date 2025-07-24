@@ -71,6 +71,9 @@ private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UGUB_HackSelectionButton* HackingButton5;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UGUB_HackSelectionButton* HackingButton6;
+
 	TArray<UGUB_HackSelectionButton*> ButtonSlots;
 
 	UPROPERTY(EditAnywhere)
@@ -133,7 +136,29 @@ private:
 
 	FTimerHandle MovingChamberHandle;
 
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* SelectedUnFilled;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* SelectedFilled;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* UnFilled;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* Filled;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* Locked;
+
+	int QuedInputs = 0;
+
+
 	float LatestRotationGoal = 0;
+
+	FVector2D OriginalPos;
+
+	FVector2D LastPos;
 
 	UFUNCTION()
 	void RotateToLatestChamberPos();
