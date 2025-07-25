@@ -156,12 +156,28 @@ private:
 
 	float LatestRotationGoal = 0;
 
+	float CurrentRotAmount = 0;
+
 	FVector2D OriginalPos;
 
 	FVector2D LastPos;
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	UImage* SelectedSlotLocation;
+
 	UFUNCTION()
 	void RotateToLatestChamberPos();
+
+	void GetRotationAroundCenter(UImage* bullet, int RotDir, float Amount);
+
+	UFUNCTION()
+	void MoveToSelectedPositon(float Alpha);
+
+	UPROPERTY(EditDefaultsOnly)
+	FSlateColor BeforeSelectedLerpColor;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ColorBlendSpeed;
 
 	UPROPERTY(EditDefaultsOnly)
 	float ChamberRotationSpeed;
