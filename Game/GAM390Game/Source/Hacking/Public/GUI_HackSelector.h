@@ -173,6 +173,13 @@ private:
 	UFUNCTION()
 	void MoveToSelectedPositon(float Alpha);
 
+	void SetBulletToSelected();
+
+	void SetBulletToUnSelected();
+
+	UFUNCTION()
+	void MoveToUnselectedPosition(float Alpha);
+
 	UPROPERTY(EditDefaultsOnly)
 	FSlateColor BeforeSelectedLerpColor;
 
@@ -181,6 +188,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float ChamberRotationSpeed;
+
+	FVector2D UnselectedPos;
 
 
 	

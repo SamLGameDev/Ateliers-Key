@@ -16,30 +16,32 @@
 // OR finish rotation, then move out, could be a sperate animation?
 
 void UGUI_HackSelector::FocusNextSlot()
-{
+{	
 
-	if (GetWorld()->GetTimerManager().IsTimerActive(MovingChamberHandle))
+
+	int index = FMath::Wrap(CurrentButtonSlot + QuedInputs, -1, 5);
+
+
+
+	ButtonSlots[index]->SetUnFocused();
+
+	UImage* LastBullet = ChamberBullets[index];
+
+	QuedInputs++;
+
+
+	index = FMath::Wrap(CurrentButtonSlot + QuedInputs, -1, 5);
+
+	if (index >= UnlockedHackSlots->GetRegisteredObject())
 	{
-		QuedInputs++;
-		return;
+		index = 0;
 	}
 
-	ButtonSlots[CurrentButtonSlot]->SetUnFocused();
 
-	UImage* LastBullet = ChamberBullets[CurrentButtonSlot];
+	ButtonSlots[index]->SetFocused();
+	SlotHackDescription->SetText(ButtonSlots[index]->GetDescription());
 
-
-
-	CurrentButtonSlot++;
-
-	if (CurrentButtonSlot > UnlockedHackSlots->GetRegisteredObject() - 1)
-	{
-		CurrentButtonSlot = 0;
-	}
-	ButtonSlots[CurrentButtonSlot]->SetFocused();
-	SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
-
-	UImage* CurrentBullet = ChamberBullets[CurrentButtonSlot];
+	UImage* CurrentBullet = ChamberBullets[index];
 
 	UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(CurrentBullet->Slot);
 
@@ -64,16 +66,28 @@ void UGUI_HackSelector::FocusNextSlot()
 
 	UE_LOG(LogTemp, Warning, TEXT("Rad: %0.5f"), angleRad);
 
-	angleRad = FMath::UnwindRadians(angleRad);
+	//angleRad = FMath::UnwindRadians(angleRad);
 
-	LatestRotationGoal = FMath::RadiansToDegrees(angleRad);
+	float angleDeg = FMath::RadiansToDegrees(angleRad);
+
+	if (angleDeg > 0)
+	{
+		angleDeg = -360 + angleDeg;
+	}
+
+	LatestRotationGoal += angleDeg;
 
 
-	UE_LOG(LogTemp, Warning, TEXT("Deg: %0.5f"), FMath::RadiansToDegrees(angleRad));
+	UE_LOG(LogTemp, Warning, TEXT("Deg: %0.5f"), angleDeg);
 	UE_LOG(LogTemp, Warning, TEXT("Deg: %0.5f"), LatestRotationGoal);
 
+	if (GetWorld()->GetTimerManager().IsTimerActive(MovingChamberHandle))
+	{
+		return;
+	}
+
 	FTimerDelegate MovingChamberDel;
-	MovingChamberDel.BindUFunction(this, "RotateToLatestChamberPos");
+	MovingChamberDel.BindUFunction(this, "MoveToUnselectedPosition", 0);
 
 	MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
 	
@@ -84,24 +98,28 @@ void UGUI_HackSelector::FocusNextSlot()
 
 void UGUI_HackSelector::FocusPreviousSlot()
 {
-	if (GetWorld()->GetTimerManager().IsTimerActive(MovingChamberHandle))
+
+	int index = FMath::Wrap(CurrentButtonSlot + QuedInputs, 0, 6);
+
+
+
+	ButtonSlots[index]->SetUnFocused();
+
+	UImage* LastBullet = ChamberBullets[index];
+
+	QuedInputs--;
+
+	index = FMath::Wrap(CurrentButtonSlot + QuedInputs, 0, 6);
+
+	if (index >= UnlockedHackSlots->GetRegisteredObject())
 	{
-		QuedInputs--;
-		return;
+		index = UnlockedHackSlots->GetRegisteredObject() - 1;
 	}
 
-	UImage* LastBullet = ChamberBullets[CurrentButtonSlot];
-	ButtonSlots[CurrentButtonSlot]->SetUnFocused();
-	CurrentButtonSlot--;
-
-	if (CurrentButtonSlot < 0)
-	{
-		CurrentButtonSlot = ButtonSlots.Num() - 1;
-	}
 	ButtonSlots[CurrentButtonSlot]->SetFocused();
-	SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
+	SlotHackDescription->SetText(ButtonSlots[index]->GetDescription());
 
-	UImage* CurrentBullet = ChamberBullets[CurrentButtonSlot];
+	UImage* CurrentBullet = ChamberBullets[index];
 
 	UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(CurrentBullet->Slot);
 
@@ -128,12 +146,19 @@ void UGUI_HackSelector::FocusPreviousSlot()
 
 	angleRad = FMath::UnwindRadians(angleRad);
 
-	LatestRotationGoal = LatestRotationGoal + FMath::RadiansToDegrees(angleRad);
+	float angleDeg = FMath::RadiansToDegrees(angleRad);
+
+	if (angleDeg < 0)
+	{
+		angleDeg = 360 + angleDeg;
+	}
+
+	LatestRotationGoal += angleDeg;
 
 
 	UE_LOG(LogTemp, Warning, TEXT("Deg: %0.5f"), LatestRotationGoal);
 	FTimerDelegate MovingChamberDel;
-	MovingChamberDel.BindUFunction(this, "RotateToLatestChamberPos");
+	MovingChamberDel.BindUFunction(this, "MoveToUnselectedPosition", 0);
 
 	MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
 
@@ -227,6 +252,41 @@ void UGUI_HackSelector::NativeConstruct()
 
 	UpdateRemainingBullets();
 
+	if (UnlockedHackSlots->GetRegisteredObject() == 0)
+	{
+		for (UImage* bullet : ChamberBullets)
+		{
+			
+			bullet->SetBrushFromTexture(Locked);
+			
+		}
+		return;
+	}
+
+	for (int i = 0; i < ButtonSlots.Num(); i++)
+	{
+		if (i >= UnlockedHackSlots->GetRegisteredObject())
+		{
+			ChamberBullets[i]->SetBrushFromTexture(Locked);
+			continue;
+		}
+
+		if (ButtonSlots[i]->GetHack())
+		{
+			ChamberBullets[i]->SetBrushFromTexture(Filled);
+		}
+		else
+		{
+			ChamberBullets[i]->SetBrushFromTexture(UnFilled);
+		}
+	}
+
+	UnselectedPos = Cast<UCanvasPanelSlot>(ChamberBullet1->Slot)->GetPosition();
+
+	SetBulletToSelected();
+
+	ChamberBullet1->SetBrushFromTexture(ButtonSlots[0]->GetHack() ? SelectedFilled : SelectedUnFilled);
+
 
 }
 
@@ -243,39 +303,18 @@ void UGUI_HackSelector::RotateToLatestChamberPos()
 		GetRotationAroundCenter(bullet, RotDir, ChamberRotationSpeed * GetWorld()->GetDeltaSeconds());
 	}
 
-	/*ChamberParent->SetRenderTransformAngle(ChamberParent->GetRenderTransformAngle() + (ChamberRotationSpeed * GetWorld()->GetDeltaSeconds() * RotDir));
-
-	UImage* CurrentBullet = ChamberBullets[CurrentButtonSlot];
-
-	UImage* LastBullet = ChamberBullets[CurrentButtonSlot + RotDir];
-
-	float SizeByFrame = FMath::Abs(100 / (LatestRotationGoal / (ChamberRotationSpeed * GetWorld()->GetDeltaSeconds())));
-
-	float PosXByFrame = FMath::Abs(48 / (LatestRotationGoal / (ChamberRotationSpeed * GetWorld()->GetDeltaSeconds())));
-
-	float PosYByFrame = FMath::Abs(28 / (LatestRotationGoal / (ChamberRotationSpeed * GetWorld()->GetDeltaSeconds())));
-
-
-	UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(CurrentBullet->Slot);
-
-
-	UCanvasPanelSlot* LastSlot = Cast<UCanvasPanelSlot>(LastBullet->Slot);
-
-	CurrentSlot->SetSize(CurrentSlot->GetSize() + SizeByFrame);
-
-	LastSlot->SetSize(LastSlot->GetSize() - SizeByFrame);*/
-
-	//CurrentSlot->SetPosition(CurrentSlot->GetPosition() + FVector2D(PosXByFrame, PosYByFrame));
-
-
-	//LastSlot->SetPosition(LastSlot->GetPosition() - FVector2D(PosXByFrame, PosYByFrame));
-
-
-
 	if (FMath::IsNearlyEqual(CurrentRotAmount,  FMath::Abs(LatestRotationGoal), ChamberRotationSpeed * GetWorld()->GetDeltaSeconds()))
 	{
+		CurrentButtonSlot = FMath::WrapExclusive(QuedInputs + CurrentButtonSlot, 0, 6);
 
-		UE_LOG(LogTemp, Warning, TEXT("Lat: %0.5f"), LatestRotationGoal);
+		if (CurrentButtonSlot >= UnlockedHackSlots->GetRegisteredObject())
+		{
+			CurrentButtonSlot = RotDir == -1 ? 0 : UnlockedHackSlots->GetRegisteredObject() - 1;
+		}
+
+
+
+		UE_LOG(LogTemp, Warning, TEXT("But: %d"), CurrentButtonSlot);
 		UE_LOG(LogTemp, Warning, TEXT("Cur: %0.5f"), CurrentRotAmount);
 		UE_LOG(LogTemp, Warning, TEXT("Rot: %0.5f"), FMath::Abs(LatestRotationGoal) - CurrentRotAmount);
 
@@ -288,10 +327,10 @@ void UGUI_HackSelector::RotateToLatestChamberPos()
 
 		LatestRotationGoal = 0;
 		CurrentRotAmount = 0;
+		QuedInputs = 0;
 
 
-
-		ChamberBullets[CurrentButtonSlot]->SetBrushFromTexture(SelectedUnFilled, true);
+		ChamberBullets[CurrentButtonSlot]->SetBrushFromTexture(ButtonSlots[CurrentButtonSlot]->GetHack() ? SelectedFilled : SelectedUnFilled);
 
 		UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(ChamberBullets[CurrentButtonSlot]->Slot);
 
@@ -301,41 +340,14 @@ void UGUI_HackSelector::RotateToLatestChamberPos()
 
 		CurrentSlot->SetPosition(pos);
 
+		UnselectedPos = pos;
+
 		ChamberBullets[CurrentButtonSlot]->SetBrushTintColor(BeforeSelectedLerpColor);
 
 		FTimerDelegate MovingChamberDel;
 		MovingChamberDel.BindUFunction(this, "MoveToSelectedPositon", 0);
 
 		MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
-
-
-		//ChamberParent->SetRenderTransformAngle(LatestRotationGoal);
-
-	/*	CurrentSlot->SetSize(FVector2D(200, 200));
-		LastSlot->SetSize(FVector2D(200, 200));
-
-		LastBullet->SetBrushFromTexture(UnFilled, true);
-
-		CurrentBullet->SetBrushFromTexture(SelectedUnFilled, true);
-
-		CurrentBullet->SetBrushSize(FVector2D(200, 200));
-
-
-		LastBullet->SetBrushSize(FVector2D(200, 200));
-
-		LastSlot->SetPosition(LastPos);
-
-		float CosA = FMath::Cos(LatestRotationGoal);
-
-		float SinA = FMath::Sin(LatestRotationGoal);
-
-		FVector2D Delta = FVector2D(48, 28);
-
-		FVector2D RotatedDelta;
-		RotatedDelta.X = Delta.X * CosA - Delta.Y * SinA;
-		RotatedDelta.Y = Delta.X * SinA + Delta.Y * CosA;
-
-		CurrentSlot->SetPosition(OriginalPos + RotatedDelta);*/
 
 
 		return;
@@ -384,13 +396,7 @@ void UGUI_HackSelector::MoveToSelectedPositon(float Alpha)
 
 	if (CurrentSlot->GetPosition().Equals(target, ChamberRotationSpeed * GetWorld()->GetDeltaSeconds()))
 	{
-		CurrentSlot->SetPosition(target);
-
-		ChamberBullets[CurrentButtonSlot]->SetRenderScale(FVector2D(1, 1));
-
-		ChamberBullets[CurrentButtonSlot]->SetBrushTintColor(FSlateColor(FLinearColor::White));
-
-
+		SetBulletToSelected();
 		return;
 	}
 
@@ -401,6 +407,75 @@ void UGUI_HackSelector::MoveToSelectedPositon(float Alpha)
 	MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
 
 	
+}
+
+void UGUI_HackSelector::SetBulletToSelected()
+{
+	UCanvasPanelSlot* targetSlot = Cast<UCanvasPanelSlot>(SelectedSlotLocation->Slot);
+
+	FVector2D target = targetSlot->GetPosition();
+	UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(ChamberBullets[CurrentButtonSlot]->Slot);
+
+	CurrentSlot->SetPosition(target);
+
+	ChamberBullets[CurrentButtonSlot]->SetRenderScale(FVector2D(1, 1));
+
+	ChamberBullets[CurrentButtonSlot]->SetBrushTintColor(FSlateColor(FLinearColor::White));
+
+	LatestRotationGoal = 0;
+	CurrentRotAmount = 0;
+	QuedInputs = 0;
+}
+
+void UGUI_HackSelector::SetBulletToUnSelected()
+{
+
+	UImage* bullet = ChamberBullets[CurrentButtonSlot];
+
+	UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(bullet->Slot);
+
+	CurrentSlot->SetPosition(UnselectedPos);
+
+	bullet->SetRenderScale(FVector2D(1, 1));
+
+	bullet->SetBrushTintColor(FSlateColor(FLinearColor::White));
+
+	bullet->SetBrushFromTexture(ButtonSlots[CurrentButtonSlot]->GetHack() ? Filled : UnFilled);
+}
+
+void UGUI_HackSelector::MoveToUnselectedPosition(float Alpha)
+{
+	Alpha += ColorBlendSpeed * GetWorld()->GetDeltaSeconds();
+
+	UImage* bullet = ChamberBullets[CurrentButtonSlot];
+
+	UCanvasPanelSlot* CurrentSlot = Cast<UCanvasPanelSlot>(bullet->Slot);
+
+	CurrentSlot->SetPosition(FMath::Vector2DInterpConstantTo(CurrentSlot->GetPosition(), UnselectedPos, GetWorld()->GetDeltaSeconds(), ChamberRotationSpeed));
+
+	bullet->SetRenderScale(FMath::Vector2DInterpConstantTo(bullet->GetRenderTransform().Scale, FVector2D(0.6, 0.6), GetWorld()->GetDeltaSeconds(), ChamberRotationSpeed / 100));
+
+	FSlateColor color = FSlateColor(FLinearColor::LerpUsingHSV(FLinearColor::White, BeforeSelectedLerpColor.GetSpecifiedColor(), Alpha));
+
+	bullet->SetBrushTintColor(color);
+
+	if (CurrentSlot->GetPosition().Equals(UnselectedPos, ChamberRotationSpeed * GetWorld()->GetDeltaSeconds()))
+	{
+		SetBulletToUnSelected();
+
+		FTimerDelegate MovingChamberDel;
+		MovingChamberDel.BindUFunction(this, "RotateToLatestChamberPos");
+
+		MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
+
+		return;
+	}
+
+
+	FTimerDelegate MovingChamberDel;
+	MovingChamberDel.BindUFunction(this, "MoveToUnselectedPosition", Alpha);
+
+	MovingChamberHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(MovingChamberDel);
 }
 
 void UGUI_HackSelector::FocusNextAvailableHack()
@@ -460,6 +535,8 @@ void UGUI_HackSelector::LoadSelectedToSlot()
 	ButtonSlots[CurrentButtonSlot]->SetHack(AvailableHackButtons[CurrentAvailableHack]->GetHack());
 
 	SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
+
+	ChamberBullets[CurrentButtonSlot]->SetBrushFromTexture(SelectedFilled);
 }
 
 void UGUI_HackSelector::ReduceBulletsIfNeeded(UGUB_HackSelectionButton* loadedButton)
