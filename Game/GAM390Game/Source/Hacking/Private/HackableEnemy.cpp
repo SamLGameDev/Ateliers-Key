@@ -15,13 +15,8 @@ AHackableEnemy::AHackableEnemy()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
-	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(Root);
-
 	LoadingBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("LoadingBar"));
-	LoadingBar->SetupAttachment(Mesh);
-
-	BaseMesh = Mesh;
+	LoadingBar->SetupAttachment(Root);
 
 	DisableHighlight();
 
@@ -35,7 +30,7 @@ void AHackableEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BaseMesh = Mesh;
+	GetComponents<UMeshComponent>(BaseMesh);
 	if (HackableObjects)
 	{
 		HackableObjects->RegisterObject(this);

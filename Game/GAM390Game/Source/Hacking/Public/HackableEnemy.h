@@ -21,8 +21,8 @@ public:
 public:
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USkeletalMeshComponent* Mesh;
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//USkeletalMeshComponent* Mesh;
 
 protected:
 	// Called when the game starts or when spawned

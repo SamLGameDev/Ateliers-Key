@@ -11,11 +11,19 @@ AHackable::AHackable()
 
 void AHackable::EnableHighlight()
 {
-	BaseMesh->SetOverlayMaterial(HackableObejctOutline);
+	for (UMeshComponent* mesh : BaseMesh)
+	{
+		mesh->SetOverlayMaterial(HackableObejctOutline);
+	}
+
 }
 void AHackable::DisableHighlight()
 {
-	BaseMesh->SetOverlayMaterial(nullptr);
+	for (UMeshComponent* mesh : BaseMesh)
+	{
+		mesh->SetOverlayMaterial(nullptr);
+	}
+
 }
 
 void AHackable::SetLoadingBarProgress(const float Percent)

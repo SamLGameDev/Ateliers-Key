@@ -17,13 +17,9 @@ AHackableActor::AHackableActor()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(Root);
-
 	LoadingBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("LoadingBar"));
-	LoadingBar->SetupAttachment(Mesh);
+	LoadingBar->SetupAttachment(Root);
 
-	BaseMesh = Mesh;
 
 	DisableHighlight();
 
@@ -35,7 +31,7 @@ void AHackableActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BaseMesh = Mesh;
+	GetComponents<UMeshComponent>(BaseMesh);
 
 	if(HackableObjects)
 	{

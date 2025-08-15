@@ -194,8 +194,5 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UWidgetAnimation* FocusNextHackAnim;
 
-	UPROPERTY(meta=(BindWidget))
-	UTextBlock
-
 	
 };

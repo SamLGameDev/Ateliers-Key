@@ -44,7 +44,7 @@ public:
 	/// <summary>
 	/// need base mesh so we can change the mesh overlay regardless of if it is a skeletal mesh or static mesh
 	/// </summary>
-	UMeshComponent* BaseMesh;
+	TArray<UMeshComponent*> BaseMesh;
 
 	virtual void BeginDestroy() override;
 
