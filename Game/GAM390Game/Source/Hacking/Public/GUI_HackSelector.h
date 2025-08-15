@@ -191,6 +191,11 @@ private:
 
 	FVector2D UnselectedPos;
 
+	UPROPERTY(EditDefaultsOnly)
+	UWidgetAnimation* FocusNextHackAnim;
+
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock
 
 	
 };

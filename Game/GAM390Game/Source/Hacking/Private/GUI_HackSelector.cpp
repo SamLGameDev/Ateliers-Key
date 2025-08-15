@@ -10,11 +10,6 @@
 #include "Components/ScrollBoxSlot.h"
 
 
-// TO-DO: 
-//Rework how rotation works to instead move each chamber by an angle.
-// Except for the first point, which we lerp towards the original location of the first point. 
-// OR finish rotation, then move out, could be a sperate animation?
-
 void UGUI_HackSelector::FocusNextSlot()
 {	
 
@@ -482,7 +477,7 @@ void UGUI_HackSelector::FocusNextAvailableHack()
 {
 	if (CurrentAvailableHack < AvailableHackButtons.Num() - 1)
 	{
-		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
+		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
 		CurrentAvailableHack++;
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
 		AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);
@@ -494,6 +489,7 @@ void UGUI_HackSelector::FocusPreviousAvailableHack()
 {
 	if (CurrentAvailableHack > 0)
 	{
+		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Reverse, 1, true);
 		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
 		CurrentAvailableHack--;
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
