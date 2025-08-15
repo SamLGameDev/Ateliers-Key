@@ -96,26 +96,24 @@ void AHackableTurret::OnShootCompleted(const FInputActionValue& Value) {
 	);
 }
 
-void AHackableTurret::CameraLogic(const FInputActionValue& Value) {
+void AHackableTurret::CameraLogic(const FInputActionValue& Value)
+{
 	FVector2D InputVector = Value.Get<FVector2D>();
+
 	MouseInput = InputVector;
-
-	AddControllerPitchInput(MouseInput.Y * -1.0f);
-	AddControllerYawInput(MouseInput.X);
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Move"));
 }
 
 void AHackableTurret::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	FRotator ControlRot = GetControlRotation();
+	if (!TurretBody) return;
 
-	// 2️⃣ Create a new rotator keeping only yaw
-	FRotator NewRot(0.f, ControlRot.Yaw, 0.f);
+	FRotator CurrentRot = TurretBody->GetRelativeRotation();
 
-	// 3️⃣ Set relative rotation of TurretBody
-	TurretBody->SetRelativeRotation(NewRot);
+	CurrentRot.Yaw += MouseInput.X;
+	CurrentRot.Pitch = FMath::Clamp(CurrentRot.Pitch + MouseInput.Y * 1.0f, -45.f, 45.f);
+
+	TurretBody->SetRelativeRotation(CurrentRot);
 }
 
 void AHackableTurret::ResetDoOnce() {
