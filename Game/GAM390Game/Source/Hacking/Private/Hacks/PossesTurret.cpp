@@ -3,7 +3,6 @@
 
 #include "Hacks/PossesTurret.h"
 
-
 void UPossesTurret::ExecuteHack(UObject* HackedObject)
 {
 	Super::ExecuteHack(HackedObject);
