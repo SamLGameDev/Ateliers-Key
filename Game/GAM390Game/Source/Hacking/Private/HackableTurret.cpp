@@ -28,6 +28,8 @@ void AHackableTurret::BeginPlay() {
 	Super::BeginPlay();
 
 	EnableInput(GetWorld()->GetFirstPlayerController());
+
+	currentBulletCount = maxBulletCount;
 }
 
 void AHackableTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -64,7 +66,7 @@ void AHackableTurret::OnShootTriggered(const FInputActionValue& Value) {
 }
 
 void AHackableTurret::ShootLogic() {
-	if (!bHolding) return;
+	if (!bHolding || currentBulletCount <= 0) return;
 
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
 
@@ -92,6 +94,10 @@ void AHackableTurret::ShootLogic() {
 	DamageInfo.CanBeBlocked = true;
 	DamageInfo.CanBeParried = true;
 	DamageInfo.ShouldForceInterrupt = true;
+
+	currentBulletCount--;
+
+	if(TurretHud) TurretHud->UpdateBulletCount(currentBulletCount, maxBulletCount);
 
     if (bHit) {
 		AActor* HitActor = HitResult.GetActor();
@@ -153,6 +159,18 @@ void AHackableTurret::ResetDoOnce() {
 }
 
 void AHackableTurret::StartCountdown() {
+
+	if (TurretHudWidgetClass)
+	{
+		TurretHud = CreateWidget<UGUI_TurretHud>(GetWorld(), TurretHudWidgetClass);
+		if (TurretHud)
+		{
+			TurretHud->AddToViewport();
+			TurretHud->turret = this;
+			TurretHud->UpdateBulletCount(currentBulletCount, maxBulletCount);
+		}
+	}
+
 	GetWorldTimerManager().SetTimer(
 		CountdownTimer,
 		this,
@@ -184,5 +202,7 @@ void AHackableTurret::CountdownComplete()
 
 	MouseInput = FVector2D::ZeroVector;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Bazinga!"));
+	ResetDoOnce();
+
+	TurretHud->RemoveFromViewport();
 }

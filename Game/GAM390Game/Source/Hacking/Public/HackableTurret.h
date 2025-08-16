@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
 #include <DamageSystem.h>
+#include <GUI_TurretHud.h>
 #include "HackableTurret.generated.h"
 
 /**
@@ -56,8 +57,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Turret")
 	bool bHolding;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Turret")
+	UPROPERTY(BlueprintReadWrite, Category = "Damage System")
 	int teamNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage System")
+	int maxBulletCount;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	TSubclassOf<UUserWidget> TurretHudWidgetClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UDamageSystem* DamageSystem;
@@ -73,6 +80,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	UMaterialInterface* ImpactDecal;
+
+	float currentBulletCount;
+	
+	UGUI_TurretHud* TurretHud;
 
 	void OnCameraLookTriggered(const FInputActionValue& Value);
 	void OnCameraLookCompleted(const FInputActionValue& Value);
