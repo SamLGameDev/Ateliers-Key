@@ -151,3 +151,38 @@ void AHackableTurret::ResetDoOnce() {
 
 	GetWorldTimerManager().ClearTimer(ShootCompletedTimer);
 }
+
+void AHackableTurret::StartCountdown() {
+	GetWorldTimerManager().SetTimer(
+		CountdownTimer,
+		this,
+		&AHackableTurret::CountdownComplete,
+		5.0f,
+		false
+	);
+}
+
+void AHackableTurret::CountdownComplete()
+{
+	GetWorldTimerManager().ClearTimer(CountdownTimer);
+
+	if (!Actor) return;
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	APawn* FoundPawn = Cast<APawn>(UGameplayStatics::GetActorOfClass(World, Actor));
+	if (!FoundPawn)
+	{
+		return;
+	}
+
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (!PC) return;
+
+	PC->Possess(FoundPawn);
+
+	MouseInput = FVector2D::ZeroVector;
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Bazinga!"));
+}

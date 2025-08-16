@@ -24,10 +24,13 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	void StartCountdown();
 
 private:
 	FTimerHandle ShootCompletedTimer;
 	FTimerHandle FireRateTimer;
+	FTimerHandle CountdownTimer;
 
 
 protected:
@@ -59,6 +62,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UDamageSystem* DamageSystem;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TSubclassOf<APawn> Actor;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	USoundBase* Sound;
 
@@ -78,5 +84,7 @@ protected:
 	void ResetDoOnce();
 
 	void ShootLogic();
-	
+
+	void CountdownComplete();
+
 };

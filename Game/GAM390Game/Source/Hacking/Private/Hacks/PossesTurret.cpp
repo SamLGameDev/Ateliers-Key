@@ -2,15 +2,17 @@
 
 
 #include "Hacks/PossesTurret.h"
+#include <HackableTurret.h>
 
 void UPossesTurret::ExecuteHack(UObject* HackedObject)
 {
 	Super::ExecuteHack(HackedObject);
 
-	APawn* obj = Cast<APawn>(HackedObject);
+	AHackableTurret* obj = Cast<AHackableTurret>(HackedObject);
 
 	if (obj->ActorHasTag("Turret"))
 	{
 		obj->GetWorld()->GetFirstPlayerController()->Possess(obj);
+		obj->StartCountdown();
 	}
 }
