@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include <EnhancedInputComponent.h>
+#include <Damageable.h>
 
 AHackableTurret::AHackableTurret() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -50,32 +51,61 @@ void AHackableTurret::OnCameraLookCompleted(const FInputActionValue& Value) {
 }
 
 void AHackableTurret::OnShootTriggered(const FInputActionValue& Value) {
-	bHolding = true;
-	if (bHolding) {
-		ShootLogic();
+	if (!bHolding) {
+		bHolding = true;
+		GetWorldTimerManager().SetTimer(
+			FireRateTimer,
+			this,
+			&AHackableTurret::ShootLogic,
+			0.1f,
+			true
+		);
 	}
 }
 
 void AHackableTurret::ShootLogic() {
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
+	if (!bHolding) return;
 
-	FVector Start = GetActorLocation();
-	FVector ForwardVector = GetActorForwardVector();
-	FVector End = Start + (ForwardVector * 25000);
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
 
-	FHitResult HitResult;
+    FVector Start = TurretBody->GetComponentLocation();
+    FVector ForwardVector = TurretBody->GetForwardVector();
+    FVector End = Start + (ForwardVector * 25000);
 
-	FCollisionQueryParams TraceParams(FName(TEXT("Trace")), true, this);
-	TraceParams.bTraceComplex = true;
-	TraceParams.bReturnPhysicalMaterial = false;
+    FHitResult HitResult;
+    FCollisionQueryParams TraceParams(FName(TEXT("Trace")), true, this);
+    TraceParams.bTraceComplex = true;
+    TraceParams.bReturnPhysicalMaterial = false;
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, TraceParams);
-	int32 RandValue = FMath::RandRange(2, 5);
+    bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, TraceParams);
+    int32 RandValue = FMath::RandRange(2, 5);
 
-	if (bHit) {
-		/*HitResult.GetActor()->Implements*/
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator());
-		UDecalComponent* DecalComp = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactDecal, FVector(RandValue, RandValue, RandValue), HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator(), 20);
+	FColor LineColor = bHit ? FColor::Red : FColor::Green;
+	DrawDebugLine(GetWorld(), Start, End, LineColor, false, 2.0f, 0, 5.0f);
+
+	FDamageInfo DamageInfo;
+
+	DamageInfo.Amount = 25.0f;
+	DamageInfo.DamageType = EDamageTransmitter::Projectile;
+	DamageInfo.DamageResponse = EDamageResponse::None;
+	DamageInfo.ShouldDamageInvincible = false;
+	DamageInfo.CanBeBlocked = true;
+	DamageInfo.CanBeParried = true;
+	DamageInfo.ShouldForceInterrupt = true;
+
+    if (bHit) {
+		AActor* HitActor = HitResult.GetActor();
+		if (HitActor->GetClass()->ImplementsInterface(UDamageable::StaticClass())) {
+			HitActor->GetComponentByClass<UDamageSystem>()->TakeDamage(DamageInfo, this);
+		}
+		else {
+
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator());
+			UDecalComponent* DecalComp = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactDecal, FVector(RandValue), HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator(), 20);
+		}
+    }
+
+	if (bHolding) {
 		GetWorldTimerManager().SetTimer(
 			FireRateTimer,
 			this,
@@ -117,5 +147,7 @@ void AHackableTurret::Tick(float DeltaTime) {
 }
 
 void AHackableTurret::ResetDoOnce() {
-	bHolding = true;
+	bHolding = false;
+
+	GetWorldTimerManager().ClearTimer(ShootCompletedTimer);
 }

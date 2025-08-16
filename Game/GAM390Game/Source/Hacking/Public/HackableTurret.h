@@ -63,7 +63,7 @@ protected:
 	USoundBase* Sound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-	UParticleSystem* ExplosionEffect;
+	UParticleSystem* ImpactEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	UMaterialInterface* ImpactDecal;
