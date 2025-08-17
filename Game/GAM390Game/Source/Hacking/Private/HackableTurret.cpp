@@ -4,6 +4,7 @@
 #include "HackableTurret.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/DecalComponent.h"
 #include <EnhancedInputComponent.h>
 #include <Damageable.h>
 
@@ -13,13 +14,13 @@ AHackableTurret::AHackableTurret() {
 
 	DamageSystem = CreateDefaultSubobject<UDamageSystem>(TEXT("DamageSystem"));
 
-	TurretBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretBase"));
+	TurretBase = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TurretBase"));
 	TurretBase->SetupAttachment(Root);
 
 	TurretBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretBody"));
 	TurretBody->SetupAttachment(TurretBase);
 
-	TurretBarrel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretBarrel"));
+	TurretBarrel = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TurretBarrel"));
 	TurretBarrel->SetupAttachment(TurretBody);
 
 }
@@ -65,28 +66,73 @@ void AHackableTurret::OnShootTriggered(const FInputActionValue& Value) {
 	}
 }
 
+void AHackableTurret::ShootLogicAI() {
+	if (!bHolding) {
+		bHolding = true;
+		GetWorldTimerManager().SetTimer(
+			FireRateTimer,
+			this,
+			&AHackableTurret::ShootLogic,
+			0.1f,
+			true
+		);
+	}
+}
+
+void AHackableTurret::ResetLogicAI() {
+	GetWorldTimerManager().SetTimer(
+		ShootCompletedTimer,
+		this,
+		&AHackableTurret::ResetDoOnce,
+		0.15f,
+		false
+	);
+}
+
 void AHackableTurret::ShootLogic() {
 	if (!bHolding || currentBulletCount <= 0) return;
 
-    UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
 
-    FVector Start = TurretBody->GetComponentLocation();
-    FVector ForwardVector = TurretBody->GetForwardVector();
-    FVector End = Start + (ForwardVector * 25000);
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	if (!PC) return;
 
-    FHitResult HitResult;
-    FCollisionQueryParams TraceParams(FName(TEXT("Trace")), true, this);
-    TraceParams.bTraceComplex = true;
-    TraceParams.bReturnPhysicalMaterial = false;
+	int32 ViewportX, ViewportY;
+	PC->GetViewportSize(ViewportX, ViewportY);
+	FVector WorldLocation, WorldDirection;
+	PC->DeprojectScreenPositionToWorld(ViewportX * 0.5f, ViewportY * 0.5f, WorldLocation, WorldDirection);
 
-    bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, TraceParams);
-    int32 RandValue = FMath::RandRange(2, 5);
+	FVector TargetEnd = WorldLocation + (WorldDirection * 25000.f);
+
+	FHitResult CameraHit;
+	FCollisionQueryParams CameraTraceParams(FName(TEXT("CameraTrace")), true, this);
+	CameraTraceParams.bTraceComplex = true;
+
+	bool bCameraHit = GetWorld()->LineTraceSingleByChannel(
+		CameraHit, WorldLocation, TargetEnd, ECC_Visibility, CameraTraceParams
+	);
+
+	FVector FinalTarget = bCameraHit ? CameraHit.Location : TargetEnd;
+
+	FName SocketName = bLeftBarrel ? MuzzleSocketNameL : MuzzleSocketNameR;
+	bLeftBarrel = !bLeftBarrel;
+
+	if (!TurretBarrel || !TurretBarrel->DoesSocketExist(SocketName)) return;
+
+	FVector Start = TurretBarrel->GetSocketLocation(SocketName);
+	FVector End = FinalTarget;
+
+	FHitResult HitResult;
+	FCollisionQueryParams TraceParams(FName(TEXT("TurretTrace")), true, this);
+	TraceParams.bTraceComplex = true;
+	TraceParams.bReturnPhysicalMaterial = false;
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, TraceParams);
 
 	FColor LineColor = bHit ? FColor::Red : FColor::Green;
-	DrawDebugLine(GetWorld(), Start, End, LineColor, false, 2.0f, 0, 5.0f);
+	DrawDebugLine(GetWorld(), Start, End, LineColor, false, 2.0f, 0, 2.0f);
 
 	FDamageInfo DamageInfo;
-
 	DamageInfo.Amount = 25.0f;
 	DamageInfo.DamageType = EDamageTransmitter::Projectile;
 	DamageInfo.DamageResponse = EDamageResponse::None;
@@ -95,21 +141,36 @@ void AHackableTurret::ShootLogic() {
 	DamageInfo.CanBeParried = true;
 	DamageInfo.ShouldForceInterrupt = true;
 
-	currentBulletCount--;
-
-	if(TurretHud) TurretHud->UpdateBulletCount(currentBulletCount, maxBulletCount);
-
-    if (bHit) {
+	if (bHit) {
 		AActor* HitActor = HitResult.GetActor();
-		if (HitActor->GetClass()->ImplementsInterface(UDamageable::StaticClass())) {
-			HitActor->GetComponentByClass<UDamageSystem>()->TakeDamage(DamageInfo, this);
+		if (HitActor && HitActor->GetClass()->ImplementsInterface(UDamageable::StaticClass())) {
+			if (UDamageSystem* DS = HitActor->GetComponentByClass<UDamageSystem>()) {
+				DS->TakeDamage(DamageInfo, this);
+			}
 		}
 		else {
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactEffect, HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator());
 
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator());
-			UDecalComponent* DecalComp = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactDecal, FVector(RandValue), HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator(), 20);
+			float LifeSpan = 10.f;
+			float FadeScreenSize = 0.001f;
+
+			int32 RandValue = FMath::RandRange(2, 5);
+			UDecalComponent* DecalComp = UGameplayStatics::SpawnDecalAtLocation(
+				GetWorld(), ImpactDecal, FVector(RandValue),
+				HitResult.Location,
+				FRotationMatrix::MakeFromX(HitResult.Normal).Rotator(),
+				LifeSpan
+			);
+
+			if (DecalComp) {
+				DecalComp->FadeScreenSize = FadeScreenSize;
+				DecalComp->SetFadeScreenSize(FadeScreenSize);
+			}
 		}
-    }
+	}
+
+	currentBulletCount--;
+	if (TurretHud) TurretHud->UpdateBulletCount(currentBulletCount, maxBulletCount);
 
 	if (bHolding) {
 		GetWorldTimerManager().SetTimer(
@@ -121,6 +182,9 @@ void AHackableTurret::ShootLogic() {
 		);
 	}
 }
+
+
+
 
 void AHackableTurret::OnShootCompleted(const FInputActionValue& Value) {
 	GetWorldTimerManager().SetTimer(
@@ -142,15 +206,17 @@ void AHackableTurret::CameraLogic(const FInputActionValue& Value)
 void AHackableTurret::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (!TurretBody) return;
+	if (!TurretBody || !TurretBarrel) return;
 
-	FRotator CurrentRot = TurretBody->GetRelativeRotation();
+	FRotator BodyRot = TurretBody->GetRelativeRotation();
+	BodyRot.Yaw += MouseInput.X;
+	TurretBody->SetRelativeRotation(BodyRot);
 
-	CurrentRot.Yaw += MouseInput.X;
-	CurrentRot.Pitch = FMath::Clamp(CurrentRot.Pitch + MouseInput.Y * 1.0f, -45.f, 45.f);
-
-	TurretBody->SetRelativeRotation(CurrentRot);
+	FRotator BarrelRot = TurretBarrel->GetRelativeRotation();
+	BarrelRot.Roll = FMath::Clamp(BarrelRot.Roll - MouseInput.Y, -45.f, 45.f);
+	TurretBarrel->SetRelativeRotation(BarrelRot);
 }
+
 
 void AHackableTurret::ResetDoOnce() {
 	bHolding = false;

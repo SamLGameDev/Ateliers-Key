@@ -129,6 +129,10 @@
 		{
 			"Name": "CodeView",
 			"Enabled": true
+		},
+		{
+			"Name": "CascadeToNiagaraConverter",
+			"Enabled": true
 		}
 	]
 }

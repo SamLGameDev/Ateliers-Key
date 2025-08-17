@@ -6,6 +6,8 @@
 #include "HackableEnemy.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include <DamageSystem.h>
 #include <GUI_TurretHud.h>
@@ -37,13 +39,13 @@ private:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* TurretBase;
+	USkeletalMeshComponent* TurretBase;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* TurretBody;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* TurretBarrel;
+	USkeletalMeshComponent* TurretBarrel;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Inputs")
 	UInputAction* LookAction;
@@ -56,6 +58,20 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Turret")
 	bool bHolding;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UNiagaraSystem* ImpactEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UMaterialInterface* ImpactDecal;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Barrels")
+	FName MuzzleSocketNameL = "Muzzle_L";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Barrels")
+	FName MuzzleSocketNameR = "Muzzle_R";
+
+	bool bLeftBarrel;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Damage System")
 	int teamNumber;
@@ -75,12 +91,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	USoundBase* Sound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-	UParticleSystem* ImpactEffect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-	UMaterialInterface* ImpactDecal;
-
 	float currentBulletCount;
 	
 	UGUI_TurretHud* TurretHud;
@@ -93,6 +103,12 @@ protected:
 
 	void CameraLogic(const FInputActionValue& Value);
 	void ResetDoOnce();
+
+	UFUNCTION(BlueprintCallable)
+	void ShootLogicAI();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetLogicAI();
 
 	void ShootLogic();
 
