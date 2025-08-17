@@ -129,9 +129,6 @@ void AHackableTurret::ShootLogic() {
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, TraceParams);
 
-	FColor LineColor = bHit ? FColor::Red : FColor::Green;
-	DrawDebugLine(GetWorld(), Start, End, LineColor, false, 2.0f, 0, 2.0f);
-
 	FDamageInfo DamageInfo;
 	DamageInfo.Amount = 25.0f;
 	DamageInfo.DamageType = EDamageTransmitter::Projectile;
