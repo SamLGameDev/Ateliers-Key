@@ -102,7 +102,11 @@ void AHackableTurret::ShootLogic() {
 	FVector WorldLocation, WorldDirection;
 	PC->DeprojectScreenPositionToWorld(ViewportX * 0.5f, ViewportY * 0.5f, WorldLocation, WorldDirection);
 
-	FVector TargetEnd = WorldLocation + (WorldDirection * 25000.f);
+	float BulletSpreadDegrees = 2.0f;
+	float BulletSpreadRad = FMath::DegreesToRadians(BulletSpreadDegrees);
+	FVector SpreadDirection = FMath::VRandCone(WorldDirection, BulletSpreadRad);
+
+	FVector TargetEnd = WorldLocation + (SpreadDirection * 25000.f);
 
 	FHitResult CameraHit;
 	FCollisionQueryParams CameraTraceParams(FName(TEXT("CameraTrace")), true, this);
@@ -206,11 +210,11 @@ void AHackableTurret::Tick(float DeltaTime) {
 	if (!TurretBody || !TurretBarrel) return;
 
 	FRotator BodyRot = TurretBody->GetRelativeRotation();
-	BodyRot.Yaw += MouseInput.X;
+	BodyRot.Yaw = FMath::Clamp(BodyRot.Yaw + MouseInput.X, MinYaw, MaxYaw);
 	TurretBody->SetRelativeRotation(BodyRot);
 
 	FRotator BarrelRot = TurretBarrel->GetRelativeRotation();
-	BarrelRot.Roll = FMath::Clamp(BarrelRot.Roll - MouseInput.Y, -45.f, 45.f);
+	BarrelRot.Roll = FMath::Clamp(BarrelRot.Roll - MouseInput.Y, MinPitch, MaxPitch);
 	TurretBarrel->SetRelativeRotation(BarrelRot);
 }
 

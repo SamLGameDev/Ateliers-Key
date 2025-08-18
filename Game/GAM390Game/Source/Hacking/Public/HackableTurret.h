@@ -47,22 +47,34 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* TurretBarrel;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Inputs")
+	UPROPERTY(EditAnywhere, Category = "Turret|Rotation")
+	float MinYaw = -90.f;
+
+	UPROPERTY(EditAnywhere, Category = "Turret|Rotation")
+	float MaxYaw = 90.f;
+
+	UPROPERTY(EditAnywhere, Category = "Turret|Rotation")
+	float MinPitch = -45.f;
+
+	UPROPERTY(EditAnywhere, Category = "Turret|Rotation")
+	float MaxPitch = 45.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Turret|Inputs")
 	UInputAction* LookAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Inputs")
+	UPROPERTY(EditDefaultsOnly, Category = "Turret|Inputs")
 	UInputAction* ShootAction;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Turret")
+	UPROPERTY(BlueprintReadWrite, Category = "Turret|Turret")
 	FVector2D MouseInput;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Turret")
+	UPROPERTY(BlueprintReadWrite, Category = "Turret|Turret")
 	bool bHolding;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Effects")
 	UNiagaraSystem* ImpactEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Effects")
 	UMaterialInterface* ImpactDecal;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Barrels")
@@ -73,22 +85,22 @@ protected:
 
 	bool bLeftBarrel;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Damage System")
+	UPROPERTY(BlueprintReadWrite, Category = "Turret|Damage System")
 	int teamNumber;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage System")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Damage System")
 	int maxBulletCount;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Widget")
 	TSubclassOf<UUserWidget> TurretHudWidgetClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret|Components")
 	UDamageSystem* DamageSystem;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Components")
 	TSubclassOf<APawn> Actor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Audio")
 	USoundBase* Sound;
 
 	float currentBulletCount;
