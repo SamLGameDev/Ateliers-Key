@@ -21,20 +21,17 @@ void UGUI_TurretHud::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
         RemainingTime -= InDeltaTime;
 
         if (RemainingTime < 0.0f)
+        {
             RemainingTime = 0.0f;
+        }
 
-        int32 s = FMath::FloorToInt(RemainingTime);
-        int32 ms = FMath::FloorToInt((RemainingTime - s) * 1000);
-
-        int32 firstDigitMs = ms / 100;
-
-        FString CountdownString = FString::Printf(TEXT("%d.%d"), s, firstDigitMs);
+        const FString CountdownString = FString::Printf(TEXT("%0.1f"), RemainingTime);
 
         UpdateCountdownText(CountdownString);
     }
 }
 
-void UGUI_TurretHud::UpdateBulletCount(int currentBulletCount, int maxBulletCount)
+void UGUI_TurretHud::UpdateBulletCount(const int currentBulletCount, const int maxBulletCount)
 {
     currentBulletCountText->SetText(FText::AsNumber(currentBulletCount));
     maxBulletCountText->SetText(FText::AsNumber(maxBulletCount));

@@ -36,9 +36,11 @@ void AHackableTurret::BeginPlay() {
 void AHackableTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+	if (UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) 
+	{
 		EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHackableTurret::OnCameraLookTriggered);
 		EnhancedInput->BindAction(LookAction, ETriggerEvent::Completed, this, &AHackableTurret::OnCameraLookCompleted);
+
 		EnhancedInput->BindAction(ShootAction, ETriggerEvent::Triggered, this, &AHackableTurret::OnShootTriggered);
 		EnhancedInput->BindAction(ShootAction, ETriggerEvent::Completed, this, &AHackableTurret::OnShootCompleted);
 	}
@@ -54,9 +56,13 @@ void AHackableTurret::OnCameraLookCompleted(const FInputActionValue& Value) {
 }
 
 void AHackableTurret::OnShootTriggered(const FInputActionValue& Value) {
+
 	if (!bHolding) {
+
 		bHolding = true;
-		GetWorldTimerManager().SetTimer(
+
+		GetWorldTimerManager().SetTimer
+		(
 			FireRateTimer,
 			this,
 			&AHackableTurret::ShootLogic,
@@ -90,6 +96,7 @@ void AHackableTurret::ResetLogicAI() {
 }
 
 void AHackableTurret::ShootLogic() {
+
 	if (!bHolding || currentBulletCount <= 0) return;
 
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
@@ -99,10 +106,11 @@ void AHackableTurret::ShootLogic() {
 
 	int32 ViewportX, ViewportY;
 	PC->GetViewportSize(ViewportX, ViewportY);
+
 	FVector WorldLocation, WorldDirection;
 	PC->DeprojectScreenPositionToWorld(ViewportX * 0.5f, ViewportY * 0.5f, WorldLocation, WorldDirection);
 
-	float BulletSpreadDegrees = 2.0f;
+	const float BulletSpreadDegrees = 2.0f;
 	float BulletSpreadRad = FMath::DegreesToRadians(BulletSpreadDegrees);
 	FVector SpreadDirection = FMath::VRandCone(WorldDirection, BulletSpreadRad);
 
@@ -112,7 +120,7 @@ void AHackableTurret::ShootLogic() {
 	FCollisionQueryParams CameraTraceParams(FName(TEXT("CameraTrace")), true, this);
 	CameraTraceParams.bTraceComplex = true;
 
-	bool bCameraHit = GetWorld()->LineTraceSingleByChannel(
+	const bool bCameraHit = GetWorld()->LineTraceSingleByChannel(
 		CameraHit, WorldLocation, TargetEnd, ECC_Visibility, CameraTraceParams
 	);
 
@@ -255,7 +263,7 @@ void AHackableTurret::CountdownComplete()
 
 	UWorld* World = GetWorld();
 	if (!World) return;
-
+		
 	APawn* FoundPawn = Cast<APawn>(UGameplayStatics::GetActorOfClass(World, Actor));
 	if (!FoundPawn)
 	{

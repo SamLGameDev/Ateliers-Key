@@ -10,9 +10,13 @@ void UPossesTurret::ExecuteHack(UObject* HackedObject)
 
 	AHackableTurret* obj = Cast<AHackableTurret>(HackedObject);
 
-	if (obj->ActorHasTag("Turret"))
+	if (!obj)
 	{
-		obj->GetWorld()->GetFirstPlayerController()->Possess(obj);
-		obj->StartCountdown();
+		return;
 	}
+
+	obj->GetWorld()->GetFirstPlayerController()->Possess(obj);
+		
+	obj->StartCountdown();
+	
 }

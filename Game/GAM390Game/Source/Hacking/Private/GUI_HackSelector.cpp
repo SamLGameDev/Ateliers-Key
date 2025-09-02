@@ -480,8 +480,11 @@ void UGUI_HackSelector::FocusNextAvailableHack()
 		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
 		CurrentAvailableHack++;
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
-		AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);
+		//AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);
 		PotentialHackDescription->SetText(AvailableHackButtons[CurrentAvailableHack]->GetDescription());
+
+
+
 	}
 }
 

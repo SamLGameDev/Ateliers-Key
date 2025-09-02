@@ -29,7 +29,7 @@ public:
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     class UTextBlock* currentBulletCountText;
 
-    void UpdateBulletCount(int currentBulletCount, int maxBulletCount);
+    void UpdateBulletCount(const int currentBulletCount, const int maxBulletCount);
 
     AHackableTurret* turret;
 

@@ -51,6 +51,9 @@ public:
 	UFUNCTION()
 	void Exit();
 
+	UPROPERTY(BlueprintReadWrite)
+	UWidgetAnimation* FocusNextHackAnim;
+
 private:
 
 	UPROPERTY(EditAnywhere,meta=(BindWidget))
@@ -191,8 +194,17 @@ private:
 
 	FVector2D UnselectedPos;
 
-	UPROPERTY(EditDefaultsOnly)
-	UWidgetAnimation* FocusNextHackAnim;
 
+	UPROPERTY(EditDefaultsOnly)
+	UTextBlock* MiddleText;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTextBlock* TopText;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTextBlock* BottomText;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTextBlock* MiddleStationaryText;
 	
 };
