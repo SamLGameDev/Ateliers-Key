@@ -18,27 +18,27 @@ UCLASS()
 class HACKING_API UGUI_TurretHud : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
-    virtual void NativeConstruct() override;
-    virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-    UPROPERTY(EditAnywhere, meta = (BindWidget))
-    class UTextBlock* maxBulletCountText;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* maxBulletCountText;
 
-    UPROPERTY(EditAnywhere, meta = (BindWidget))
-    class UTextBlock* currentBulletCountText;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* currentBulletCountText;
 
-    void UpdateBulletCount(const int currentBulletCount, const int maxBulletCount);
+	void UpdateBulletCount(const int currentBulletCount, const int maxBulletCount);
 
-    AHackableTurret* turret;
+	AHackableTurret* turret;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Countdown")
-    float CountdownTime = 5.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Countdown")
+	float CountdownTime = 5.0f;
 
-    float RemainingTime;
+	float RemainingTime;
 
-    UFUNCTION(BlueprintImplementableEvent, Category = "Countdown")
-    void UpdateCountdownText(const FString& Text);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Countdown")
+	void UpdateCountdownText(const FString& Text);
 };

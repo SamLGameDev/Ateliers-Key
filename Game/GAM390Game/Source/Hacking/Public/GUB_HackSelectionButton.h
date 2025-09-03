@@ -7,7 +7,6 @@
 #include "GUB_HackSelectionButton.generated.h"
 
 
-
 class UButton;
 class UTextBlock;
 struct FButtonStyle;
@@ -21,8 +20,8 @@ UCLASS()
 class HACKING_API UGUB_HackSelectionButton : public UUserWidget
 {
 	GENERATED_BODY()
-public:
 
+public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadWrite)
 	UBorder* Parent;
 
@@ -105,5 +104,4 @@ private:
 	FSlateColor TextColor;
 
 	bool bIsLoaded;
-
 };

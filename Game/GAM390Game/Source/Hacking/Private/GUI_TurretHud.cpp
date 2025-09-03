@@ -7,32 +7,32 @@
 
 void UGUI_TurretHud::NativeConstruct()
 {
-    Super::NativeConstruct();
+	Super::NativeConstruct();
 
-    RemainingTime = CountdownTime;
+	RemainingTime = CountdownTime;
 }
 
 void UGUI_TurretHud::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
-    Super::NativeTick(MyGeometry, InDeltaTime);
+	Super::NativeTick(MyGeometry, InDeltaTime);
 
-    if (RemainingTime > 0.0f)
-    {
-        RemainingTime -= InDeltaTime;
+	if (RemainingTime > 0.0f)
+	{
+		RemainingTime -= InDeltaTime;
 
-        if (RemainingTime < 0.0f)
-        {
-            RemainingTime = 0.0f;
-        }
+		if (RemainingTime < 0.0f)
+		{
+			RemainingTime = 0.0f;
+		}
 
-        const FString CountdownString = FString::Printf(TEXT("%0.1f"), RemainingTime);
+		const FString CountdownString = FString::Printf(TEXT("%0.1f"), RemainingTime);
 
-        UpdateCountdownText(CountdownString);
-    }
+		UpdateCountdownText(CountdownString);
+	}
 }
 
 void UGUI_TurretHud::UpdateBulletCount(const int currentBulletCount, const int maxBulletCount)
 {
-    currentBulletCountText->SetText(FText::AsNumber(currentBulletCount));
-    maxBulletCountText->SetText(FText::AsNumber(maxBulletCount));
+	currentBulletCountText->SetText(FText::AsNumber(currentBulletCount));
+	maxBulletCountText->SetText(FText::AsNumber(maxBulletCount));
 }

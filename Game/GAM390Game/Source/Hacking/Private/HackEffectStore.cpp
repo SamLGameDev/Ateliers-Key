@@ -3,4 +3,3 @@
 
 #include "HackEffectStore.h"
 #include "Hacks/HackEffect.h"
-

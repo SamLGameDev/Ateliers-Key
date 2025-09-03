@@ -22,7 +22,10 @@ public:
 	virtual void RegisterObject(UHackEffect* Object) override { BaseRunTimeSet<UHackEffect*>::RegisterObject(Object); };
 
 	UFUNCTION(BlueprintCallable, Category = "RunTimeSet|HackList")
-	virtual void DeregisterObject(UHackEffect* Object) override { BaseRunTimeSet<UHackEffect*>::DeregisterObject(Object); };
+	virtual void DeregisterObject(UHackEffect* Object) override
+	{
+		BaseRunTimeSet<UHackEffect*>::DeregisterObject(Object);
+	};
 
 	UFUNCTION(BlueprintCallable, Category = "RunTimeSet|HackList")
 	virtual void Clear() override { BaseRunTimeSet<UHackEffect*>::Clear(); };

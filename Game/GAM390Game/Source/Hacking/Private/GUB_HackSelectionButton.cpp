@@ -16,8 +16,8 @@ void UGUB_HackSelectionButton::SetFocused()
 
 void UGUB_HackSelectionButton::SetUnFocused()
 {
-	Clickable->SetStyle(bIsLoaded ? LoadedStyle: UnFocusedStyle);
-	Parent->SetBrushColor(bIsLoaded ? BorderLoadedColor: FLinearColor::Transparent);
+	Clickable->SetStyle(bIsLoaded ? LoadedStyle : UnFocusedStyle);
+	Parent->SetBrushColor(bIsLoaded ? BorderLoadedColor : FLinearColor::Transparent);
 }
 
 void UGUB_HackSelectionButton::SetHack(UHackEffect* Hack)
@@ -49,7 +49,6 @@ void UGUB_HackSelectionButton::SetSelectedDisplayDisabled()
 	Clickable->SetStyle(FocusedStyle);
 	DisplayText->SetColorAndOpacity(TextColor);
 	Parent->SetBrushColor(FLinearColor::Transparent);
-
 }
 
 void UGUB_HackSelectionButton::SetSelectedDisplayEnabled()

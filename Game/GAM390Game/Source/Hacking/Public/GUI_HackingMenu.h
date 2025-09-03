@@ -24,7 +24,6 @@ class HACKING_API UGUI_HackingMenu : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	UFUNCTION()
 	void FocusNextHackButton();
 
@@ -48,7 +47,6 @@ public:
 	}
 
 private:
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UGUB_HackingButton* HackingButton1;
 
@@ -90,9 +88,4 @@ private:
 	UObject* FocusedObject;
 
 	TArray<UGUB_HackingButton*> HackingButtons;
-
-
-
-
-
 };

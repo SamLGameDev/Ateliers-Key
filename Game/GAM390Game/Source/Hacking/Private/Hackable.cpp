@@ -15,15 +15,14 @@ void AHackable::EnableHighlight()
 	{
 		mesh->SetOverlayMaterial(HackableObejctOutline);
 	}
-
 }
+
 void AHackable::DisableHighlight()
 {
 	for (UMeshComponent* mesh : BaseMesh)
 	{
 		mesh->SetOverlayMaterial(nullptr);
 	}
-
 }
 
 void AHackable::SetLoadingBarProgress(const float Percent)
@@ -44,7 +43,6 @@ void AHackable::DisableLoadingBar()
 
 void AHackable::StartHack(UHackEffect* Hack)
 {
-
 	FTimerDelegate HackProgress;
 
 	HackProgress.BindUFunction(this, "ProgressHack", Hack, Hack->TimeToHack);
@@ -75,7 +73,6 @@ void AHackable::ProgressHack(UHackEffect* Hack, float TimeRemaining)
 	HackProgress.BindUFunction(this, "ProgressHack", Hack, TimeRemaining);
 
 	GetWorld()->GetTimerManager().SetTimerForNextTick(HackProgress);
-
 }
 
 void AHackable::EndHack(UHackEffect* Hack)
@@ -91,6 +88,4 @@ void AHackable::BeginDestroy()
 	{
 		HackableObjects->DeregisterObject(this);
 	}
-
 }
-

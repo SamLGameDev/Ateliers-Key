@@ -9,7 +9,7 @@
 // Sets default values
 AHackableEnemy::AHackableEnemy()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -21,7 +21,6 @@ AHackableEnemy::AHackableEnemy()
 	DisableHighlight();
 
 	DisableLoadingBar();
-
 }
 
 
@@ -35,20 +34,16 @@ void AHackableEnemy::BeginPlay()
 	{
 		HackableObjects->RegisterObject(this);
 	}
-	
 }
 
 // Called every frame
 void AHackableEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void AHackableEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
-

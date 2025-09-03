@@ -23,7 +23,6 @@ class HACKING_API UGUI_HackSelector : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	UFUNCTION()
 	void FocusNextSlot();
 
@@ -55,8 +54,7 @@ public:
 	UWidgetAnimation* FocusNextHackAnim;
 
 private:
-
-	UPROPERTY(EditAnywhere,meta=(BindWidget))
+	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UScrollBox* AvaialableHacksDisplay;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -83,7 +81,6 @@ private:
 	TSubclassOf<UGUB_HackSelectionButton> BPHackingButton;
 
 	int CurrentButtonSlot = 0;
-
 
 
 	TArray<UGUB_HackSelectionButton*> AvailableHackButtons;
@@ -206,5 +203,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UTextBlock* MiddleStationaryText;
-	
 };

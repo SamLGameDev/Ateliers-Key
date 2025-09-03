@@ -14,6 +14,9 @@ class BaseRunTimeSet{
 
 
 public:
+
+    virtual ~BaseRunTimeSet() {};
+	
 	/// <summary>
 	/// Add an Object to the Array
 	/// </summary>

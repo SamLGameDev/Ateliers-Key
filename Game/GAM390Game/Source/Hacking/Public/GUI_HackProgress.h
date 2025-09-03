@@ -17,14 +17,9 @@ class HACKING_API UGUI_HackProgress : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	void SetFill(float InPercent);
 
 private:
-
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UProgressBar* LoadingBar;
-
-
-	
 };

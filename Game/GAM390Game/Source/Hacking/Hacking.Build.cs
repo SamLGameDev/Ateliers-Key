@@ -8,6 +8,10 @@ public class Hacking : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "VariableStores", "GeneralUtilities", "Slate", "SlateCore", "Niagara", "EnhancedInput", "DamageSystem"});
+		PublicDependencyModuleNames.AddRange(new[]
+		{
+			"Core", "CoreUObject", "Engine", "VariableStores", "GeneralUtilities", "Slate", "SlateCore", "Niagara",
+			"EnhancedInput", "DamageSystem", "UMG"
+		});
 	}
 }

@@ -13,9 +13,7 @@ UCLASS()
 class HACKING_API UPossesTurret : public UHackEffect
 {
 	GENERATED_BODY()
+
 public:
-
-
 	virtual void ExecuteHack(UObject* HackedObject) override;
-	
 };

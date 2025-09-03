@@ -49,7 +49,6 @@ public:
 	virtual void BeginDestroy() override;
 
 protected:
-
 	UPROPERTY(EditAnywhere)
 	USceneComponent* Root;
 
@@ -61,6 +60,4 @@ protected:
 
 	UPROPERTY(EditAnyWhere)
 	UWidgetComponent* LoadingBar;
-
-
 };

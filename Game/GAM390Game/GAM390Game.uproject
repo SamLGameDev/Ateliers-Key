@@ -7,11 +7,7 @@
 		{
 			"Name": "GAM390Game",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"UMG"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "GeneralUtilities",
@@ -21,28 +17,17 @@
 		{
 			"Name": "VariableStores",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "ProcEnemies",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"AIModule"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "DamageSystem",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"CoreUObject",
-				"Engine"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "UserSettings",
@@ -62,68 +47,32 @@
 		{
 			"Name": "Menus",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"UMG"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "Hacking",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"UMG",
-				"Engine"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "EnchancedInputAdditions",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"EnhancedInput"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "SoundManagement",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "TimeManagementExtended",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject"
-			]
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
-			"Enabled": true,
-			"TargetAllowList": [
-				"Editor"
-			]
-		},
-		{
-			"Name": "GameplayBehaviors",
-			"Enabled": true
-		},
-		{
-			"Name": "SmartObjects",
-			"Enabled": true
-		},
-		{
-			"Name": "GameplayBehaviorSmartObjects",
-			"Enabled": true
-		},
-		{
-			"Name": "MotionWarping",
 			"Enabled": true
 		},
 		{
@@ -131,8 +80,12 @@
 			"Enabled": true
 		},
 		{
-			"Name": "CascadeToNiagaraConverter",
-			"Enabled": true
+			"Name": "VisualStudioTools",
+			"Enabled": false,
+			"SupportedTargetPlatforms": [
+				"Win64"
+			],
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/362651520df94e4fa65492dbcba44ae2"
 		}
 	]
 }

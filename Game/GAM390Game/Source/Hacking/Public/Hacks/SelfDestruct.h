@@ -16,5 +16,4 @@ class HACKING_API USelfDestruct : public UHackEffect
 
 public:
 	virtual void ExecuteHack(UObject* HackedObject) override;
-	
 };

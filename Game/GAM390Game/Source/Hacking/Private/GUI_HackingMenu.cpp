@@ -19,7 +19,6 @@ void UGUI_HackingMenu::FocusNextHackButton()
 		HackingButtons[CurrentlyFocused]->SetFocused();
 		HackDescription->SetText(HackingButtons[CurrentlyFocused]->GetDescription());
 	}
-
 }
 
 void UGUI_HackingMenu::FocusPreviousHackButton()
@@ -53,9 +52,8 @@ void UGUI_HackingMenu::UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks)
 			continue;
 		}
 		HackingButtons[i]->SetVisibility(ESlateVisibility::Hidden);
-
 	}
-	EnabledButtons = Hacks.Num() -1;
+	EnabledButtons = Hacks.Num() - 1;
 	HackDescriptionParent->SetVisibility(ESlateVisibility::Visible);
 	HackDescription->SetText(HackingButtons[CurrentlyFocused]->GetDescription());
 }
@@ -64,7 +62,6 @@ void UGUI_HackingMenu::UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks)
 void UGUI_HackingMenu::TriggerHack()
 {
 	SetLoadedHack();
-
 }
 
 void UGUI_HackingMenu::SetLoadedHack()
@@ -78,7 +75,6 @@ void UGUI_HackingMenu::SetLoadedHack()
 	}
 
 	HackingButtons[CurrentlyFocused]->SetSelectedDisplayLoaded();
-
 }
 
 void UGUI_HackingMenu::NativeConstruct()
@@ -102,7 +98,6 @@ void UGUI_HackingMenu::NativeConstruct()
 	}
 
 
-
 	for (UGUB_HackingButton* Button : HackingButtons)
 	{
 		Button->SetHackingMenu(this);
@@ -112,7 +107,6 @@ void UGUI_HackingMenu::NativeConstruct()
 	HackDescriptionParent->SetVisibility(ESlateVisibility::Hidden);
 
 	UpdateButtonDisplay(LoadedHacks->GetRegisteredObjects());
-
 }
 
 void UGUI_HackingMenu::NativeDestruct()
@@ -121,7 +115,4 @@ void UGUI_HackingMenu::NativeDestruct()
 
 	HackingButtons[CurrentlyFocused]->SetUnFocused();
 	CurrentlyFocused = 0;
-
 }
-
-

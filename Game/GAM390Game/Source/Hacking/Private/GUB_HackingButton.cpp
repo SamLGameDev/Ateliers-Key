@@ -51,7 +51,6 @@ void UGUB_HackingButton::SetHack(UHackEffect* Hack)
 	SetDisplayText(Hack->DisplayText);
 	SetVisibility(ESlateVisibility::Visible);
 	LoadedEffect = Hack;
-
 }
 
 FText UGUB_HackingButton::GetDescription()
@@ -64,4 +63,3 @@ void UGUB_HackingButton::SetDisplayText(FText Text)
 {
 	DisplayText->SetText(Text);
 }
-

@@ -11,7 +11,7 @@
 // Sets default values
 AHackableActor::AHackableActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -33,7 +33,7 @@ void AHackableActor::BeginPlay()
 
 	GetComponents<UMeshComponent>(BaseMesh);
 
-	if(HackableObjects)
+	if (HackableObjects)
 	{
 		HackableObjects->RegisterObject(this);
 	}
@@ -43,6 +43,4 @@ void AHackableActor::BeginPlay()
 void AHackableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-

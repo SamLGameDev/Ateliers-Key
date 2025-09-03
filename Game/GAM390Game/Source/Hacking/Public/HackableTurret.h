@@ -27,7 +27,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 	void StartCountdown();
 
 private:
@@ -35,9 +35,7 @@ private:
 	FTimerHandle FireRateTimer;
 	FTimerHandle CountdownTimer;
 
-
 protected:
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* TurretBase;
 
@@ -90,7 +88,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Damage System")
 	int maxBulletCount;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Widget")
 	TSubclassOf<UUserWidget> TurretHudWidgetClass;
 
@@ -104,7 +102,7 @@ protected:
 	USoundBase* Sound;
 
 	float currentBulletCount;
-	
+
 	UGUI_TurretHud* TurretHud;
 
 	void OnCameraLookTriggered(const FInputActionValue& Value);
@@ -125,5 +123,4 @@ protected:
 	void ShootLogic();
 
 	void CountdownComplete();
-
 };

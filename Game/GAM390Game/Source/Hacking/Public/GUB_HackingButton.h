@@ -23,7 +23,6 @@ class HACKING_API UGUB_HackingButton : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadWrite)
 	UBorder* Parent;
 
@@ -66,9 +65,7 @@ public:
 
 	void SetUpButton();
 
-
 private:
-
 	FButtonStyle CurrentUnFocusedStyle = UnFocusedStyle;
 
 	FLinearColor CurrentBorderColor;
@@ -94,5 +91,4 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	FSlateColor TextColor;
-
 };

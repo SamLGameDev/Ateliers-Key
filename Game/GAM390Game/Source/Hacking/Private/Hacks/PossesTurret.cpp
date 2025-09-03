@@ -16,7 +16,6 @@ void UPossesTurret::ExecuteHack(UObject* HackedObject)
 	}
 
 	obj->GetWorld()->GetFirstPlayerController()->Possess(obj);
-		
+
 	obj->StartCountdown();
-	
 }

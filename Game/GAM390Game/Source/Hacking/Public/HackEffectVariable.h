@@ -17,11 +17,12 @@ class HACKING_API UHackEffectVariable : public UPrimaryDataAsset, public BaseVar
 	GENERATED_BODY()
 
 public:
-
 	UFUNCTION(BlueprintCallable, Category = "VariableStores")
 	virtual void SetObject(UHackEffect* Object) override { BaseVariableStore<UHackEffect*>::SetObject(Object); };
 
 	UFUNCTION(BlueprintCallable, Category = "VariableStores")
-	virtual UHackEffect* GetRegisteredObject() const override { return BaseVariableStore<UHackEffect*>::GetRegisteredObject(); };
-	
+	virtual UHackEffect* GetRegisteredObject() const override
+	{
+		return BaseVariableStore<UHackEffect*>::GetRegisteredObject();
+	};
 };

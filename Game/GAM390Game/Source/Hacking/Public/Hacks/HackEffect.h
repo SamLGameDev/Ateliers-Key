@@ -15,7 +15,6 @@ class HACKING_API UHackEffect : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(EditAnywhere)
 	float TimeToHack;
 

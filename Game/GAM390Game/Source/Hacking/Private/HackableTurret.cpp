@@ -8,7 +8,8 @@
 #include <EnhancedInputComponent.h>
 #include <Damageable.h>
 
-AHackableTurret::AHackableTurret() {
+AHackableTurret::AHackableTurret()
+{
 	PrimaryActorTick.bCanEverTick = true;
 	MouseInput = FVector2D::ZeroVector;
 
@@ -22,10 +23,10 @@ AHackableTurret::AHackableTurret() {
 
 	TurretBarrel = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TurretBarrel"));
 	TurretBarrel->SetupAttachment(TurretBody);
-
 }
 
-void AHackableTurret::BeginPlay() {
+void AHackableTurret::BeginPlay()
+{
 	Super::BeginPlay();
 
 	EnableInput(GetWorld()->GetFirstPlayerController());
@@ -33,10 +34,11 @@ void AHackableTurret::BeginPlay() {
 	currentBulletCount = maxBulletCount;
 }
 
-void AHackableTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+void AHackableTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) 
+	if (UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHackableTurret::OnCameraLookTriggered);
 		EnhancedInput->BindAction(LookAction, ETriggerEvent::Completed, this, &AHackableTurret::OnCameraLookCompleted);
@@ -51,14 +53,15 @@ void AHackableTurret::OnCameraLookTriggered(const FInputActionValue& Value)
 	CameraLogic(Value);
 }
 
-void AHackableTurret::OnCameraLookCompleted(const FInputActionValue& Value) {
+void AHackableTurret::OnCameraLookCompleted(const FInputActionValue& Value)
+{
 	CameraLogic(Value);
 }
 
-void AHackableTurret::OnShootTriggered(const FInputActionValue& Value) {
-
-	if (!bHolding) {
-
+void AHackableTurret::OnShootTriggered(const FInputActionValue& Value)
+{
+	if (!bHolding)
+	{
 		bHolding = true;
 
 		GetWorldTimerManager().SetTimer
@@ -72,8 +75,10 @@ void AHackableTurret::OnShootTriggered(const FInputActionValue& Value) {
 	}
 }
 
-void AHackableTurret::ShootLogicAI() {
-	if (!bHolding) {
+void AHackableTurret::ShootLogicAI()
+{
+	if (!bHolding)
+	{
 		bHolding = true;
 		GetWorldTimerManager().SetTimer(
 			FireRateTimer,
@@ -85,7 +90,8 @@ void AHackableTurret::ShootLogicAI() {
 	}
 }
 
-void AHackableTurret::ResetLogicAI() {
+void AHackableTurret::ResetLogicAI()
+{
 	GetWorldTimerManager().SetTimer(
 		ShootCompletedTimer,
 		this,
@@ -95,14 +101,20 @@ void AHackableTurret::ResetLogicAI() {
 	);
 }
 
-void AHackableTurret::ShootLogic() {
-
-	if (!bHolding || currentBulletCount <= 0) return;
+void AHackableTurret::ShootLogic()
+{
+	if (!bHolding || currentBulletCount <= 0)
+	{
+		return;
+	}
 
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), 1.0f, 1.0f, 0.0f);
 
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-	if (!PC) return;
+	if (!PC)
+	{
+		return;
+	}
 
 	int32 ViewportX, ViewportY;
 	PC->GetViewportSize(ViewportX, ViewportY);
@@ -110,7 +122,7 @@ void AHackableTurret::ShootLogic() {
 	FVector WorldLocation, WorldDirection;
 	PC->DeprojectScreenPositionToWorld(ViewportX * 0.5f, ViewportY * 0.5f, WorldLocation, WorldDirection);
 
-	const float BulletSpreadDegrees = 2.0f;
+	constexpr float BulletSpreadDegrees = 2.0f;
 	float BulletSpreadRad = FMath::DegreesToRadians(BulletSpreadDegrees);
 	FVector SpreadDirection = FMath::VRandCone(WorldDirection, BulletSpreadRad);
 
@@ -129,7 +141,10 @@ void AHackableTurret::ShootLogic() {
 	FName SocketName = bLeftBarrel ? MuzzleSocketNameL : MuzzleSocketNameR;
 	bLeftBarrel = !bLeftBarrel;
 
-	if (!TurretBarrel || !TurretBarrel->DoesSocketExist(SocketName)) return;
+	if (!TurretBarrel || !TurretBarrel->DoesSocketExist(SocketName))
+	{
+		return;
+	}
 
 	FVector Start = TurretBarrel->GetSocketLocation(SocketName);
 	FVector End = FinalTarget;
@@ -150,15 +165,20 @@ void AHackableTurret::ShootLogic() {
 	DamageInfo.CanBeParried = true;
 	DamageInfo.ShouldForceInterrupt = true;
 
-	if (bHit) {
+	if (bHit)
+	{
 		AActor* HitActor = HitResult.GetActor();
-		if (HitActor && HitActor->GetClass()->ImplementsInterface(UDamageable::StaticClass())) {
-			if (UDamageSystem* DS = HitActor->GetComponentByClass<UDamageSystem>()) {
+		if (HitActor && HitActor->GetClass()->ImplementsInterface(UDamageable::StaticClass()))
+		{
+			if (UDamageSystem* DS = HitActor->GetComponentByClass<UDamageSystem>())
+			{
 				DS->TakeDamage(DamageInfo, this);
 			}
 		}
-		else {
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactEffect, HitResult.Location, FRotationMatrix::MakeFromX(HitResult.Normal).Rotator());
+		else
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactEffect, HitResult.Location,
+			                                               FRotationMatrix::MakeFromX(HitResult.Normal).Rotator());
 
 			float LifeSpan = 10.f;
 			float FadeScreenSize = 0.001f;
@@ -171,7 +191,8 @@ void AHackableTurret::ShootLogic() {
 				LifeSpan
 			);
 
-			if (DecalComp) {
+			if (DecalComp)
+			{
 				DecalComp->FadeScreenSize = FadeScreenSize;
 				DecalComp->SetFadeScreenSize(FadeScreenSize);
 			}
@@ -179,9 +200,13 @@ void AHackableTurret::ShootLogic() {
 	}
 
 	currentBulletCount--;
-	if (TurretHud) TurretHud->UpdateBulletCount(currentBulletCount, maxBulletCount);
+	if (TurretHud)
+	{
+		TurretHud->UpdateBulletCount(currentBulletCount, maxBulletCount);
+	}
 
-	if (bHolding) {
+	if (bHolding)
+	{
 		GetWorldTimerManager().SetTimer(
 			FireRateTimer,
 			this,
@@ -193,9 +218,8 @@ void AHackableTurret::ShootLogic() {
 }
 
 
-
-
-void AHackableTurret::OnShootCompleted(const FInputActionValue& Value) {
+void AHackableTurret::OnShootCompleted(const FInputActionValue& Value)
+{
 	GetWorldTimerManager().SetTimer(
 		ShootCompletedTimer,
 		this,
@@ -212,10 +236,14 @@ void AHackableTurret::CameraLogic(const FInputActionValue& Value)
 	MouseInput = InputVector;
 }
 
-void AHackableTurret::Tick(float DeltaTime) {
+void AHackableTurret::Tick(float DeltaTime)
+{
 	Super::Tick(DeltaTime);
 
-	if (!TurretBody || !TurretBarrel) return;
+	if (!TurretBody || !TurretBarrel)
+	{
+		return;
+	}
 
 	FRotator BodyRot = TurretBody->GetRelativeRotation();
 	BodyRot.Yaw = FMath::Clamp(BodyRot.Yaw + MouseInput.X, MinYaw, MaxYaw);
@@ -227,14 +255,15 @@ void AHackableTurret::Tick(float DeltaTime) {
 }
 
 
-void AHackableTurret::ResetDoOnce() {
+void AHackableTurret::ResetDoOnce()
+{
 	bHolding = false;
 
 	GetWorldTimerManager().ClearTimer(ShootCompletedTimer);
 }
 
-void AHackableTurret::StartCountdown() {
-
+void AHackableTurret::StartCountdown()
+{
 	if (TurretHudWidgetClass)
 	{
 		TurretHud = CreateWidget<UGUI_TurretHud>(GetWorld(), TurretHudWidgetClass);
@@ -259,11 +288,17 @@ void AHackableTurret::CountdownComplete()
 {
 	GetWorldTimerManager().ClearTimer(CountdownTimer);
 
-	if (!Actor) return;
+	if (!Actor)
+	{
+		return;
+	}
 
 	UWorld* World = GetWorld();
-	if (!World) return;
-		
+	if (!World)
+	{
+		return;
+	}
+
 	APawn* FoundPawn = Cast<APawn>(UGameplayStatics::GetActorOfClass(World, Actor));
 	if (!FoundPawn)
 	{
@@ -271,7 +306,10 @@ void AHackableTurret::CountdownComplete()
 	}
 
 	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
-	if (!PC) return;
+	if (!PC)
+	{
+		return;
+	}
 
 	PC->Possess(FoundPawn);
 
@@ -279,5 +317,5 @@ void AHackableTurret::CountdownComplete()
 
 	ResetDoOnce();
 
-	TurretHud->RemoveFromViewport();
+	TurretHud->RemoveFromParent();
 }
