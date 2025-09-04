@@ -23,11 +23,20 @@ class HACKING_API UGUI_HackSelector : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	float GetRotationAmount(const UImage* LastBullet);
+	
+	void MoveToNextBullet(const int8 RotDir);
+	bool CanRotateChamber() const;
+
 	UFUNCTION()
 	void FocusNextSlot();
+	void StartChamberRotation(int8 RotDir);
 
 	UFUNCTION()
 	void FocusPreviousSlot();
+
+	UFUNCTION()
+	void EndChamberRotation();
 
 
 	UFUNCTION()
@@ -40,11 +49,11 @@ public:
 	UFUNCTION()
 	void LoadSelectedToSlot();
 
-	void ReduceBulletsIfNeeded(UGUB_HackSelectionButton* loadedButton);
+	void ReduceBulletsIfNeeded(const UGUB_HackSelectionButton* loadedButton) const;
 
-	void ReduceRemainngBullets();
+	void ReduceRemainingBullets() const;
 
-	void UpdateRemainingBullets();
+	void UpdateRemainingBullets() const;
 
 
 	UFUNCTION()
@@ -86,6 +95,10 @@ private:
 	TArray<UGUB_HackSelectionButton*> AvailableHackButtons;
 
 	virtual void NativeConstruct() override;
+	void RotateAllBulletsAroundCenter(int8 RotDir, float Amount);
+	void SetSelectedSprite();
+	void PrepareCurrentBulletForSelection();
+	void SetCurrentBulletToSelected(int8 RotDir);
 
 	UPROPERTY(EditDefaultsOnly)
 	UHackEffectStore* AvailableHacks;
@@ -150,10 +163,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* Locked;
-
-	int QuedInputs = 0;
-
-
+	
 	float LatestRotationGoal = 0;
 
 	float CurrentRotAmount = 0;
@@ -168,17 +178,20 @@ private:
 	UFUNCTION()
 	void RotateToLatestChamberPos();
 
-	void GetRotationAroundCenter(UImage* bullet, int RotDir, float Amount);
+	void RotateBulletAroundCenter(const UImage* bullet, int8 RotDir, float Amount) const;
+	bool LerpImageToPosition(const UImage* ToMove, const UImage* Target) const;
+	bool LerpImageToPosition(const UImage* ToMove, const FVector2D Target) const;
+	bool LerpImageToScale(UImage* ToMove, FVector2D Scale) const;
+	void LerpImageToColor(float Alpha, UImage* ToMove, FLinearColor FromColor, FLinearColor ToColor) const;
 
 	UFUNCTION()
 	void MoveToSelectedPositon(float Alpha);
 
-	void SetBulletToSelected();
-
-	void SetBulletToUnSelected();
+	void SetBulletToSelectedInstant();
+	void SetUnselectedSprite();
 
 	UFUNCTION()
-	void MoveToUnselectedPosition(float Alpha);
+	void MoveToUnselectedPosition(float Alpha, int8 RotDir);
 
 	UPROPERTY(EditDefaultsOnly)
 	FSlateColor BeforeSelectedLerpColor;
@@ -203,4 +216,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UTextBlock* MiddleStationaryText;
+
+	bool bEndChamberRotation;
 };

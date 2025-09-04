@@ -45,10 +45,10 @@ void ABP_Player::SetUpInputActions()
 void ABP_Player::SetUpHackSelectionActions()
 {
 	InputComp->BindAction(NextSlot, ETriggerEvent::Started, HackSelector, &UGUI_HackSelector::FocusNextSlot);
-	InputComp->BindAction(NextSlot, ETriggerEvent::Triggered, HackSelector, &UGUI_HackSelector::FocusNextSlot);
+	InputComp->BindAction(NextSlot, ETriggerEvent::Completed, HackSelector, &UGUI_HackSelector::EndChamberRotation);
 
 	InputComp->BindAction(PreviousSlot, ETriggerEvent::Started, HackSelector, &UGUI_HackSelector::FocusPreviousSlot);
-	InputComp->BindAction(PreviousSlot, ETriggerEvent::Triggered, HackSelector, &UGUI_HackSelector::FocusPreviousSlot);
+	InputComp->BindAction(PreviousSlot, ETriggerEvent::Completed, HackSelector, &UGUI_HackSelector::EndChamberRotation);
 
 	InputComp->BindAction(NextAvailableHack, ETriggerEvent::Started, HackSelector, &UGUI_HackSelector::FocusNextAvailableHack);
 	InputComp->BindAction(NextAvailableHack, ETriggerEvent::Triggered, HackSelector, &UGUI_HackSelector::FocusNextAvailableHack);
