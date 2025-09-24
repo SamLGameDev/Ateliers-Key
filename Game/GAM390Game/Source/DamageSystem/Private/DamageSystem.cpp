@@ -65,16 +65,11 @@ bool UDamageSystem::ReserveAttackToken(int32 Amount) {
 	if (AttackTokensCount >= Amount) {
 		AttackTokensCount -= Amount;
 
-		if (GEngine) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Attack Tokens Count: TRUE"));
-		}
 		return true;
 	}
-
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Attack Tokens Count: FALSE"));
+	else {
+		return false;
 	}
-	return false;
 }
 
 void UDamageSystem::ReturnAttackToken(int32 Amount) {
