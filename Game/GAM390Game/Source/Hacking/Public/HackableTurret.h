@@ -30,6 +30,9 @@ public:
 
 	void StartCountdown();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret|Components")
+	UDamageSystem* DamageSystem;
+
 private:
 	FTimerHandle ShootCompletedTimer;
 	FTimerHandle FireRateTimer;
@@ -91,9 +94,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Widget")
 	TSubclassOf<UUserWidget> TurretHudWidgetClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret|Components")
-	UDamageSystem* DamageSystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Components")
 	TSubclassOf<APawn> Actor;

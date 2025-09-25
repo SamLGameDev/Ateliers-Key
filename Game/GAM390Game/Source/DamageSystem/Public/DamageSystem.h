@@ -67,6 +67,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	int TeamNumber;
+
 protected:
 	static void CallOnDeath(AActor* DamagedActor);
 

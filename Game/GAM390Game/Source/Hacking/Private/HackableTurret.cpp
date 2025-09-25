@@ -154,10 +154,10 @@ void AHackableTurret::ShootLogic()
 	TraceParams.bTraceComplex = true;
 	TraceParams.bReturnPhysicalMaterial = false;
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, TraceParams);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_GameTraceChannel10, TraceParams);
 
 	FDamageInfo DamageInfo;
-	DamageInfo.Amount = 25.0f;
+	DamageInfo.Amount = 10.0f;
 	DamageInfo.DamageType = EDamageTransmitter::Projectile;
 	DamageInfo.DamageResponse = EDamageResponse::None;
 	DamageInfo.ShouldDamageInvincible = false;
@@ -173,6 +173,9 @@ void AHackableTurret::ShootLogic()
 			if (UDamageSystem* DS = HitActor->GetComponentByClass<UDamageSystem>())
 			{
 				DS->TakeDamage(DamageInfo, this);
+				if (GEngine) {
+					GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Red, TEXT("DAMAGED"));
+				}
 			}
 		}
 		else
@@ -318,4 +321,6 @@ void AHackableTurret::CountdownComplete()
 	ResetDoOnce();
 
 	TurretHud->RemoveFromParent();
+
+	DamageSystem->TeamNumber = 1;
 }
