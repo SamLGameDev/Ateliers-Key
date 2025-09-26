@@ -55,11 +55,6 @@
 			"LoadingPhase": "Default"
 		},
 		{
-			"Name": "EnchancedInputAdditions",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
 			"Name": "SoundManagement",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
