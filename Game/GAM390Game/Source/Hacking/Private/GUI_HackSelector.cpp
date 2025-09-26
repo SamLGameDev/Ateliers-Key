@@ -97,22 +97,25 @@ void UGUI_HackSelector::EndChamberRotation()
 
 void UGUI_HackSelector::FocusNextAvailableHack()
 {
-	if (CurrentAvailableHack < AvailableHackButtons.Num() - 1)
+	if (CurrentAvailableHack < AvailableHackButtons.Num() - 1 && !IsPlayingAnimation())
 	{
 		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
+
+		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
 		CurrentAvailableHack++;
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
-		
 		PotentialHackDescription->SetText(AvailableHackButtons[CurrentAvailableHack]->GetDescription());
 	}
 }
 
 void UGUI_HackSelector::FocusPreviousAvailableHack()
 {
-	if (CurrentAvailableHack > 0)
+	if (CurrentAvailableHack > 0 && !IsPlayingAnimation())
 	{
 		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Reverse, 1, true);
-		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
+
+		UnmovingTopBulletText->SetText(AvailableHackButtons[CurrentAvailableHack]->GetEffectName());
+
 		CurrentAvailableHack--;
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
 		AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);

@@ -86,6 +86,9 @@ public:
 		return true;
 	}
 
+	UFUNCTION(BlueprintCallable)
+	FText GetEffectName() const;
+
 private:
 	UHackEffect* LoadedEffect;
 

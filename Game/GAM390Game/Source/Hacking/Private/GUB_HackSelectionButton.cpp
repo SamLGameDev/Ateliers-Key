@@ -79,3 +79,8 @@ void UGUB_HackSelectionButton::SetLoadedButton(UGUB_HackSelectionButton* Button)
 {
 	LoadedButton = Button;
 }
+
+FText UGUB_HackSelectionButton::GetEffectName() const
+{
+	return LoadedEffect->DisplayText;
+}

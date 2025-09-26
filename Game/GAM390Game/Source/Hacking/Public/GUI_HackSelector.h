@@ -62,6 +62,18 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UWidgetAnimation* FocusNextHackAnim;
 
+protected:
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<UGUB_HackSelectionButton*> AvailableHackButtons;
+
+	UPROPERTY(BlueprintReadOnly)
+	int CurrentAvailableHack;
+
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget), BlueprintReadWrite)
+	UTextBlock* UnmovingTopBulletText;
+
 private:
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UScrollBox* AvaialableHacksDisplay;
@@ -92,7 +104,6 @@ private:
 	int CurrentButtonSlot = 0;
 
 
-	TArray<UGUB_HackSelectionButton*> AvailableHackButtons;
 
 	virtual void NativeConstruct() override;
 	void RotateAllBulletsAroundCenter(int8 RotDir, float Amount);
@@ -103,7 +114,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UHackEffectStore* AvailableHacks;
 
-	int CurrentAvailableHack;
+
 
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
@@ -206,10 +217,8 @@ private:
 
 
 	UPROPERTY(EditDefaultsOnly)
-	UTextBlock* MiddleText;
+	UTextBlock* PreviousAnimNowSelectedText;
 
-	UPROPERTY(EditDefaultsOnly)
-	UTextBlock* TopText;
 
 	UPROPERTY(EditDefaultsOnly)
 	UTextBlock* BottomText;
@@ -218,4 +227,6 @@ private:
 	UTextBlock* MiddleStationaryText;
 
 	bool bEndChamberRotation;
+
+	//void OnAnimationFinished(const UWidgetAnimation* Animation) override;
 };
