@@ -74,6 +74,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget), BlueprintReadWrite)
 	UTextBlock* UnmovingTopBulletText;
 
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget), BlueprintReadWrite)
+	UTextBlock* AnimSelectedText;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget), BlueprintReadWrite)
+	UTextBlock* MovingBottomText;
+
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget), BlueprintReadWrite)
+	UTextBlock* UnMovingBottomText;
+
 private:
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UScrollBox* AvaialableHacksDisplay;
@@ -216,8 +227,6 @@ private:
 	FVector2D UnselectedPos;
 
 
-	UPROPERTY(EditDefaultsOnly)
-	UTextBlock* PreviousAnimNowSelectedText;
 
 
 	UPROPERTY(EditDefaultsOnly)

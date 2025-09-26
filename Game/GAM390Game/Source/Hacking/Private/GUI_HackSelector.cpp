@@ -103,6 +103,16 @@ void UGUI_HackSelector::FocusNextAvailableHack()
 
 		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
 		CurrentAvailableHack++;
+
+		if (AvailableHackButtons.IsValidIndex(CurrentAvailableHack + 1))
+		{
+			UnMovingBottomText->SetText(AvailableHackButtons[CurrentAvailableHack + 1]->GetEffectName());
+		}
+		else
+		{
+			UnMovingBottomText->SetText(FText::GetEmpty());
+		}
+
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
 		PotentialHackDescription->SetText(AvailableHackButtons[CurrentAvailableHack]->GetDescription());
 	}
@@ -114,9 +124,21 @@ void UGUI_HackSelector::FocusPreviousAvailableHack()
 	{
 		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Reverse, 1, true);
 
-		UnmovingTopBulletText->SetText(AvailableHackButtons[CurrentAvailableHack]->GetEffectName());
+		MovingBottomText->SetText(AvailableHackButtons[CurrentAvailableHack]->GetEffectName());
 
 		CurrentAvailableHack--;
+
+		AnimSelectedText->SetText(AvailableHackButtons[CurrentAvailableHack]->GetEffectName());
+
+		if (CurrentAvailableHack - 1 < 0)
+		{
+			UnmovingTopBulletText->SetText(FText::GetEmpty());
+		}
+		else
+		{
+			UnmovingTopBulletText->SetText(AvailableHackButtons[CurrentAvailableHack - 1]->GetEffectName());
+		}
+
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
 		AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);
 		PotentialHackDescription->SetText(AvailableHackButtons[CurrentAvailableHack]->GetDescription());
