@@ -313,28 +313,60 @@ void UGUI_HackSelector::NativeConstruct()
 		{
 			bullet->SetBrushFromTexture(Locked);
 		}
-		return;
 	}
-
-	for (int i = 0; i < ButtonSlots.Num(); i++)
+	else
 	{
-		if (i >= UnlockedHackSlots->GetRegisteredObject())
+		for (int i = 0; i < ButtonSlots.Num(); i++)
 		{
-			ChamberBullets[i]->SetBrushFromTexture(Locked);
-			continue;
-		}
+			if (i >= UnlockedHackSlots->GetRegisteredObject())
+			{
+				ChamberBullets[i]->SetBrushFromTexture(Locked);
+				continue;
+			}
 
-		if (ButtonSlots[i]->GetHack())
-		{
-			ChamberBullets[i]->SetBrushFromTexture(Filled);
+			if (ButtonSlots[i]->GetHack())
+			{
+				ChamberBullets[i]->SetBrushFromTexture(Filled);
+			}
+			else
+			{
+				ChamberBullets[i]->SetBrushFromTexture(UnFilled);
+			}
 		}
-		else
-		{
-			ChamberBullets[i]->SetBrushFromTexture(UnFilled);
-		}
+		SetBulletToSelectedInstant();
+	}
+	
+
+	UnmovingTopBulletText->SetText(FText::GetEmpty());
+
+	if (AvailableHackButtons.IsValidIndex(2))
+	{
+		UnMovingBottomText->SetText(AvailableHackButtons[2]->GetEffectName());
+	}
+	else
+	{
+		UnMovingBottomText->SetText(FText::GetEmpty());
 	}
 
-	SetBulletToSelectedInstant();
+	if (AvailableHackButtons.IsValidIndex(1))
+	{
+		MovingBottomText->SetText(AvailableHackButtons[1]->GetEffectName());
+	}
+	else
+	{
+		MovingBottomText->SetText(FText::GetEmpty());
+	}
+
+	if (AvailableHackButtons.IsValidIndex(0))
+	{
+		AnimSelectedText->SetText(AvailableHackButtons[0]->GetEffectName());
+	}
+	else
+	{
+		AnimSelectedText->SetText(FText::GetEmpty());
+	}
+
+
 }
 
 void UGUI_HackSelector::RotateAllBulletsAroundCenter(const int8 RotDir, const float Amount)
