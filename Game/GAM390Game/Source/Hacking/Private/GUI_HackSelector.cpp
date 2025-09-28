@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GUI_HackSelector.h"
+
+#include "AssetDefinitionAssetInfo.h"
 #include "GUB_HackSelectionButton.h"
 #include "HackEffectStore.h"
 #include "Hacks/HackEffect.h"
@@ -100,6 +102,7 @@ void UGUI_HackSelector::FocusNextAvailableHack()
 	if (CurrentAvailableHack < AvailableHackButtons.Num() - 1 && !IsPlayingAnimation())
 	{
 		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
+			
 
 		AvailableHackButtons[CurrentAvailableHack]->SetUnFocused();
 		CurrentAvailableHack++;
@@ -122,8 +125,10 @@ void UGUI_HackSelector::FocusPreviousAvailableHack()
 {
 	if (CurrentAvailableHack > 0 && !IsPlayingAnimation())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Bottom: %s"), *UnMovingBottomText->GetText().ToString());
+		
 		PlayAnimation(FocusNextHackAnim, 0, 1, EUMGSequencePlayMode::Reverse, 1, true);
-
+		
 		MovingBottomText->SetText(AvailableHackButtons[CurrentAvailableHack]->GetEffectName());
 
 		CurrentAvailableHack--;
@@ -142,6 +147,8 @@ void UGUI_HackSelector::FocusPreviousAvailableHack()
 		AvailableHackButtons[CurrentAvailableHack]->SetFocused();
 		AvaialableHacksDisplay->ScrollWidgetIntoView(AvailableHackButtons[CurrentAvailableHack]);
 		PotentialHackDescription->SetText(AvailableHackButtons[CurrentAvailableHack]->GetDescription());
+		
+
 	}
 }
 
