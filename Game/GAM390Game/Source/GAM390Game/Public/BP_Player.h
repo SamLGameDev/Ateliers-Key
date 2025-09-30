@@ -117,7 +117,15 @@ protected:
 	UHackEffectStore* LoadedHacks;
 
 	virtual void BeginDestroy() override;
+	
+	UFUNCTION(BlueprintCallable)
+	void Melee();
 
+	UPROPERTY(EditDefaultsOnly)
+	float MeleeOffset;
+
+	UPROPERTY(EditDefaultsOnly)
+	FVector MeleeBoxHalfBounds;
 
 public:	
 	// Called every frame

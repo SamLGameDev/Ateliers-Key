@@ -17,6 +17,7 @@
 #include "TimeDialationToken.h"
 #include "HackableEnemy.h"
 #include "Hackable.h"
+#include "PhysicsAssetRenderUtils.h"
 
 // Sets default values
 ABP_Player::ABP_Player()
@@ -130,6 +131,43 @@ void ABP_Player::BeginDestroy()
 	}
 
 #endif
+}
+
+void ABP_Player::Melee()
+{
+	FHitResult MeleeHit;
+
+	FVector Start = GetActorLocation();
+	FVector End = Start + Cast<APlayerController>(GetController())->PlayerCameraManager->GetCameraRotation().Vector() * MeleeOffset;
+
+	FQuat Rot = FRotator(0, GetControlRotation().Yaw,0).Quaternion();
+
+	FCollisionObjectQueryParams CollisionObjectParams;
+	CollisionObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+	FCollisionShape CollisionBox = FCollisionShape::MakeBox(MeleeBoxHalfBounds);
+
+	FCollisionQueryParams CollisionQueryParams;
+	
+	bool bHit = GetWorld()->SweepSingleByObjectType
+	(
+		MeleeHit,
+		End,
+		End,
+		Rot,
+		CollisionObjectParams,
+		FCollisionShape::MakeBox(MeleeBoxHalfBounds),
+		CollisionQueryParams
+	);
+
+	Print("Control Rotation: %0.5f, %0.5f, %0.5f", GetControlRotation().Roll, GetControlRotation().Pitch, GetControlRotation().Yaw);
+
+	DrawDebugBox(GetWorld(), End, CollisionBox.GetExtent(),Rot,  FColor::Red, false, 100, 1, 1);
+
+	if (bHit)
+	{
+		Print("Hit Something", FColor::Red);
+	}
 }
 
 // Called every frame
