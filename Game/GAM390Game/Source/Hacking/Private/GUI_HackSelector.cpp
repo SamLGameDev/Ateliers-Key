@@ -43,6 +43,15 @@ void UGUI_HackSelector::MoveToNextBullet(const int8 RotDir)
 	const UImage* LastBullet = ChamberBullets[CurrentButtonSlot];
 	
 	CurrentButtonSlot = FMath::WrapExclusive<uint8>(CurrentButtonSlot + RotDir, 0, UnlockedHackSlots->GetRegisteredObject());
+
+	if (ButtonSlots[CurrentButtonSlot]->GetHack())
+	{
+		HackingButton1->SetDisplayText(ButtonSlots[CurrentButtonSlot]->GetEffectName());
+	}
+	else
+	{
+		HackingButton1->SetDisplayText(FText::GetEmpty());
+	}
 	
 	ButtonSlots[CurrentButtonSlot]->SetFocused();
 	SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
@@ -178,7 +187,7 @@ void UGUI_HackSelector::LoadSelectedToSlot()
 
 	ButtonSlots[CurrentButtonSlot]->SetHack(AvailableHackButtons[CurrentAvailableHack]->GetHack());
 
-	SlotHackDescription->SetText(ButtonSlots[CurrentButtonSlot]->GetDescription());
+
 
 	ChamberBullets[CurrentButtonSlot]->SetBrushFromTexture(SelectedFilled);
 }
@@ -449,7 +458,6 @@ void UGUI_HackSelector::RotateToLatestChamberPos()
 			
 			return;
 		}
-		
 		MoveToNextBullet(-RotDir);
 	}
 	FTimerDelegate MovingChamberDel;

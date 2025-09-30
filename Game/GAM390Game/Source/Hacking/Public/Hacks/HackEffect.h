@@ -19,7 +19,7 @@ public:
 	float TimeToHack;
 
 	UPROPERTY(EditAnywhere)
-	FText DisplayText;
+	FText DisplayText = FText::GetEmpty();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ExecuteHack(UObject* HackedObject);
