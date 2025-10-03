@@ -6,6 +6,7 @@
 #include "Hacks/HackEffect.h"
 #include "PossesTurret.generated.h"
 
+
 /**
  * 
  */
@@ -15,5 +16,5 @@ class HACKING_API UPossesTurret : public UHackEffect
 	GENERATED_BODY()
 
 public:
-	virtual void ExecuteHack(UObject* HackedObject) override;
+	virtual void ExecuteHack(const FHackInfo& HackInfo) override;
 };

@@ -4,11 +4,11 @@
 #include "Hacks/PossesTurret.h"
 #include <HackableTurret.h>
 
-void UPossesTurret::ExecuteHack(UObject* HackedObject)
+void UPossesTurret::ExecuteHack(const FHackInfo& HackInfo)
 {
-	Super::ExecuteHack(HackedObject);
+	Super::ExecuteHack(HackInfo);
 
-	AHackableTurret* obj = Cast<AHackableTurret>(HackedObject);
+	AHackableTurret* obj = Cast<AHackableTurret>(HackInfo.HackedObject);
 
 	if (!obj)
 	{

@@ -78,7 +78,7 @@ void AHackable::ProgressHack(UHackEffect* Hack, float TimeRemaining)
 void AHackable::EndHack(UHackEffect* Hack)
 {
 	DisableLoadingBar();
-	Hack->ExecuteHack(this);
+	Hack->ExecuteHack(FHackInfo(this , this));
 }
 
 void AHackable::BeginDestroy()

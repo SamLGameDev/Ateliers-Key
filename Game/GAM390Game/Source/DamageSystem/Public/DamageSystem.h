@@ -41,7 +41,10 @@ public:
 	int32 AttackTokensCount;
 
 	UFUNCTION(BlueprintCallable)
-	void Heal(float amount);
+	void Heal(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void HealTemp(float Amount);
 
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(const FDamageInfo& DamageInfo, AActor* Source);
@@ -67,6 +70,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float CurrentTempHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float MaxTempHealth;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
 	int TeamNumber;
 

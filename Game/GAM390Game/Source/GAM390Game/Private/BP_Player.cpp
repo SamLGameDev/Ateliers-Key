@@ -19,6 +19,7 @@
 #include "Hackable.h"
 #include "PhysicsAssetRenderUtils.h"
 
+
 // Sets default values
 ABP_Player::ABP_Player()
 {
@@ -133,14 +134,15 @@ void ABP_Player::BeginDestroy()
 #endif
 }
 
-void ABP_Player::Melee()
+
+bool ABP_Player::DetectHitEntity(FHitResult& MeleeHit) const
 {
-	FHitResult MeleeHit;
+	const FVector Start = GetActorLocation();
+	const FVector End = Start + Cast<APlayerController>(GetController())->PlayerCameraManager->GetCameraRotation().Vector() * MeleeOffset;
 
-	FVector Start = GetActorLocation();
-	FVector End = Start + Cast<APlayerController>(GetController())->PlayerCameraManager->GetCameraRotation().Vector() * MeleeOffset;
 
-	FQuat Rot = FRotator(0, GetControlRotation().Yaw,0).Quaternion();
+	//Rotate it around the Z axis, so its facing the players direction, but not affecting the bounds
+	const FQuat Rot = FRotator(0, GetControlRotation().Yaw,0).Quaternion();
 
 	FCollisionObjectQueryParams CollisionObjectParams;
 	CollisionObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
@@ -149,7 +151,7 @@ void ABP_Player::Melee()
 
 	FCollisionQueryParams CollisionQueryParams;
 	
-	bool bHit = GetWorld()->SweepSingleByObjectType
+	const bool bHit = GetWorld()->SweepSingleByObjectType
 	(
 		MeleeHit,
 		End,
@@ -160,13 +162,16 @@ void ABP_Player::Melee()
 		CollisionQueryParams
 	);
 
-	Print("Control Rotation: %0.5f, %0.5f, %0.5f", GetControlRotation().Roll, GetControlRotation().Pitch, GetControlRotation().Yaw);
+	return bHit;
+}
 
-	DrawDebugBox(GetWorld(), End, CollisionBox.GetExtent(),Rot,  FColor::Red, false, 100, 1, 1);
-
-	if (bHit)
+void ABP_Player::Melee(UHackEffect* Hack)
+{
+	if (FHitResult MeleeHit; DetectHitEntity(MeleeHit))
 	{
-		Print("Hit Something", FColor::Red);
+		const FHackInfo HackInfo = FHackInfo(this, MeleeHit.GetActor());
+		
+		Hack->ExecuteHack(HackInfo);
 	}
 }
 

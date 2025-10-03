@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Hacks/HackEffect.h"
 #include "BP_Player.generated.h"
 
 class UInputMappingContext;
@@ -117,9 +118,10 @@ protected:
 	UHackEffectStore* LoadedHacks;
 
 	virtual void BeginDestroy() override;
-	
+	bool DetectHitEntity(FHitResult& MeleeHit) const;
+
 	UFUNCTION(BlueprintCallable)
-	void Melee();
+	void Melee(UHackEffect* Hack);
 
 	UPROPERTY(EditDefaultsOnly)
 	float MeleeOffset;
@@ -144,5 +146,8 @@ public:
 	void StartHackSelection();
 
 	void SwitchMap(const UInputMappingContext* Map, UEnhancedInputLocalPlayerSubsystem* Input);
+
+
+	
 
 };

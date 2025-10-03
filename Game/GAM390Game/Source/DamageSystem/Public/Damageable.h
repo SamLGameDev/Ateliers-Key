@@ -46,4 +46,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
 	void Heal(double Amount, double& NewHealth);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void HealTemp(double Amount, double& NewHealth);
 };

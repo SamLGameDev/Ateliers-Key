@@ -15,5 +15,5 @@ class HACKING_API USelfDestruct : public UHackEffect
 	GENERATED_BODY()
 
 public:
-	virtual void ExecuteHack(UObject* HackedObject) override;
+	virtual void ExecuteHack(const FHackInfo& HackInfo) override;
 };

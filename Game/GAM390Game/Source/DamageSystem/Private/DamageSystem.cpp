@@ -31,16 +31,21 @@ void UDamageSystem::BeginPlay()
 void UDamageSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
 	// ...
 }
 
-void UDamageSystem::Heal(float amount) {
+void UDamageSystem::Heal(float Amount) {
 	if (!IsDead) {
-		CurrentHealth += amount;
+		CurrentHealth += Amount;
 
 		CurrentHealth = FMath::Clamp(CurrentHealth, 0.0f, MaxHealth);
 	}
+}
+
+void UDamageSystem::HealTemp(float Amount)
+{
+	
 }
 
 void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
