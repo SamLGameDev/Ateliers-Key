@@ -20,7 +20,8 @@ public class AbilitySystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "AIModule"
             }
         );
     }

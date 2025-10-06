@@ -59,6 +59,21 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 	}
 
 	if (!IsBlocking || !IsInvincible || !IsDead) {
+
+		if (CurrentTempHealth > 0)
+		{
+			CurrentTempHealth -= DamageInfo.Amount;
+
+			if (CurrentTempHealth <= 0.0f) {
+				CurrentHealth += CurrentTempHealth;
+				CurrentTempHealth = 0;
+			}
+			else
+			{
+				return;
+			}
+		}
+
 		CurrentHealth -= DamageInfo.Amount;
 
 		if (CurrentHealth <= 0.0f) {
