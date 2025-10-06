@@ -45,8 +45,5 @@ public:
 	void GetMaxHealth(double& MaxHealth);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
-	void Heal(double Amount, double& NewHealth);
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
-	void HealTemp(double Amount, double& NewHealth);
+	void Heal(double Amount);
 };
