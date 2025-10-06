@@ -54,7 +54,7 @@ void ULifeSteal::StartExecution(AActor* Target)
 
 void ULifeSteal::LifeSteal(UDamageSystem* TargetDS, float RemainingDuration)
 {
-	if (RemainingDuration <= 0) return;
+	if (RemainingDuration <= 0 || TargetDS->IsDead) return;
 
 	FDamageInfo DamageInfo;
 	DamageInfo.Amount = DamagePerTick * GetWorld()->GetDeltaSeconds();
@@ -65,7 +65,7 @@ void ULifeSteal::LifeSteal(UDamageSystem* TargetDS, float RemainingDuration)
 
 	FTimerDelegate LifeStealDel;
 
-	LifeStealDel.BindUFunction(this, FName("LifeSteal"), TargetDS, Duration);
+	LifeStealDel.BindUFunction(this, FName("LifeSteal"), TargetDS, RemainingDuration - GetWorld()->GetDeltaSeconds());
 
 	StealLoop = GetWorld()->GetTimerManager().SetTimerForNextTick(LifeStealDel);
 }

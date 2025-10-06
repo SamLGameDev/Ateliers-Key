@@ -17,7 +17,7 @@ public:
 	UConditionCheck();
 
 	UFUNCTION(BlueprintCallable, Category = "Ability")
-	virtual bool Check() PURE_VIRTUAL(UConditionCheck::Check, return false;);
+	virtual bool CheckOld() PURE_VIRTUAL(UConditionCheck::Check, return false;);
 
 protected:
 	// Called when the game starts

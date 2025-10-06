@@ -45,7 +45,11 @@ void UDamageSystem::Heal(float Amount) {
 
 void UDamageSystem::HealTemp(float Amount)
 {
-	
+	if (!IsDead) {
+		CurrentTempHealth += Amount;
+
+		CurrentTempHealth = FMath::Clamp(CurrentTempHealth, 0.0f, MaxTempHealth);
+	}
 }
 
 void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
@@ -58,6 +62,7 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 		CurrentHealth -= DamageInfo.Amount;
 
 		if (CurrentHealth <= 0.0f) {
+			IsDead = true;
 			OnDeath.Broadcast();
 		}
 		else {
