@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Ability.h"
+#include "InputMappingContext.h"
 #include "LockEntity.generated.h"
 
 class AAIController;
@@ -25,6 +26,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	void StartExecution(AActor* Target);
 
+
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void StartPlayerLock(APawn* Player);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	float Duration;
 
@@ -33,5 +38,8 @@ private:
 	FTimerHandle EndLockHandle;
 
 	AAIController* TargetController;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	UInputMappingContext* PlayerLockedMap;
 	
 };

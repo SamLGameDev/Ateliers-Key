@@ -44,3 +44,7 @@ void ULockEntity::StartExecution(AActor* Target)
 	}
 
 }
+
+void ULockEntity::StartPlayerLock(APawn* Player)
+{
+}

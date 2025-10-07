@@ -37,6 +37,9 @@ protected:
 	void SetUpHackingActions();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
+	const UInputMappingContext* CoreMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
 	const UInputMappingContext* GameplayMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
@@ -129,6 +132,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	FVector MeleeBoxHalfBounds;
 
+	FTimerHandle LockInputHandle;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -141,6 +146,12 @@ public:
 	void SwitchToHackingMap();
 
 	void SwitchToHackingSelection();
+
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void LockGameplayInputs(const float Duration = -1);
+
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void UnLockGameplayInputs();
 
 	UFUNCTION(BlueprintCallable)
 	void StartHackSelection();

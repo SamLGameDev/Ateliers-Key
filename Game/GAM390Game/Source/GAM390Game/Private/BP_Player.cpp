@@ -32,6 +32,14 @@ ABP_Player::ABP_Player()
 void ABP_Player::BeginPlay()
 {
 	Super::BeginPlay();
+
+	const APlayerController* playerController = Cast<APlayerController>(GetController());
+
+	UEnhancedInputLocalPlayerSubsystem* input =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+
+	SwitchMap(CoreMap, input);
+
 	SwitchToGameplayMap();
 	HackingMenu = CreateWidget<UGUI_HackingMenu>(GetWorld(), BPHackingMenu, "HackingMenu");
 	HackSelector = CreateWidget<UGUI_HackSelector>(GetWorld(), BPHackSelector, "HackSelector");
@@ -233,6 +241,35 @@ void ABP_Player::SwitchToHackingSelection()
 	input->RemoveMappingContext(HackingMap);
 
 	SwitchMap(HackSelctionMap, input);
+}
+
+void ABP_Player::LockGameplayInputs(const float Duration)
+{
+
+	const APlayerController* playerController = Cast<APlayerController>(GetController());
+
+	UEnhancedInputLocalPlayerSubsystem* input =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+
+	input->RemoveMappingContext(GameplayMap);
+
+	if (Duration == -1)
+	{
+		return;
+	}
+
+	FTimerDelegate lockInputDel;
+	lockInputDel.BindUFunction(this, NAMEOF(UnLockGameplayInputs));
+
+	GetWorld()->GetTimerManager().SetTimer(LockInputHandle, lockInputDel, Duration, false);
+
+}
+
+void ABP_Player::UnLockGameplayInputs()
+{
+	GetWorld()->GetTimerManager().ClearTimer(LockInputHandle);
+
+	SwitchToGameplayMap();
 }
 
 void ABP_Player::StartHackSelection()

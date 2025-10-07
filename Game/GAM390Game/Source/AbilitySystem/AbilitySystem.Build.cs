@@ -21,7 +21,8 @@ public class AbilitySystem : ModuleRules
                 "Engine",
                 "Slate",
                 "SlateCore",
-                "AIModule"
+                "AIModule",
+                "EnhancedInput"
             }
         );
     }
