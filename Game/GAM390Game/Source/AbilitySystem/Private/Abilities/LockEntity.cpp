@@ -2,35 +2,45 @@
 
 
 #include "Abilities/LockEntity.h"
-#include "GameFramework/Character.h"
 #include "AIController.h"
 #include "BrainComponent.h"
 
+
 void ULockEntity::CancelExecution()
 {
+	if (!TargetController)
+	{
+		return;
+	}
+	
+	TargetController->GetBrainComponent()->StartLogic();
+	GetWorld()->GetTimerManager().ClearTimer(EndLockHandle);
 }
 
 void ULockEntity::StartExecution(AActor* Target)
 {
 	APawn* target = Cast<APawn>(Target);
 
-	AController* controller = target->GetController();
-
-	if (controller)
+	if (AController* controller = target->GetController())
 	{
-		AAIController* aiController = Cast<AAIController>(controller);
+		TargetController = Cast<AAIController>(controller);
 
-		if (!aiController)
+		if (!TargetController)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AiControrkpwrkenge"));
+			return;
 		}
 
-		UBrainComponent* brain = aiController->GetBrainComponent();
+		UBrainComponent* brain = TargetController->GetBrainComponent();
+		
+		TargetController->ClearFocus(EAIFocusPriority::Gameplay);
+		brain->StopLogic("EntityHasBeenLocked");
 
-		if (brain)
-		{
-			brain->StopLogic("EntityHasBeenLocked");
-		}
+		FTimerDelegate lockDel;
+
+		lockDel.BindUFunction(this, "CancelExecution");
+
+		GetWorld()->GetTimerManager().SetTimer(EndLockHandle, lockDel, Duration, false);
+		
 	}
 
 }

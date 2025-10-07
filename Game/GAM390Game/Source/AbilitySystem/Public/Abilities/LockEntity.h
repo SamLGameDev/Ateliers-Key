@@ -6,6 +6,7 @@
 #include "Ability.h"
 #include "LockEntity.generated.h"
 
+class AAIController;
 /**
  * 
  */
@@ -18,12 +19,19 @@ public:
 
 	void StartExecution() override {};
 
-	void CancelExecution() override;
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void CancelExecution();
 
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	void StartExecution(AActor* Target);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	float Duration;
+
+private:
+
+	FTimerHandle EndLockHandle;
+
+	AAIController* TargetController;
 	
 };

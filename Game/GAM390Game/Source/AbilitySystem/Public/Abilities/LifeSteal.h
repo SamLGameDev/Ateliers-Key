@@ -23,6 +23,7 @@ protected:
 
 	void StartExecution() override {};
 
+	UFUNCTION(BlueprintCallable, Category = "Ability")
 	void CancelExecution() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Ability")
