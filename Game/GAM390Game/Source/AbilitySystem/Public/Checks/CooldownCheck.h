@@ -25,7 +25,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	float CooldownDuration;
-	
+
+	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle CooldownTimer;
 	
 	

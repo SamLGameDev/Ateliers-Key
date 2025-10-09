@@ -6,6 +6,12 @@
 #include "Components/ActorComponent.h"
 #include "Ability.generated.h"
 
+UENUM(BlueprintType, Blueprintable)
+enum ECancelPriority : uint8
+{
+	Absolute,
+	Normal
+};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ABILITYSYSTEM_API UAbility : public UActorComponent

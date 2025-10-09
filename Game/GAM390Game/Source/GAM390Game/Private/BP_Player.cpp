@@ -40,6 +40,8 @@ void ABP_Player::BeginPlay()
 
 	SwitchMap(CoreMap, input);
 
+	SwitchMap(AbilityMap, input);
+
 	SwitchToGameplayMap();
 	HackingMenu = CreateWidget<UGUI_HackingMenu>(GetWorld(), BPHackingMenu, "HackingMenu");
 	HackSelector = CreateWidget<UGUI_HackSelector>(GetWorld(), BPHackSelector, "HackSelector");

@@ -40,6 +40,9 @@ protected:
 	const UInputMappingContext* CoreMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
+	const UInputMappingContext* AbilityMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
 	const UInputMappingContext* GameplayMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");

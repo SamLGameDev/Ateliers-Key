@@ -58,7 +58,7 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 		return;
 	}
 
-	if (!IsBlocking || !IsInvincible || !IsDead) {
+	if (!IsBlocking && !IsInvincible && !IsDead) {
 
 		if (CurrentTempHealth > 0)
 		{
