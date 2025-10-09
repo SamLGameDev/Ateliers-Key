@@ -6,11 +6,11 @@
 #include "Components/ActorComponent.h"
 #include "Ability.generated.h"
 
-UENUM(BlueprintType, Blueprintable)
-enum ECancelPriority : uint8
+UENUM(BlueprintType)
+enum class ECancelPriority : uint8
 {
-	Absolute,
-	Normal
+	Absolute UMETA(DisplayName = "Absolute"),
+	Normal   UMETA(DisplayName = "Normal")
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))

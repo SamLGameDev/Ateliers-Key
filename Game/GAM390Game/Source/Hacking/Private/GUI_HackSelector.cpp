@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GUI_HackSelector.h"
-
-#include "AssetDefinitionAssetInfo.h"
 #include "GUB_HackSelectionButton.h"
 #include "HackEffectStore.h"
 #include "Hacks/HackEffect.h"
