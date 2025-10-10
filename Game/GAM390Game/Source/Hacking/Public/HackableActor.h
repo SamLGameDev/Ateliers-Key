@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Hackable.h"
 #include "HackableActor.generated.h"
 
 class UDecalComponent;
@@ -12,47 +13,19 @@ class UHackEffect;
 class UWidgetComponent;
 
 UCLASS()
-class HACKING_API AHackableActor : public AActor
+class HACKING_API AHackableActor : public AHackable
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AHackableActor();
-
-	UFUNCTION(BlueprintCallable)
-	void EnableHighlight();
-
-	UFUNCTION(BlueprintCallable)
-	void DisableHighlight();
-
-	void SetLoadingBarProgress(const float Percent);
-
-	void EnableLoadingBar();
-
-	void DisableLoadingBar();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
-	USceneComponent* Root;
-
-	UPROPERTY(EditAnywhere)
-	UActorList* HackableObjects;
-
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* Mesh;
-
-	UPROPERTY(EditAnywhere)
-	UMaterialInstance* HackableObejctOutline;
-
-	UPROPERTY(EditAnyWhere)
-	UWidgetComponent* LoadingBar;
-
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };

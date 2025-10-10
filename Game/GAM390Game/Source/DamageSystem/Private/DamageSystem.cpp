@@ -21,8 +21,9 @@ void UDamageSystem::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 	CurrentHealth = MaxHealth;
+	
 }
 
 
@@ -30,34 +31,75 @@ void UDamageSystem::BeginPlay()
 void UDamageSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
 	// ...
 }
 
-void UDamageSystem::Heal(float amount) {
+void UDamageSystem::Heal(float Amount) {
 	if (!IsDead) {
-		CurrentHealth += amount;
+		CurrentHealth += Amount;
 
 		CurrentHealth = FMath::Clamp(CurrentHealth, 0.0f, MaxHealth);
 	}
 }
 
-void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo) {
+void UDamageSystem::HealTemp(float Amount)
+{
+	if (!IsDead) {
+		CurrentTempHealth += Amount;
+
+		CurrentTempHealth = FMath::Clamp(CurrentTempHealth, 0.0f, MaxTempHealth);
+	}
+}
+
+void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 	if (DamageInfo.CanBeBlocked && IsBlocking) {
 		OnBlocked.Broadcast();
 		return;
 	}
 
-	if (!IsBlocking || !IsInvincible || !IsDead) {
+	if (!IsBlocking && !IsInvincible && !IsDead) {
+
+		if (CurrentTempHealth > 0)
+		{
+			CurrentTempHealth -= DamageInfo.Amount;
+			OnDamageResponse.Broadcast(DamageInfo.DamageResponse, Source);
+
+			if (CurrentTempHealth <= 0.0f) {
+				CurrentHealth += CurrentTempHealth;
+				CurrentTempHealth = 0;
+			}
+			else
+			{
+				return;
+			}
+		}
+
 		CurrentHealth -= DamageInfo.Amount;
 
 		if (CurrentHealth <= 0.0f) {
+			IsDead = true;
 			OnDeath.Broadcast();
 		}
 		else {
-			OnDamageResponse.Broadcast(DamageInfo.DamageResponse);
+			OnDamageResponse.Broadcast(DamageInfo.DamageResponse, Source);
 		}
 	}
+}
+
+bool UDamageSystem::ReserveAttackToken(int32 Amount) {
+	if (AttackTokensCount >= Amount) {
+		AttackTokensCount -= Amount;
+
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void UDamageSystem::ReturnAttackToken(int32 Amount) {
+	AttackTokensCount += Amount;
 }
 
 void UDamageSystem::CallOnDeath(AActor* DamagedActor) {

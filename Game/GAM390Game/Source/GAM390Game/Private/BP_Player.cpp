@@ -15,6 +15,9 @@
 #include "GUI_HackSelector.h"
 #include "TimeManager.h"
 #include "TimeDialationToken.h"
+#include "HackableEnemy.h"
+#include "Hackable.h"
+
 
 // Sets default values
 ABP_Player::ABP_Player()
@@ -28,6 +31,16 @@ ABP_Player::ABP_Player()
 void ABP_Player::BeginPlay()
 {
 	Super::BeginPlay();
+
+	const APlayerController* playerController = Cast<APlayerController>(GetController());
+
+	UEnhancedInputLocalPlayerSubsystem* input =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+
+	SwitchMap(CoreMap, input);
+
+	SwitchMap(AbilityMap, input);
+
 	SwitchToGameplayMap();
 	HackingMenu = CreateWidget<UGUI_HackingMenu>(GetWorld(), BPHackingMenu, "HackingMenu");
 	HackSelector = CreateWidget<UGUI_HackSelector>(GetWorld(), BPHackSelector, "HackSelector");
@@ -43,10 +56,10 @@ void ABP_Player::SetUpInputActions()
 void ABP_Player::SetUpHackSelectionActions()
 {
 	InputComp->BindAction(NextSlot, ETriggerEvent::Started, HackSelector, &UGUI_HackSelector::FocusNextSlot);
-	InputComp->BindAction(NextSlot, ETriggerEvent::Triggered, HackSelector, &UGUI_HackSelector::FocusNextSlot);
+	InputComp->BindAction(NextSlot, ETriggerEvent::Completed, HackSelector, &UGUI_HackSelector::EndChamberRotation);
 
 	InputComp->BindAction(PreviousSlot, ETriggerEvent::Started, HackSelector, &UGUI_HackSelector::FocusPreviousSlot);
-	InputComp->BindAction(PreviousSlot, ETriggerEvent::Triggered, HackSelector, &UGUI_HackSelector::FocusPreviousSlot);
+	InputComp->BindAction(PreviousSlot, ETriggerEvent::Completed, HackSelector, &UGUI_HackSelector::EndChamberRotation);
 
 	InputComp->BindAction(NextAvailableHack, ETriggerEvent::Started, HackSelector, &UGUI_HackSelector::FocusNextAvailableHack);
 	InputComp->BindAction(NextAvailableHack, ETriggerEvent::Triggered, HackSelector, &UGUI_HackSelector::FocusNextAvailableHack);
@@ -79,8 +92,6 @@ void ABP_Player::StartHacking()
 	SwitchToHackingMap();
 	HackingDialation = UTimeManager::SetTimeDialation(this, 0.01);
 	EnableHackableObjectsHighlight();
-	HackingTraceHandle = OnTick.AddUFunction(this, NAMEOF(DisplayViewedHackableObject));
-	HackingMenu->DisableHackButtons();
 }
 
 void ABP_Player::StopHacking()
@@ -91,7 +102,6 @@ void ABP_Player::StopHacking()
 	HackingDialation->StopDialation();
 
 	DisableHackableObjectsHighlight();
-	OnTick.Remove(HackingTraceHandle);
 }
 
 void ABP_Player::StopHackSelecton()
@@ -104,53 +114,20 @@ void ABP_Player::EnableHackableObjectsHighlight()
 {
 	for (AActor* Object : HackableObjects->GetRegisteredObjects())
 	{
-		AHackableActor* HObject = Cast<AHackableActor>(Object);
+		AHackable* HObject = Cast<AHackable>(Object);
 		HObject->EnableHighlight();
 	}
+
 }
 
 void ABP_Player::DisableHackableObjectsHighlight()
 {
 	for (AActor* Object : HackableObjects->GetRegisteredObjects())
 	{
-		if(!Object)
-		{
-			return;
-		}
-		AHackableActor* HObject = Cast<AHackableActor>(Object);
+		AHackable* HObject = Cast<AHackable>(Object);
 		HObject->DisableHighlight();
 	}
-}
 
-void ABP_Player::DisplayViewedHackableObject()
-{
-	FHitResult Result;
-
-	APlayerCameraManager* CManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager.Get();
-
-	FVector Start = CManager->GetCameraLocation();
-
-	FVector Forward = CManager->GetActorForwardVector() * 2500;
-
-	FCollisionObjectQueryParams Oparams;
-	Oparams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel1);
-
-	FCollisionQueryParams params;
-
-	bool bhit = GetWorld()->LineTraceSingleByObjectType(Result, Start, Start + Forward, Oparams, params);
-	if (bhit)
-	{
-		AHackableActor* Hackable = Cast<AHackableActor>(Result.GetActor());
-
-		const TArray<UHackEffect*>& hacks = LoadedHacks->GetRegisteredObjects();
-
-		HackingMenu->UpdateButtonDisplay(hacks);
-		HackingMenu->SetFocusedObject(Hackable);
-	}
-	else
-	{
-		HackingMenu->DisableHackButtons();
-	}
 }
 
 void ABP_Player::BeginDestroy()
@@ -164,6 +141,47 @@ void ABP_Player::BeginDestroy()
 	}
 
 #endif
+}
+
+
+bool ABP_Player::DetectHitEntity(FHitResult& MeleeHit) const
+{
+	const FVector Start = GetActorLocation();
+	const FVector End = Start + Cast<APlayerController>(GetController())->PlayerCameraManager->GetCameraRotation().Vector() * MeleeOffset;
+
+
+	//Rotate it around the Z axis, so its facing the players direction, but not affecting the bounds
+	const FQuat Rot = FRotator(0, GetControlRotation().Yaw,0).Quaternion();
+
+	FCollisionObjectQueryParams CollisionObjectParams;
+	CollisionObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+	FCollisionShape CollisionBox = FCollisionShape::MakeBox(MeleeBoxHalfBounds);
+
+	FCollisionQueryParams CollisionQueryParams;
+	
+	const bool bHit = GetWorld()->SweepSingleByObjectType
+	(
+		MeleeHit,
+		End,
+		End,
+		Rot,
+		CollisionObjectParams,
+		FCollisionShape::MakeBox(MeleeBoxHalfBounds),
+		CollisionQueryParams
+	);
+
+	return bHit;
+}
+
+void ABP_Player::Melee(UHackEffect* Hack)
+{
+	if (FHitResult MeleeHit; DetectHitEntity(MeleeHit))
+	{
+		const FHackInfo HackInfo = FHackInfo(this, MeleeHit.GetActor());
+		
+		Hack->ExecuteHack(HackInfo);
+	}
 }
 
 // Called every frame
@@ -224,6 +242,35 @@ void ABP_Player::SwitchToHackingSelection()
 	input->RemoveMappingContext(HackingMap);
 
 	SwitchMap(HackSelctionMap, input);
+}
+
+void ABP_Player::LockGameplayInputs(const float Duration)
+{
+
+	const APlayerController* playerController = Cast<APlayerController>(GetController());
+
+	UEnhancedInputLocalPlayerSubsystem* input =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+
+	input->RemoveMappingContext(GameplayMap);
+
+	if (Duration == -1)
+	{
+		return;
+	}
+
+	FTimerDelegate lockInputDel;
+	lockInputDel.BindUFunction(this, NAMEOF(UnLockGameplayInputs));
+
+	GetWorld()->GetTimerManager().SetTimer(LockInputHandle, lockInputDel, Duration, false);
+
+}
+
+void ABP_Player::UnLockGameplayInputs()
+{
+	GetWorld()->GetTimerManager().ClearTimer(LockInputHandle);
+
+	SwitchToGameplayMap();
 }
 
 void ABP_Player::StartHackSelection()

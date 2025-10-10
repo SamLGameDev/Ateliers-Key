@@ -3,6 +3,7 @@
 
 #include "InputTriggerInitialDelayPulse.h"
 
+
 ETriggerState UInputTriggerInitialDelayPulse::UpdateState_Implementation(const UEnhancedPlayerInput* PlayerInput, FInputActionValue ModifiedValue, float DeltaTime)
 {
 	ETriggerState State = Super::UpdateState_Implementation(PlayerInput, ModifiedValue, DeltaTime);

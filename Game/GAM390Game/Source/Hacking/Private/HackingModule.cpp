@@ -3,5 +3,4 @@
 #include "HackingModule.h"
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_MODULE( FDefaultModuleImpl, Hacking);
- 
+IMPLEMENT_MODULE(FDefaultModuleImpl, Hacking);

@@ -16,8 +16,8 @@ void UGUB_HackSelectionButton::SetFocused()
 
 void UGUB_HackSelectionButton::SetUnFocused()
 {
-	Clickable->SetStyle(bIsLoaded ? LoadedStyle: UnFocusedStyle);
-	Parent->SetBrushColor(bIsLoaded ? BorderLoadedColor: FLinearColor::Transparent);
+	Clickable->SetStyle(bIsLoaded ? LoadedStyle : UnFocusedStyle);
+	Parent->SetBrushColor(bIsLoaded ? BorderLoadedColor : FLinearColor::Transparent);
 }
 
 void UGUB_HackSelectionButton::SetHack(UHackEffect* Hack)
@@ -25,6 +25,13 @@ void UGUB_HackSelectionButton::SetHack(UHackEffect* Hack)
 	SetDisplayText(Hack->DisplayText);
 	SetVisibility(ESlateVisibility::Visible);
 	LoadedEffect = Hack;
+}
+
+void UGUB_HackSelectionButton::ClearLoadedHack()
+{
+	LoadedEffect = nullptr;
+	SetLoadedDisabled();
+	LoadedButton = nullptr;
 }
 
 FText UGUB_HackSelectionButton::GetDescription()
@@ -42,7 +49,6 @@ void UGUB_HackSelectionButton::SetSelectedDisplayDisabled()
 	Clickable->SetStyle(FocusedStyle);
 	DisplayText->SetColorAndOpacity(TextColor);
 	Parent->SetBrushColor(FLinearColor::Transparent);
-
 }
 
 void UGUB_HackSelectionButton::SetSelectedDisplayEnabled()
@@ -72,4 +78,9 @@ void UGUB_HackSelectionButton::SetLoadedEnabled()
 void UGUB_HackSelectionButton::SetLoadedButton(UGUB_HackSelectionButton* Button)
 {
 	LoadedButton = Button;
+}
+
+FText UGUB_HackSelectionButton::GetEffectName() const
+{
+	return LoadedEffect->DisplayText;
 }

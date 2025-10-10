@@ -39,11 +39,11 @@ void AFrag_GrenadeExplosion::GetActorsInRadius(UObject* WorldContext, FVector Or
         true
     );
 
-    if (GEngine)
+    /*if (GEngine)
     {
         GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan,
             FString::Printf(TEXT("Grenade found %d hits"), HitResults.Num()));
-    }
+    }*/
 
     for (const FHitResult& Hit : HitResults)
     {
@@ -62,14 +62,14 @@ void AFrag_GrenadeExplosion::GetActorsInRadius(UObject* WorldContext, FVector Or
             damageInfo.CanBeParried = false;
             damageInfo.ShouldForceInterrupt = false;
 
-            HitActor->FindComponentByClass<UDamageSystem>()->TakeDamage(damageInfo);
+            HitActor->FindComponentByClass<UDamageSystem>()->TakeDamage(damageInfo, GetOwner());
 
             // Print actor name to screen
-            if (GEngine)
+            /*if (GEngine)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green,
                     FString::Printf(TEXT("Found actor with DamageSystem: %s"), *HitActor->GetName()));
-            }
+            }*/
         }
     }
 

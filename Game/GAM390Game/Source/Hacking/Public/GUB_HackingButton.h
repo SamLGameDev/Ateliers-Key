@@ -10,7 +10,7 @@ class UButton;
 class UTextBlock;
 struct FButtonStyle;
 class UHackEffect;
-class AHackableActor;
+class AHackable;
 class UBorder;
 class UGUI_HackingMenu;
 
@@ -23,7 +23,6 @@ class HACKING_API UGUB_HackingButton : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadWrite)
 	UBorder* Parent;
 
@@ -44,16 +43,12 @@ public:
 		return LoadedEffect;
 	}
 
-	UPROPERTY(EditAnywhere)
-	FButtonStyle FocusedStyle;
 
 	UPROPERTY(EditAnywhere)
 	FLinearColor BorderStyle;
 
 	UPROPERTY(EditAnywhere)
 	FButtonStyle UnFocusedStyle;
-
-	void StartHack(UObject* HackedObject);
 
 	FText GetDescription();
 
@@ -62,35 +57,38 @@ public:
 		HackingMenu = Menu;
 	}
 
-	void SetDisplayDisabled();
-
-	void SetDisplayEnabled();
-
 	void SetDisplayText(FText Text);
 
+	void SetSelectedDisplayLoaded();
 
+	void SetSelectedDisplayUnLoaded();
+
+	void SetUpButton();
 
 private:
+	FButtonStyle CurrentUnFocusedStyle = UnFocusedStyle;
+
+	FLinearColor CurrentBorderColor;
+
+	UPROPERTY(EditAnywhere)
+	FButtonStyle LoadedStyle;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor BorderLoadedColor;
+
+	UPROPERTY(EditAnywhere)
+	FSlateColor TextLoadedColor;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor BorderUnLoadedColor;
+
+	UPROPERTY(EditAnywhere)
+	FSlateColor TextUnLoadedColor;
+
 	UHackEffect* LoadedEffect;
 
 	UGUI_HackingMenu* HackingMenu;
 
 	UPROPERTY(EditAnywhere)
-	FButtonStyle DisabledStyle;
-
-	UPROPERTY(EditAnywhere)
-	FLinearColor BorderDisabledColor;
-
-	UPROPERTY(EditAnywhere)
-	FSlateColor TextDisabledColor;
-
-
-	UPROPERTY(EditAnywhere)
 	FSlateColor TextColor;
-
-
-	UFUNCTION()
-	void ProgressHack(AHackableActor* HackedObject, float TimeRemaining);
-
-	void TriggerHack(AHackableActor* HackedObject);
 };

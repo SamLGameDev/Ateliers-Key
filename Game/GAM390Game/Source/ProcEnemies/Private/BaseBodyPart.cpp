@@ -21,15 +21,15 @@ void ABaseBodyPart::ExecuteAbility()
 
 }
 
-void ABaseBodyPart::TakeDamage_Implementation(const int Damage)
-{
-	CurrentDurability -= Damage;
-	if (CurrentDurability < 0)
-	{
-		Destroy();
-	}
-
-}
+//void ABaseBodyPart::TakeDamage_Implementation(const int Damage)
+//{
+//	CurrentDurability -= Damage;
+//	if (CurrentDurability < 0)
+//	{
+//		Destroy();
+//	}
+//
+//}
 
 #if WITH_EDITOR
 void ABaseBodyPart::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)

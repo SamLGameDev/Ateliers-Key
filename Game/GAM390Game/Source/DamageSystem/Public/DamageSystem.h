@@ -9,7 +9,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBlocked);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, EDamageResponse, DamageResponse);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageResponse, EDamageResponse, DamageResponse, AActor*, Source);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DAMAGESYSTEM_API UDamageSystem : public UActorComponent
@@ -37,11 +37,23 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDamageResponse OnDamageResponse;
 
-	UFUNCTION(BlueprintCallable)
-	void Heal(float amount);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	int32 AttackTokensCount;
 
 	UFUNCTION(BlueprintCallable)
-	void TakeDamage(const FDamageInfo& DamageInfo);
+	void Heal(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void HealTemp(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(const FDamageInfo& DamageInfo, AActor* Source);
+
+	UFUNCTION(BlueprintCallable)
+	bool ReserveAttackToken(int32 Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void ReturnAttackToken(int32 Amount);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;
@@ -57,6 +69,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float CurrentTempHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float MaxTempHealth;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	int TeamNumber;
 
 protected:
 	static void CallOnDeath(AActor* DamagedActor);

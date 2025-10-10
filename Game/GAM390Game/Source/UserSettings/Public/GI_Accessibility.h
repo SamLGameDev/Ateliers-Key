@@ -29,6 +29,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* SoundTable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Score;
+
+	UFUNCTION(BlueprintCallable, Category = "Scoring")
+	void UpdateScore(int NewScore);
+
 	virtual void Init() override;
 
 	void SyncSubtitlesSettings();

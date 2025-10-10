@@ -7,7 +7,6 @@
 #include "GUB_HackSelectionButton.generated.h"
 
 
-
 class UButton;
 class UTextBlock;
 struct FButtonStyle;
@@ -21,8 +20,8 @@ UCLASS()
 class HACKING_API UGUB_HackSelectionButton : public UUserWidget
 {
 	GENERATED_BODY()
-public:
 
+public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadWrite)
 	UBorder* Parent;
 
@@ -37,6 +36,8 @@ public:
 	void SetUnFocused();
 
 	void SetHack(UHackEffect* Hack);
+
+	void ClearLoadedHack();
 
 	UHackEffect* const GetHack() const
 	{
@@ -76,6 +77,18 @@ public:
 		return LoadedButton;
 	}
 
+	const bool IsEmpty() const
+	{
+		if (LoadedEffect)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	FText GetEffectName() const;
+
 private:
 	UHackEffect* LoadedEffect;
 
@@ -94,5 +107,4 @@ private:
 	FSlateColor TextColor;
 
 	bool bIsLoaded;
-
 };

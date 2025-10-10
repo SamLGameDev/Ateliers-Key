@@ -14,6 +14,9 @@ class BaseRunTimeSet{
 
 
 public:
+
+    virtual ~BaseRunTimeSet() {};
+	
 	/// <summary>
 	/// Add an Object to the Array
 	/// </summary>
@@ -60,7 +63,7 @@ void BaseRunTimeSet<T>::RegisterObjects(TArray<T> Set)
 template<typename T>
 void BaseRunTimeSet<T>::DeregisterObject(T Object)
 {
-	m_RegisteredObjects.Remove(Object);
+	m_RegisteredObjects.RemoveSingle(Object);
 }
 
 template<typename T>

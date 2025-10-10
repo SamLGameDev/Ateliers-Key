@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Hacks/HackEffect.h"
 #include "BP_Player.generated.h"
 
 class UInputMappingContext;
@@ -34,6 +35,12 @@ protected:
 	void SetUpHackSelectionActions();
 
 	void SetUpHackingActions();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
+	const UInputMappingContext* CoreMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
+	const UInputMappingContext* AbilityMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
 	const UInputMappingContext* GameplayMap;
@@ -94,9 +101,6 @@ protected:
 	DECLARE_MULTICAST_DELEGATE(FOnTickSignature);
 	FOnTickSignature OnTick;
 
-	UFUNCTION()
-	void DisplayViewedHackableObject();
-
 	FDelegateHandle HackingTraceHandle;
 
 	UPROPERTY()
@@ -120,7 +124,18 @@ protected:
 	UHackEffectStore* LoadedHacks;
 
 	virtual void BeginDestroy() override;
+	bool DetectHitEntity(FHitResult& MeleeHit) const;
 
+	UFUNCTION(BlueprintCallable)
+	void Melee(UHackEffect* Hack);
+
+	UPROPERTY(EditDefaultsOnly)
+	float MeleeOffset;
+
+	UPROPERTY(EditDefaultsOnly)
+	FVector MeleeBoxHalfBounds;
+
+	FTimerHandle LockInputHandle;
 
 public:	
 	// Called every frame
@@ -135,9 +150,18 @@ public:
 
 	void SwitchToHackingSelection();
 
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void LockGameplayInputs(const float Duration = -1);
+
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void UnLockGameplayInputs();
+
 	UFUNCTION(BlueprintCallable)
 	void StartHackSelection();
 
 	void SwitchMap(const UInputMappingContext* Map, UEnhancedInputLocalPlayerSubsystem* Input);
+
+
+	
 
 };

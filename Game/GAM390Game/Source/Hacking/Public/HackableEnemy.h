@@ -1,0 +1,35 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Pawn.h"
+#include "ActorList.h"
+#include "Components/WidgetComponent.h"
+#include "Hackable.h"
+#include "HackableEnemy.generated.h"
+
+UCLASS()
+class HACKING_API AHackableEnemy : public AHackable
+{
+	GENERATED_BODY()
+
+public:
+	// Sets default values for this pawn's properties
+	AHackableEnemy();
+
+
+	//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//USkeletalMeshComponent* Mesh;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+};

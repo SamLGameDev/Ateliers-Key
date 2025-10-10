@@ -27,14 +27,27 @@ public:
 	/// <param name="InTime">The Dialiation</param>
 	/// <param name="LifeTime">Optional param for a lifetime, will auto clear the dialation after this time has passed
 	/// -1 means infinite time</param>
+	/// <param name="InitialStartDelay"> Optional Param for a delay before the dialation begins, -1 for no delay </param>
 	UFUNCTION(BlueprintCallable, Category = "TimeManagement")
-	static UTimeDialationToken* SetTimeDialation(const UObject* WorldContextObject, const float InTime, const float LifeTime = -1);
+	static UTimeDialationToken* SetTimeDialation(const UObject* WorldContextObject, const float InTime, const float LifeTime = -1, const float InitialStartDelay = -1);
 
 	static void RemoveToken(UTimeDialationToken* Token);
+
+	static const float SetTokenActive(UTimeDialationToken* Token);
 
 	static const float GetCurrentDialation()
 	{
 		return CurrentTimeDialation;
+	}
+
+	/// <summary>
+	/// Only to be used on start to ensure dilation is back to 1
+	/// </summary>
+	UFUNCTION(BlueprintCallable)
+	static void ResetCurrentDialation()
+	{
+		CurrentTimeDialation = 1;
+		CurrentDialations.Empty();
 	}
 
 private:

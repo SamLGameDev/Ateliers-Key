@@ -3,7 +3,9 @@
 
 #include "Hacks/SelfDestruct.h"
 
-void USelfDestruct::ExecuteHack(UObject* HackedObject)
+void USelfDestruct::ExecuteHack(const FHackInfo& HackInfo)
 {
-	Cast<AActor>(HackedObject)->Destroy();
+	Super::ExecuteHack(HackInfo);
+
+	Cast<AActor>(HackInfo.HackedObject)->Destroy();
 }

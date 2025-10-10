@@ -11,6 +11,9 @@ class UGUB_HackingButton;
 class UHackEffect;
 class UTextBlock;
 class UBorder;
+class UHackEffectVariable;
+class UHackEffectStore;
+
 
 /**
  * 
@@ -21,7 +24,6 @@ class HACKING_API UGUI_HackingMenu : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	UFUNCTION()
 	void FocusNextHackButton();
 
@@ -30,8 +32,6 @@ public:
 
 	void UpdateButtonDisplay(const TArray<UHackEffect*>& Hacks);
 
-	void DisableHackButtons();
-
 	void SetFocusedObject(UObject* Object)
 	{
 		FocusedObject = Object;
@@ -39,17 +39,14 @@ public:
 
 	void TriggerHack();
 
+	void SetLoadedHack();
+
 	const bool IsHacking() const
 	{
 		return bIsHacking;
 	}
 
-	void SetHackingStarted();
-
-	void SetHackingEnded();
-
 private:
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UGUB_HackingButton* HackingButton1;
 
@@ -71,6 +68,13 @@ private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UBorder* HackDescriptionParent;
 
+	UPROPERTY(EditAnywhere, Category = "Hacking")
+	UHackEffectVariable* LoadedHack;
+
+
+	UPROPERTY(EditDefaultsOnly)
+	UHackEffectStore* LoadedHacks;
+
 	bool bIsHacking = false;
 
 	virtual void NativeConstruct() override;
@@ -84,9 +88,4 @@ private:
 	UObject* FocusedObject;
 
 	TArray<UGUB_HackingButton*> HackingButtons;
-
-
-
-
-
 };

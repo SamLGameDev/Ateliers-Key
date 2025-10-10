@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include <DamageTransmitter.h>
 #include "Damageable.generated.h"
 
 // This class does not need to be modified.
@@ -20,9 +21,29 @@ class DAMAGESYSTEM_API IDamageable
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void TakeDamage(const int Damage);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void TakeDamage(double Amount, EDamageTransmitter DamageType, AActor* Dealer);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UDamageable")
+	void ReturnAttackToken(int32 Amount);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void ReserveAttackToken(int32 Amount, bool& Success);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void IsDead(bool& Dead);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void GetTeamNumber(int32& TeamNumber);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void GetCurrentHealth(double& CurrentHealth);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void GetMaxHealth(double& MaxHealth);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void Heal(double Amount);
 };

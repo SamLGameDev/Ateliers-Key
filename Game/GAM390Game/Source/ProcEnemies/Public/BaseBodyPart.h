@@ -30,7 +30,7 @@ public:
 		return MaxDurability;
 	}
 
-	virtual void TakeDamage_Implementation(const int Damage) override;
+	//virtual void TakeDamage_Implementation(const int Damage) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttatchPart(ABaseProcEnemy* Enemy) {};
