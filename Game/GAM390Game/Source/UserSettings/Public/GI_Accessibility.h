@@ -26,8 +26,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float m_Brightness;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable* SoundTable;
+	UPROPERTY(BlueprintReadOnly)
+	float CameraSensitivity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Score;

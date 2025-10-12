@@ -21,6 +21,9 @@ public:
 	UPROPERTY(Config)
 	float m_Brightness;
 
+	UPROPERTY(Config)
+	float CameraSensitivity;
+
 	UObject* WorldContext;
 
 	UUBaseGameUserSettings();

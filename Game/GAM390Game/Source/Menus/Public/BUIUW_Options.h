@@ -81,12 +81,6 @@ public:
 	USlider* CameraSensitivitySlider;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	USlider* HeadBobbingSlider;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* HeadBobbingValue;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	USlider* FOVSlider;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -454,9 +448,6 @@ private:
 	void UpdateExampleSubtitlesFunc(int SubtitlesInt);
 
 #pragma region SliderFunctions
-
-	UFUNCTION()
-	void HeadBobbingValueChange(float value);
 
 	UFUNCTION()
 	void CameraSensValueChange(float value);

@@ -34,10 +34,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	float CameraSensitivity;
-
-	UPROPERTY(BlueprintReadWrite)
-	float HeadBobbing;
-
+	
 	UPROPERTY(BlueprintReadWrite)
 	float FOVValue;
 };

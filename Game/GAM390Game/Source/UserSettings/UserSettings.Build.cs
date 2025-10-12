@@ -8,6 +8,6 @@ public class UserSettings : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "SoundManagement"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine"});
 	}
 }

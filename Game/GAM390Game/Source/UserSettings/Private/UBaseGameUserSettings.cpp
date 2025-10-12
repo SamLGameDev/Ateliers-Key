@@ -30,6 +30,8 @@ void UUBaseGameUserSettings::ApplySettings(bool bCheckForCommandLineOverrides)
 
 		gameInstance->m_Brightness = m_Brightness;
 
+		gameInstance->CameraSensitivity = CameraSensitivity;
+
 	}
 
 	SaveSettings();
@@ -65,6 +67,14 @@ void UUBaseGameUserSettings::SaveSettings()
 		GGameIni
 	);
 
+	GConfig->SetFloat
+	(
+	TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
+	TEXT("CameraSensitivity"),
+	CameraSensitivity,
+	GGameIni
+	);
+
 	Super::SaveSettings();
 }
 
@@ -87,6 +97,14 @@ void UUBaseGameUserSettings::LoadSettings(bool bForceReload)
 			TEXT("Brightness"),
 			m_Brightness,
 			GGameIni
+		);
+
+		GConfig->GetFloat
+		(
+		TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
+		TEXT("CameraSensitivity"),
+		CameraSensitivity,
+		GGameIni
 		);
 	}
 }

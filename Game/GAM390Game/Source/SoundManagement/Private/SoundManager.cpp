@@ -3,12 +3,13 @@
 
 #include "SoundManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "SettingsSave.h"
 
 UDataTable* USoundManager::SoundDataTable;
 
 TWeakObjectPtr<UAudioComponent> USoundManager::CurrentMusicComponent;
 
-void USoundManager::PlayRandomSound2D(const UObject* WorldContextObject, const ESoundType Type, const FName SubType, const FName Map, const float StartTime)
+void USoundManager::PlayRandomSound2D(const UObject* WorldContextObject, const ESoundUse Type, const FName SubType, const FName Map, const float StartTime)
 {
 	TArray<FSoundRow*> Rows;
 	GetRandomSound(Rows, Type, SubType, Map);
@@ -20,11 +21,13 @@ void USoundManager::PlayRandomSound2D(const UObject* WorldContextObject, const E
 
 	int SoundIndex = FMath::RandRange(0, Rows.Num() - 1);
 
+	USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
+	
 	UGameplayStatics::PlaySound2D
 	(
 		WorldContextObject,
 		Rows[SoundIndex]->Sound,
-		Rows[SoundIndex]->Volume,
+		Save->MasterVolume,
 		Rows[SoundIndex]->PitchMultiplier,
 		StartTime,
 		Rows[SoundIndex]->Concurrency,
@@ -40,7 +43,7 @@ void USoundManager::PlayRandomMusic(const UObject* WorldContextObject, const FNa
 	StopMusic();
 
 	TArray<FSoundRow*> Rows;
-	GetRandomSound(Rows, ESoundType::Music, SubType, Map);
+	GetRandomSound(Rows, ESoundUse::Music, SubType, Map);
 
 	if (Rows.Num() == 0)
 	{
@@ -49,11 +52,13 @@ void USoundManager::PlayRandomMusic(const UObject* WorldContextObject, const FNa
 
 	int SoundIndex = FMath::RandRange(0, Rows.Num() -1);
 
+	USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
+
 	CurrentMusicComponent = TWeakObjectPtr<UAudioComponent>(UGameplayStatics::CreateSound2D
 	(
 		WorldContextObject,
 		Rows[SoundIndex]->Sound,
-		Rows[SoundIndex]->Volume,
+		Save->MusicVolume,
 		Rows[SoundIndex]->PitchMultiplier,
 		StartTime,
 		Rows[SoundIndex]->Concurrency,
@@ -64,7 +69,7 @@ void USoundManager::PlayRandomMusic(const UObject* WorldContextObject, const FNa
 	CurrentMusicComponent.Pin()->Play(StartTime);
 }
 
-void USoundManager::PlayRandomSoundAtLocation(const UObject* WorldContextObject, const FVector Location, const ESoundType Type, const FName SubType, const FName Map, const float StartTime)
+void USoundManager::PlayRandomSoundAtLocation(const UObject* WorldContextObject, const FVector Location, const ESoundUse Type, const FName SubType, const FName Map, const float StartTime)
 {
 	TArray<FSoundRow*> Rows;
 	GetRandomSound(Rows, Type, SubType, Map);
@@ -76,12 +81,14 @@ void USoundManager::PlayRandomSoundAtLocation(const UObject* WorldContextObject,
 
 	int SoundIndex = FMath::RandRange(0, Rows.Num() -1 );
 
+	USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
+
 	UGameplayStatics::PlaySoundAtLocation
 	(
 		WorldContextObject,
 		Rows[SoundIndex]->Sound,
 		Location,
-		Rows[SoundIndex]->Volume,
+		Save->MasterVolume,
 		Rows[SoundIndex]->PitchMultiplier,
 		StartTime,
 		Rows[SoundIndex]->Attenuation,
@@ -99,13 +106,13 @@ void USoundManager::StopMusic()
 	}
 }
 
-void USoundManager::GetRandomSound(TArray<FSoundRow*>& Rows, const ESoundType Type, const FName& SubType, const FName& Map)
+void USoundManager::GetRandomSound(TArray<FSoundRow*>& Rows, const ESoundUse Type, const FName& SubType, const FName& Map)
 {
 	SoundDataTable->GetAllRows<FSoundRow>("", Rows);
 	FilterRows(Rows, Type, SubType, Map);
 }
 
-void USoundManager::FilterRows(TArray<FSoundRow*>& Rows, const ESoundType Type, const FName& SubType, const FName& Map)
+void USoundManager::FilterRows(TArray<FSoundRow*>& Rows, const ESoundUse Type, const FName& SubType, const FName& Map)
 {
 	TArray<FSoundRow*> FilteredRows;
 	for (FSoundRow* row : Rows)
@@ -118,9 +125,18 @@ void USoundManager::FilterRows(TArray<FSoundRow*>& Rows, const ESoundType Type, 
 	Rows = FilteredRows;
 }
 
-const bool USoundManager::IsMatchingType(const FSoundRow* row, const ESoundType Type)
+void USoundManager::SyncVolume()
 {
-	return row->Type == Type || row->Type == ESoundType::Any;
+	if (CurrentMusicComponent.IsValid())
+	{
+		USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
+		CurrentMusicComponent.Pin()->SetVolumeMultiplier(Save->MusicVolume);
+	}
+}
+
+const bool USoundManager::IsMatchingType(const FSoundRow* row, const ESoundUse Type)
+{
+	return row->Type == Type || row->Type == ESoundUse::Any;
 }
 
 const bool USoundManager::IsMatchingSubType(const FSoundRow* row, const FName SubType)

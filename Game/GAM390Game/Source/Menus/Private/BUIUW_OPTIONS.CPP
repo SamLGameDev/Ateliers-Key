@@ -14,6 +14,7 @@
 #include "BP_GeneralFunctions.h"
 #include "Styling/SlateTypes.h"
 #include "SubtitleWidget.h"
+#include "SoundManager.h"
 
 void UBUIUW_Options::OnResolutionHigherClicked()
 {
@@ -562,7 +563,6 @@ void UBUIUW_Options::LoadVariableSettingsFunc(USettingsSave* SaveGame)
 	MasterVolumeSlider->SetValue(SaveGame->MasterVolume);
 	DialogueVolumeSlider->SetValue(SaveGame->DialogueVolume);
 	CameraSensitivitySlider->SetValue(SaveGame->CameraSensitivity);
-	HeadBobbingSlider->SetValue(SaveGame->HeadBobbing);
 	FOVSlider->SetValue(SaveGame->FOVValue);
 	SetDropdownFunc(SaveGame->SubtitleSize);
 }
@@ -574,7 +574,6 @@ void UBUIUW_Options::LoadTextSettingsFunc(USettingsSave* SaveGame)
 	MasterVolumeValue->SetText(FText::AsNumber(FMath::RoundToInt(SaveGame->MasterVolume * 100.0f)));
 	MusicVolumeValue->SetText(FText::AsNumber(FMath::RoundToInt(SaveGame->MusicVolume * 100.0f)));
 	SFXVolumeValue->SetText(FText::AsNumber(FMath::RoundToInt(SaveGame->SFXVolume * 100.0f)));
-	HeadBobbingValue->SetText(FText::AsNumber(FMath::RoundToInt(SaveGame->HeadBobbing * 10.0f)));
 	FOVValue->SetText(FText::AsNumber(FMath::RoundToInt(SaveGame->FOVValue * 100.0f)));
 	UpdateExampleSubtitlesFunc(SaveGame->SubtitleSize);
 }
@@ -615,12 +614,11 @@ void UBUIUW_Options::SaveVariables()
 	Save->DialogueVolume = DialogueVolumeSlider->GetValue();
 	Save->SubtitleSize = Cast<UGI_SanctumSettings>(GetGameInstance())->m_SubtitleSize;
 	Save->CameraSensitivity = CameraSensitivitySlider->GetValue();
-	Save->HeadBobbing = HeadBobbingSlider->GetValue();
 	Save->FOVValue = FOVSlider->GetValue();
 	m_Settings->ApplySettings(false);
 	SetPlayerFOV(Save->FOVValue);
-
 	UGameplayStatics::SaveGameToSlot(Save, "settings", 0);
+	USoundManager::SyncVolume();
 }
 
 void UBUIUW_Options::ApplyBrightnessSettings(const float value)
@@ -637,12 +635,6 @@ void UBUIUW_Options::ApplyBrightnessSettings(const float value)
 	}
 }
 
-
-void UBUIUW_Options::HeadBobbingValueChange(float value)
-{
-	HeadBobbingValue->SetText(FText::AsNumber(FMath::RoundToInt(HeadBobbingSlider->GetValue() * 10)));
-}
-
 void UBUIUW_Options::CameraSensValueChange(float value)
 {
 	UpdateText(CameraSensitivityValue, CameraSensitivitySlider);
@@ -650,6 +642,7 @@ void UBUIUW_Options::CameraSensValueChange(float value)
 
 void UBUIUW_Options::CameraSensCapEnd()
 {
+	m_Settings->CameraSensitivity = CameraSensitivitySlider->GetValue();
 	SaveVariables();
 	UpdateText(CameraSensitivityValue, CameraSensitivitySlider);
 }
@@ -884,8 +877,6 @@ void UBUIUW_Options::SetUpMenuButtons()
 
 void UBUIUW_Options::SetUpSliders()
 {
-	HeadBobbingSlider->OnValueChanged.AddDynamic(this, &UBUIUW_Options::HeadBobbingValueChange);
-	HeadBobbingSlider->OnMouseCaptureEnd.AddDynamic(this, &UBUIUW_Options::SaveVariables);
 	CameraSensitivitySlider->OnValueChanged.AddDynamic(this, &UBUIUW_Options::CameraSensValueChange);
 	CameraSensitivitySlider->OnMouseCaptureEnd.AddDynamic(this, &UBUIUW_Options::CameraSensCapEnd);
 	FOVSlider->OnValueChanged.AddDynamic(this, &UBUIUW_Options::FOVSliderValueChange);
