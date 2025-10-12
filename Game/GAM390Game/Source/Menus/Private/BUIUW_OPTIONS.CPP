@@ -173,7 +173,7 @@ void UBUIUW_Options::OnViewDistanceHigherClicked()
 		return;
 	}
 
-	SetNewViewDistance();
+	ChangeQuality(&UUBaseGameUserSettings::SetViewDistanceQuality, m_ViewDistanceText, m_CurrentViewDistanceIndex);
 }
 
 void UBUIUW_Options::OnViewDistanceLowerClicked()
@@ -187,18 +187,19 @@ void UBUIUW_Options::OnViewDistanceLowerClicked()
 		return;
 	}
 
-	SetNewViewDistance();
+	ChangeQuality(&UUBaseGameUserSettings::SetViewDistanceQuality, m_ViewDistanceText, m_CurrentViewDistanceIndex);
+	
 }
 
-void UBUIUW_Options::SetNewViewDistance()
+void UBUIUW_Options::ChangeQuality(void(UUBaseGameUserSettings::*QualityToChange)(int32), UTextBlock* TextBlock, const uint8 Index) const
 {
-	const SettingsQuality quality = m_QualitySettings[m_CurrentViewDistanceIndex];
+	const SettingsQuality quality = m_QualitySettings[Index];
 
-	m_Settings->SetViewDistanceQuality(quality.Quality);
+	(m_Settings->*QualityToChange)(quality.Quality);
 
-	m_ViewDistanceText->SetText(FText::FromString(quality.DisplayName));
-
+	TextBlock->SetText(FText::FromString(quality.DisplayName));
 }
+
 
 void UBUIUW_Options::OnPostProcessingHigherClicked()
 {
@@ -211,7 +212,7 @@ void UBUIUW_Options::OnPostProcessingHigherClicked()
 		return;
 	}
 
-	SetNewPostProcessing();
+	ChangeQuality(&UUBaseGameUserSettings::SetPostProcessingQuality, m_PostProcessingText, m_CurrentPostProcessingIndex);
 }
 
 void UBUIUW_Options::OnPostProcessingLowerClicked()
@@ -225,16 +226,7 @@ void UBUIUW_Options::OnPostProcessingLowerClicked()
 		return;
 	}
 
-	SetNewPostProcessing();
-}
-
-void UBUIUW_Options::SetNewPostProcessing()
-{
-	const SettingsQuality quality = m_QualitySettings[m_CurrentPostProcessingIndex];
-
-	m_Settings->SetPostProcessingQuality(quality.Quality);
-
-	m_PostProcessingText->SetText(FText::FromString(quality.DisplayName));
+	ChangeQuality(&UUBaseGameUserSettings::SetPostProcessingQuality, m_PostProcessingText, m_CurrentPostProcessingIndex);
 }
 
 void UBUIUW_Options::OnAntiAliasingHigherClicked()
@@ -248,7 +240,7 @@ void UBUIUW_Options::OnAntiAliasingHigherClicked()
 		return;
 	}
 
-	SetNewAntiAliasing();
+	ChangeQuality(&UUBaseGameUserSettings::SetAntiAliasingQuality, m_AntiAliasingText, m_CurrentAntiAliasingIndex);
 }
 
 void UBUIUW_Options::OnAntiAliasingLowerClicked()
@@ -262,16 +254,7 @@ void UBUIUW_Options::OnAntiAliasingLowerClicked()
 		return;
 	}
 
-	SetNewAntiAliasing();
-}
-
-void UBUIUW_Options::SetNewAntiAliasing()
-{
-	const SettingsQuality quality = m_QualitySettings[m_CurrentAntiAliasingIndex];
-
-	m_Settings->SetAntiAliasingQuality(quality.Quality);
-
-	m_AntiAliasingText->SetText(FText::FromString(quality.DisplayName));
+	ChangeQuality(&UUBaseGameUserSettings::SetAntiAliasingQuality, m_AntiAliasingText, m_CurrentAntiAliasingIndex);
 }
 
 void UBUIUW_Options::OnTextureQualityHigherClicked()
@@ -285,7 +268,7 @@ void UBUIUW_Options::OnTextureQualityHigherClicked()
 		return;
 	}
 
-	SetNewTextureQuality();
+	ChangeQuality(&UUBaseGameUserSettings::SetTextureQuality, m_TextureQualityText, m_CurrentTextureQualityIndex);
 }
 
 void UBUIUW_Options::OnTextureQualityLowerClicked()
@@ -299,16 +282,7 @@ void UBUIUW_Options::OnTextureQualityLowerClicked()
 		return;
 	}
 
-	SetNewTextureQuality();
-}
-
-void UBUIUW_Options::SetNewTextureQuality()
-{
-	const SettingsQuality quality = m_QualitySettings[m_CurrentTextureQualityIndex];
-
-	m_Settings->SetTextureQuality(quality.Quality);
-
-	m_TextureQualityText->SetText(FText::FromString(quality.DisplayName));
+	ChangeQuality(&UUBaseGameUserSettings::SetTextureQuality, m_TextureQualityText, m_CurrentTextureQualityIndex);
 }
 
 void UBUIUW_Options::OnShadowQualityHigherClicked()
@@ -322,7 +296,7 @@ void UBUIUW_Options::OnShadowQualityHigherClicked()
 		return;
 	}
 
-	SetNewShadowQuality();
+	ChangeQuality(&UUBaseGameUserSettings::SetShadowQuality, m_ShadowQualityText, m_CurrentShadowQualityIndex);
 }
 
 void UBUIUW_Options::OnShadowQualityLowerClicked()
@@ -336,16 +310,7 @@ void UBUIUW_Options::OnShadowQualityLowerClicked()
 		return;
 	}
 
-	SetNewShadowQuality();
-}
-
-void UBUIUW_Options::SetNewShadowQuality()
-{
-   	const SettingsQuality quality = m_QualitySettings[m_CurrentShadowQualityIndex];
-
-	m_Settings->SetShadowQuality(quality.Quality);
-
-	m_ShadowQualityText->SetText(FText::FromString(quality.DisplayName));
+	ChangeQuality(&UUBaseGameUserSettings::SetShadowQuality, m_ShadowQualityText, m_CurrentShadowQualityIndex);
 }
 
 void UBUIUW_Options::OnVSyncEnabled(const bool bIsChecked)
@@ -364,7 +329,6 @@ void UBUIUW_Options::OnSubtitlesCheck(const bool bIsChecked)
 	m_Settings->SetSubtitlesEnabled(bIsChecked);
 
 	m_Settings->ApplySettings(false);
-
 	
 }
 
@@ -522,7 +486,6 @@ void UBUIUW_Options::SaveSettings()
 	UBP_SceneManager::Quit(this);
 
 	//only restart if not in editor, as otherwise it will close down the editor
-
 #if !WITH_EDITOR
 	Restart();
 #endif

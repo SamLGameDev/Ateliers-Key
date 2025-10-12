@@ -7,6 +7,8 @@
 #include "Components/Button.h"
 #include "BUIUW_MainMenu.generated.h"
 
+class UBUIUW_Options;
+
 /**
  * 
  */
@@ -22,15 +24,38 @@ protected:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* PlayButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* OptionsButton;
 	
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* QuitButton;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UBUIUW_Options> OptionsClass;
+
+	UPROPERTY()
+	UBUIUW_Options* OptionsMenu;
+
+	void CreateConnectingWidgets();
 	void NativeConstruct() override;
 
 	void Play() const;
+
+	void Quit() const;
 	
 	void SetUpButtons();
 
 	UFUNCTION()
 	void OnPlayClicked();
+	
+	UFUNCTION()
+	void OnOptionsClicked();
+	
+	UFUNCTION()
+	void OnQuitClicked();
+	
+	
 
 	
 

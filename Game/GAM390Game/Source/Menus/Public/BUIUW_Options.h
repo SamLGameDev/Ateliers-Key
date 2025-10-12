@@ -3,13 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "GI_Accessibility.h"
 #include "UBaseGameUserSettings.h"
 #include "AUW_BaseMenuWidget.h"
-#include "LevelSequence.h"
 #include "SettingsSave.h"
-#include "Components/ComboBox.h"
 #include "Components/ComboBoxString.h"
 #include "Components/HorizontalBox.h"
 #include "Components/RichTextBlock.h"
@@ -230,6 +226,8 @@ private:
 
 #pragma endregion
 
+	void ChangeQuality(void(UUBaseGameUserSettings::*QualityToChange)(int32), UTextBlock* TextBlock, uint8 Index) const;
+
 #pragma region ViewDistance
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -248,8 +246,8 @@ private:
 
 	UFUNCTION()
 	void OnViewDistanceLowerClicked();
+	
 
-	void SetNewViewDistance();
 
 #pragma endregion
 
@@ -272,8 +270,6 @@ private:
 	UFUNCTION()
 	void OnPostProcessingLowerClicked();
 
-	void SetNewPostProcessing();
-
 #pragma endregion
 
 #pragma region Anti-Aliasing
@@ -294,8 +290,6 @@ private:
 
 	UFUNCTION()
 	void OnAntiAliasingLowerClicked();
-
-	void SetNewAntiAliasing();
 
 #pragma endregion
 
@@ -318,8 +312,6 @@ private:
 	UFUNCTION()
 	void OnTextureQualityLowerClicked();
 
-	void SetNewTextureQuality();
-
 #pragma endregion
 
 #pragma region ShadowQuality
@@ -340,8 +332,6 @@ private:
 
 	UFUNCTION()
 	void OnShadowQualityLowerClicked();
-
-	void SetNewShadowQuality();
 
 #pragma endregion
 
@@ -395,7 +385,8 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* m_ApplySettings;
-	
+
+	UPROPERTY()
 	UUBaseGameUserSettings* m_Settings;
 
 #pragma region Menus
@@ -415,6 +406,7 @@ private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* m_AccessibilityMenu;
 
+	UPROPERTY()
 	UCanvasPanel* m_CurrentCanvas;
 
 	void ChangeCanvas(UCanvasPanel* NewCanvas);
