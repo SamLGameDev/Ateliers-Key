@@ -22,7 +22,7 @@ public:
 	
 protected:
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadOnly)
 	UButton* PlayButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))

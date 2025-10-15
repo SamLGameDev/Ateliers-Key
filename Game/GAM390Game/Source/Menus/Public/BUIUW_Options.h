@@ -110,6 +110,13 @@ public:
 	void SaveVariables();
 
 	void ApplyBrightnessSettings(const float value);
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadOnly)
+	UButton* m_GraphicsMenu;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget), BlueprintReadOnly)
+	UButton* m_Back;
+
 	
 private:
 	
@@ -386,9 +393,6 @@ private:
 #pragma region Menus
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* m_GraphicsMenu;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* m_SoundMenu;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -476,10 +480,6 @@ private:
 
 	UFUNCTION()
 	void InitializeMenus();
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* m_Back;
-
 
 	UPROPERTY(EditAnywhere)
 	FButtonStyle m_UnselctedButton;

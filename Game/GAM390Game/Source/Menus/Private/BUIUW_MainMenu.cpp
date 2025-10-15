@@ -23,6 +23,8 @@ void UBUIUW_MainMenu::NativeConstruct()
 	
 	SetUpButtons();
 
+	PlayButton->SetFocus();
+
 	UBP_GeneralFunctions::SetToMenuControls(GetWorld()->GetFirstPlayerController());
 }
 
