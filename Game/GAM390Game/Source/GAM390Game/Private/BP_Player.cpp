@@ -17,6 +17,7 @@
 #include "TimeDialationToken.h"
 #include "HackableEnemy.h"
 #include "Hackable.h"
+#include "Engine/UserInterfaceSettings.h"
 
 
 // Sets default values
@@ -27,12 +28,9 @@ ABP_Player::ABP_Player()
 
 }
 
-// Called when the game starts or when spawned
-void ABP_Player::BeginPlay()
+void ABP_Player::SwitchToCoreMap()
 {
-	Super::BeginPlay();
-
-	const APlayerController* playerController = Cast<APlayerController>(GetController());
+	APlayerController* playerController = Cast<APlayerController>(GetController());
 
 	UEnhancedInputLocalPlayerSubsystem* input =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
@@ -42,15 +40,40 @@ void ABP_Player::BeginPlay()
 	SwitchMap(AbilityMap, input);
 
 	SwitchToGameplayMap();
+
+	input->RemoveMappingContext(MenuMap);
+	
+	//SimulateUIMouseClick();
+	playerController->bShowMouseCursor = false;
+
+	playerController->SetInputMode(FInputModeGameOnly());
+	playerController->SetInputMode(FInputModeGameOnly());
+
+}
+
+// Called when the game starts or when spawned
+void ABP_Player::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SwitchToCoreMap();
 	HackingMenu = CreateWidget<UGUI_HackingMenu>(GetWorld(), BPHackingMenu, "HackingMenu");
 	HackSelector = CreateWidget<UGUI_HackSelector>(GetWorld(), BPHackSelector, "HackSelector");
 	SetUpInputActions();
+}
+
+void ABP_Player::SetUpMenuControls()
+{
+	InputComp->BindAction(MoveCursorGamepad, ETriggerEvent::Triggered, this, &ABP_Player::MoveCursorForGamepad);
+	InputComp->BindAction(SelectGamepad, ETriggerEvent::Triggered, this, &ABP_Player::SimulateUIMouseClick);
 }
 
 void ABP_Player::SetUpInputActions()
 {
 	SetUpHackingActions();
 	SetUpHackSelectionActions();
+
+	SetUpMenuControls();
 }
 
 void ABP_Player::SetUpHackSelectionActions()
@@ -273,14 +296,65 @@ void ABP_Player::UnLockGameplayInputs()
 	SwitchToGameplayMap();
 }
 
+void ABP_Player::SwitchToMenuControls()
+{
+	APlayerController* playerController = Cast<APlayerController>(GetController());
+
+	UEnhancedInputLocalPlayerSubsystem* input =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+
+	input->RemoveMappingContext(GameplayMap);
+	input->RemoveMappingContext(AbilityMap);
+
+	SwitchMap(MenuMap, input);
+
+	playerController->bShowMouseCursor = true;
+
+	SimulateUIMouseClick();
+
+}
+
 void ABP_Player::StartHackSelection()
 {
 	SwitchToHackingSelection();
 	HackSelector->AddToViewport();
 }
 
+
+
 void ABP_Player::SwitchMap(const UInputMappingContext* Map, UEnhancedInputLocalPlayerSubsystem* Input)
 {
 	Input->AddMappingContext(Map, 0);
+}
+
+void ABP_Player::MoveCursorForGamepad(const FInputActionValue& Value)
+{
+	float MouseX, MouseY;
+	GetWorld()->GetFirstPlayerController()->GetMousePosition(MouseX, MouseY);
+	const FVector2D adjustment = Value.Get<FVector2D>();
+	GetWorld()->GetFirstPlayerController()->SetMouseLocation(adjustment.X + MouseX, adjustment.Y + MouseY);
+}
+
+void ABP_Player::SimulateUIMouseClick()
+{
+	FSlateApplication& app = FSlateApplication::Get();
+
+	float mouseX, mouseY;
+	GetWorld()->GetFirstPlayerController()->GetMousePosition(mouseX, mouseY);
+	
+	FPointerEvent MouseEvent(
+		0,
+		app.CursorPointerIndex,
+		app.GetCursorPos(),
+		app.GetLastCursorPos(),
+		app.GetPressedMouseButtons(),
+		EKeys::LeftMouseButton,
+		0,
+		app.GetPlatformApplication()->GetModifierKeys()
+	);
+	TSharedPtr<FGenericWindow, ESPMode::ThreadSafe> NullWindow;
+	app.ProcessMouseButtonDownEvent(NullWindow, MouseEvent);
+
+	app.ProcessMouseButtonUpEvent(MouseEvent);
 }
 

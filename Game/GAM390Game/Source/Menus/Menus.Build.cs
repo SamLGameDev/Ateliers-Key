@@ -8,6 +8,6 @@ public class Menus : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UserSettings", "LevelManagers", "GeneralUtilities", "Subtitles", "UMG", "Slate", "SlateCore", "SoundManagement" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UserSettings", "LevelManagers", "GeneralUtilities", "Subtitles", "UMG", "Slate", "SlateCore", "SoundManagement", "EnhancedInput"});
 	}
 }

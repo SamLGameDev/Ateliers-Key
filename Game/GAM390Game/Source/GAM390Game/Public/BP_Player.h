@@ -27,8 +27,12 @@ public:
 	ABP_Player();
 
 protected:
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchToCoreMap();
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void SetUpMenuControls();
 
 	void SetUpInputActions();
 
@@ -50,6 +54,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
 	const UInputMappingContext* HackSelctionMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
+	const UInputMappingContext* MenuMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Hacking")
 	const UInputAction* StartHackingAction;
@@ -80,6 +87,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|HackSelection")
 	const UInputAction* ExitSelection;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Menu")
+	const UInputAction* MoveCursorGamepad;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Menu")
+	const UInputAction* SelectGamepad;
 
 	UPROPERTY();
 	UTimeDialationToken* HackingDialation;
@@ -157,9 +170,18 @@ public:
 	void UnLockGameplayInputs();
 
 	UFUNCTION(BlueprintCallable)
+	void SwitchToMenuControls();
+	
+	UFUNCTION(BlueprintCallable)
 	void StartHackSelection();
 
 	void SwitchMap(const UInputMappingContext* Map, UEnhancedInputLocalPlayerSubsystem* Input);
+
+	UFUNCTION()
+	void MoveCursorForGamepad(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void SimulateUIMouseClick();
 
 
 	

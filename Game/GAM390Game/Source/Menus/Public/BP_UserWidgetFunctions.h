@@ -19,4 +19,6 @@ class MENUS_API UBP_UserWidgetFunctions : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION()
 	static void ChangeWidget(UAUW_BaseMenuWidget* Current, UAUW_BaseMenuWidget* NewWidget);
+
+private:
 };

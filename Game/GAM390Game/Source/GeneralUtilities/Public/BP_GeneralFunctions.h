@@ -24,6 +24,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void SetToGameplayControls(APlayerController* Controller);
 
+	UFUNCTION(BlueprintCallable)
 	static void SetToMenuControls(APlayerController* Controller);
 
 	DECLARE_DELEGATE_OneParam(FInterfaceSignature, AActor*)
