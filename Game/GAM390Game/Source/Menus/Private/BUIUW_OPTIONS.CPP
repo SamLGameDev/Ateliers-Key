@@ -540,14 +540,6 @@ void UBUIUW_Options::NativeConstruct()
 		LoadVariableSettingsFunc(SaveGame);
 		LoadTextSettingsFunc(SaveGame);
 	}
-	else
-	{
-		USettingsSave* SaveGame = Cast<USettingsSave>(UGameplayStatics::CreateSaveGameObject(USettingsSave::StaticClass()));
-		UGameplayStatics::AsyncSaveGameToSlot(SaveGame, "settings", 0);
-		m_Settings->SetFrameRateLimit(60);
-		LoadVariableSettingsFunc(SaveGame);
-		LoadTextSettingsFunc(SaveGame);
-	}
 
 	InitializeMenus();
 

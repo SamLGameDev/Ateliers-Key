@@ -4,6 +4,8 @@
 #include "GI_Accessibility.h"
 
 #include "UBaseGameUserSettings.h"
+#include "SettingsSave.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGI_SanctumSettings::Init()
 {
@@ -19,6 +21,11 @@ void UGI_SanctumSettings::SyncSubtitlesSettings()
 		bSubtitlesEnabled = gameUserSettings->bSubtitlesEnabled;
 		m_Brightness = gameUserSettings->m_Brightness;
 		CameraSensitivity = gameUserSettings->CameraSensitivity;
+	}
+	if (!UGameplayStatics::DoesSaveGameExist("settings", 0))
+	{
+		USettingsSave* SaveGame = Cast<USettingsSave>(UGameplayStatics::CreateSaveGameObject(USettingsSave::StaticClass()));
+		UGameplayStatics::AsyncSaveGameToSlot(SaveGame, "settings", 0);
 	}
 }
 
