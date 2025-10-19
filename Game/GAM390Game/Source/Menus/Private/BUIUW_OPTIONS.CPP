@@ -646,6 +646,7 @@ void UBUIUW_Options::FOVSliderValueChange(float value)
 
 void UBUIUW_Options::FOVSliderCapEnd()
 {
+	m_Settings->CameraFov = FOVSlider->GetValue();
 	SaveVariables();
 	UpdateText(FOVValue, FOVSlider);
 }

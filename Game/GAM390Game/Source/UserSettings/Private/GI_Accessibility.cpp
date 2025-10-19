@@ -21,6 +21,7 @@ void UGI_SanctumSettings::SyncSubtitlesSettings()
 		bSubtitlesEnabled = gameUserSettings->bSubtitlesEnabled;
 		m_Brightness = gameUserSettings->m_Brightness;
 		CameraSensitivity = gameUserSettings->CameraSensitivity;
+		CameraFov = gameUserSettings->CameraFov;
 	}
 	if (!UGameplayStatics::DoesSaveGameExist("settings", 0))
 	{

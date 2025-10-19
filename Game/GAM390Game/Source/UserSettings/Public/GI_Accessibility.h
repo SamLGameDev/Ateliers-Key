@@ -29,6 +29,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	float CameraSensitivity;
 
+	UPROPERTY(BlueprintReadOnly)
+	float CameraFov;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Score;
 

@@ -24,6 +24,9 @@ public:
 	UPROPERTY(Config)
 	float CameraSensitivity;
 
+	UPROPERTY(Config)
+	float CameraFov;
+	
 	UObject* WorldContext;
 
 	UUBaseGameUserSettings();

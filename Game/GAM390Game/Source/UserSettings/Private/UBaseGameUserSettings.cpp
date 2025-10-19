@@ -8,6 +8,7 @@
 
 UUBaseGameUserSettings::UUBaseGameUserSettings() : bSubtitlesEnabled(false)
 {
+	LoadSettings(false);
 }
 
 void UUBaseGameUserSettings::ApplySettings(bool bCheckForCommandLineOverrides)
@@ -31,6 +32,8 @@ void UUBaseGameUserSettings::ApplySettings(bool bCheckForCommandLineOverrides)
 		gameInstance->m_Brightness = m_Brightness;
 
 		gameInstance->CameraSensitivity = CameraSensitivity;
+
+		gameInstance->CameraFov = CameraFov;
 
 	}
 
@@ -75,6 +78,14 @@ void UUBaseGameUserSettings::SaveSettings()
 	GGameIni
 	);
 
+	GConfig->SetFloat
+	(
+	TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
+	TEXT("CameraFov"),
+	CameraFov,
+	GGameIni
+	);
+
 	Super::SaveSettings();
 }
 
@@ -104,6 +115,14 @@ void UUBaseGameUserSettings::LoadSettings(bool bForceReload)
 		TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
 		TEXT("CameraSensitivity"),
 		CameraSensitivity,
+		GGameIni
+		);
+
+		GConfig->GetFloat
+		(
+		TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
+		TEXT("CameraFov"),
+		CameraFov,
 		GGameIni
 		);
 	}
