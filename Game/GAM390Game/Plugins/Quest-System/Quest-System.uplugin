@@ -1,0 +1,17 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.1",
+	"FriendlyName": "Quest-System",
+	"Description": "",
+	"Category": "Gameplay System",
+	"CreatedBy": "Dylan Gobey",
+	"CreatedByURL": "https://dylangobey.netlify.app/",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EngineVersion": "5.6.0",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"Installed": true
+}
