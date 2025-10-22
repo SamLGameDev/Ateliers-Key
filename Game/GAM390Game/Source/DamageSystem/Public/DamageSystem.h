@@ -79,6 +79,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
 	int TeamNumber;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	float HeadshotDamageMultiplier = 1.0f;
+
 protected:
 	static void CallOnDeath(AActor* DamagedActor);
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DamageResponse.h"
 #include "DamageTransmitter.h"
+#include "Chaos/ChaosEngineInterface.h"
 #include "DamageInfo.generated.h"
 
 /**
@@ -37,6 +38,27 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
 	bool ShouldForceInterrupt;
 
+	EPhysicalSurface HitSurface = SurfaceType_Default;
+
 	FDamageInfo():Amount(0), ShouldDamageInvincible(false), CanBeBlocked(false), CanBeParried(false), ShouldForceInterrupt(false){}
 	
+};
+
+UCLASS(NotPlaceable)
+class DAMAGESYSTEM_API UDamageInfoHelperFuncs : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+public:
+	
+	UFUNCTION(BlueprintCallable, Category = "Damage Info")
+	static EPhysicalSurface GetPhysicalSurface(const FDamageInfo& Info)
+	{
+		return Info.HitSurface;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Damage Info")
+	static void SetPhysicsSurface(UPARAM(ref) FDamageInfo& Info, EPhysicalSurface SurfaceType)
+	{
+		Info.HitSurface = SurfaceType;
+	};
 };

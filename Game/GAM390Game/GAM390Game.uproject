@@ -24,11 +24,6 @@
 			"LoadingPhase": "Default"
 		},
 		{
-			"Name": "ProcEnemies",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
 			"Name": "DamageSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"

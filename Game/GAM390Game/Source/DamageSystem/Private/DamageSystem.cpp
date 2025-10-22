@@ -58,11 +58,19 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 		return;
 	}
 
+	float DamageAmount =  DamageInfo.Amount;
+	
+	if (DamageInfo.HitSurface == SurfaceType1)
+	{
+		DamageAmount *= HeadshotDamageMultiplier;
+	}
+	
+
 	if (!IsBlocking && !IsInvincible && !IsDead) {
 
 		if (CurrentTempHealth > 0)
 		{
-			CurrentTempHealth -= DamageInfo.Amount;
+			CurrentTempHealth -= DamageAmount;
 			OnDamageResponse.Broadcast(DamageInfo.DamageResponse, Source);
 
 			if (CurrentTempHealth <= 0.0f) {
@@ -75,7 +83,7 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 			}
 		}
 
-		CurrentHealth -= DamageInfo.Amount;
+		CurrentHealth -= DamageAmount;
 
 		if (CurrentHealth <= 0.0f) {
 			IsDead = true;

@@ -24,7 +24,7 @@ class DAMAGESYSTEM_API IDamageable
 public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
-	void TakeDamage(double Amount, EDamageTransmitter DamageType, AActor* Dealer);
+	void TakeDamage(double Amount, EDamageTransmitter DamageType, AActor* Dealer, EPhysicalSurface HitSurface);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UDamageable")
 	void ReturnAttackToken(int32 Amount);
