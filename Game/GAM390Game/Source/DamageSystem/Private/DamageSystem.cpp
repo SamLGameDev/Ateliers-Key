@@ -74,13 +74,10 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 			OnDamageResponse.Broadcast(DamageInfo.DamageResponse, Source);
 
 			if (CurrentTempHealth <= 0.0f) {
-				CurrentHealth += CurrentTempHealth;
 				CurrentTempHealth = 0;
-			}
-			else
-			{
 				return;
 			}
+			return;
 		}
 
 		CurrentHealth -= DamageAmount;
