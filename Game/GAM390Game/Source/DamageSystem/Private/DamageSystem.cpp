@@ -80,7 +80,14 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 			return;
 		}
 
+		const float HealthBeforeDamage = CurrentHealth;
+
 		CurrentHealth -= DamageAmount;
+
+		if (CurrentHealth < CriticalHealthThreashold && HealthBeforeDamage >= CriticalHealthThreashold)
+		{
+			OnCriticalThreasholdReached.Broadcast(DamageInfo.DamageResponse, Source);
+		}
 
 		if (CurrentHealth <= 0.0f) {
 			IsDead = true;

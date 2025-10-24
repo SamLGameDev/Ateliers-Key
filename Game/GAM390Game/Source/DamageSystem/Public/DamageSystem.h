@@ -37,6 +37,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDamageResponse OnDamageResponse;
 
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnDamageResponse OnCriticalThreasholdReached;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
 	int32 AttackTokensCount;
 
@@ -81,6 +84,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
 	float HeadshotDamageMultiplier = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	float CriticalHealthThreashold = 0;
 
 protected:
 	static void CallOnDeath(AActor* DamagedActor);
