@@ -376,6 +376,7 @@ void UBUIUW_Options::ShowGraphics()
 	m_SoundMenu->SetStyle(m_UnselctedButton);
 	m_AccessibilityMenu->SetStyle(m_UnselctedButton);
 	m_ControlsMenu->SetStyle(m_UnselctedButton);
+	m_GamepadControlsMenu->SetStyle(m_UnselctedButton);
 	m_Optimal->GetParent()->SetVisibility(ESlateVisibility::Visible);
 	m_ApplySettings->GetParent()->SetVisibility(ESlateVisibility::Visible);
 
@@ -389,6 +390,7 @@ void UBUIUW_Options::ShowSound()
 	m_SoundMenu->SetStyle(m_SelctedButton);
 	m_AccessibilityMenu->SetStyle(m_UnselctedButton);
 	m_ControlsMenu->SetStyle(m_UnselctedButton);
+	m_GamepadControlsMenu->SetStyle(m_UnselctedButton);
 }
 
 void UBUIUW_Options::ShowControls()
@@ -399,6 +401,18 @@ void UBUIUW_Options::ShowControls()
 	m_SoundMenu->SetStyle(m_UnselctedButton);
 	m_AccessibilityMenu->SetStyle(m_UnselctedButton);
 	m_ControlsMenu->SetStyle(m_SelctedButton);
+	m_GamepadControlsMenu->SetStyle(m_UnselctedButton);
+}
+
+void UBUIUW_Options::ShowGamepadControls()
+{
+	ChangeCanvas(m_GamepadControlsCanvas);
+	m_GraphicsMenu->SetStyle(m_UnselctedButton);
+	m_GameplayMenu->SetStyle(m_UnselctedButton);
+	m_SoundMenu->SetStyle(m_UnselctedButton);
+	m_AccessibilityMenu->SetStyle(m_UnselctedButton);
+	m_ControlsMenu->SetStyle(m_UnselctedButton);
+	m_GamepadControlsMenu->SetStyle(m_SelctedButton);
 }
 
 void UBUIUW_Options::ShowGameplay()
@@ -409,6 +423,7 @@ void UBUIUW_Options::ShowGameplay()
 	m_SoundMenu->SetStyle(m_UnselctedButton);
 	m_AccessibilityMenu->SetStyle(m_UnselctedButton);
 	m_ControlsMenu->SetStyle(m_UnselctedButton);
+	m_GamepadControlsMenu->SetStyle(m_UnselctedButton);
 }
 
 void UBUIUW_Options::ShowAccessibility()
@@ -419,6 +434,7 @@ void UBUIUW_Options::ShowAccessibility()
 	m_SoundMenu->SetStyle(m_UnselctedButton);
 	m_AccessibilityMenu->SetStyle(m_SelctedButton);
 	m_ControlsMenu->SetStyle(m_UnselctedButton);
+	m_GamepadControlsMenu->SetStyle(m_UnselctedButton);
 }
 
 void UBUIUW_Options::SetVisibilityOfWarningAndMenus(const ESlateVisibility Warning, const ESlateVisibility Menus)
@@ -442,6 +458,7 @@ void UBUIUW_Options::SetMenuVisibility(const ESlateVisibility NewVisibility)
 
 	m_AccessibilityCanvas->SetVisibility(NewVisibility);
 
+	m_GamepadControlsCanvas->SetVisibility(NewVisibility);
 	
 
 }
@@ -455,6 +472,7 @@ void UBUIUW_Options::ShowWarning()
 	m_SoundMenu->GetParent()->SetVisibility(ESlateVisibility::Hidden);
 	m_AccessibilityMenu->GetParent()->SetVisibility(ESlateVisibility::Hidden);
 	m_ControlsMenu->GetParent()->SetVisibility(ESlateVisibility::Hidden);
+	m_GamepadControlsMenu->GetParent()->SetVisibility(ESlateVisibility::Hidden);
 
 	m_Back->GetParent()->SetVisibility(ESlateVisibility::Hidden);
 	m_Optimal->GetParent()->SetVisibility(ESlateVisibility::Hidden);
@@ -471,6 +489,7 @@ void UBUIUW_Options::HideWarning()
 	m_SoundMenu->GetParent()->SetVisibility(ESlateVisibility::Visible);
 	m_AccessibilityMenu->GetParent()->SetVisibility(ESlateVisibility::Visible);
 	m_ControlsMenu->GetParent()->SetVisibility(ESlateVisibility::Visible);
+	m_GamepadControlsMenu->GetParent()->SetVisibility(ESlateVisibility::Visible);
 
 	m_Back->GetParent()->SetVisibility(ESlateVisibility::Visible);
 	m_Optimal->GetParent()->SetVisibility(ESlateVisibility::Visible);
@@ -862,6 +881,8 @@ void UBUIUW_Options::SetUpMenuButtons()
 	m_SoundMenu->OnClicked.AddDynamic(this, &UBUIUW_Options::ShowSound);
 
 	m_ControlsMenu->OnClicked.AddDynamic(this, &UBUIUW_Options::ShowControls);
+
+	m_GamepadControlsMenu->OnClicked.AddDynamic(this, &UBUIUW_Options::ShowGamepadControls);
 
 	m_GameplayMenu->OnClicked.AddDynamic(this, &UBUIUW_Options::ShowGameplay);
 

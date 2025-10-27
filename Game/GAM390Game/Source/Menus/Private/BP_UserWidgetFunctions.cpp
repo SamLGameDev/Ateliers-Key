@@ -3,6 +3,7 @@
 
 #include "BP_UserWidgetFunctions.h"
 #include "AUW_BaseMenuWidget.h"
+#include "InputMappingContext.h"
 
 void UBP_UserWidgetFunctions::ChangeWidget(UAUW_BaseMenuWidget* Current, UAUW_BaseMenuWidget* NewWidget)
 {
@@ -12,3 +13,5 @@ void UBP_UserWidgetFunctions::ChangeWidget(UAUW_BaseMenuWidget* Current, UAUW_Ba
 
 	NewWidget->SetVisibility(ESlateVisibility::Visible);
 }
+
+

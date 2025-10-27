@@ -133,6 +133,9 @@ private:
 	UCanvasPanel* m_ControlsCanvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* m_GamepadControlsCanvas;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UCanvasPanel* m_GameplayCanvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -399,6 +402,9 @@ private:
 	UButton* m_ControlsMenu;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* m_GamepadControlsMenu;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* m_GameplayMenu;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -417,6 +423,10 @@ private:
 
 	UFUNCTION()
 	void ShowControls();
+
+	UFUNCTION()
+	void ShowGamepadControls();
+
 
 	UFUNCTION()
 	void ShowGameplay();
