@@ -11,5 +11,5 @@ USettingsSave::USettingsSave()
 	DialogueVolume = 0.5f;
 	SubtitleSize = 0;
 	CameraSensitivity = 1.0f;
-	FOVValue = 0.9f;
+	FOVValue = 100;
 }
