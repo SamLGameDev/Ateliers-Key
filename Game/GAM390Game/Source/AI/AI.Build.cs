@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class AbilitySystem : ModuleRules
+public class AI : ModuleRules
 {
-    public AbilitySystem(ReadOnlyTargetRules Target) : base(Target)
+    public AI(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -10,8 +10,7 @@ public class AbilitySystem : ModuleRules
             new string[]
             {
                 "Core",
-                "DamageSystem",
-                "AI"
+                "AIModule"
             }
         );
 
@@ -21,9 +20,7 @@ public class AbilitySystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore",
-                "AIModule",
-                "EnhancedInput"
+                "SlateCore"
             }
         );
     }

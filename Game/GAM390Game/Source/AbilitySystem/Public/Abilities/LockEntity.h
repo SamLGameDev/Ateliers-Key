@@ -7,7 +7,7 @@
 #include "InputMappingContext.h"
 #include "LockEntity.generated.h"
 
-class AAIController;
+class ABaseEnemyController;
 /**
  * 
  */
@@ -37,8 +37,10 @@ private:
 
 	FTimerHandle EndLockHandle;
 
-	AAIController* TargetController;
+	ABaseEnemyController* TargetController;
 
+	uint8 StopId;
+		
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	UInputMappingContext* PlayerLockedMap;
 	
