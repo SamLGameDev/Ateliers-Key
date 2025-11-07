@@ -8,6 +8,7 @@
 #include "IDesktopPlatform.h"
 #include "Kismet/GameplayStatics.h"
 #include "HeatMapSquare.h"
+#include "Kismet/KismetRenderingLibrary.h"
 
 void UHeatMapViewer::NativeConstruct()
 {
@@ -25,6 +26,11 @@ void UHeatMapViewer::NativeDestruct()
 	{
 		actor->Destroy();
 	}
+}
+
+FString UHeatMapViewer::GetSavePath(const FString& fileName)
+{
+	return "HeatMaps/" + FPaths::GetBaseFilename(fileName);
 }
 
 void UHeatMapViewer::LoadHeatMaps()
@@ -55,32 +61,46 @@ void UHeatMapViewer::LoadHeatMaps()
 			FileNames
 		);
 
+		TArray<FVector> playerPositions;
 		for (FString& fileName: FileNames)
 		{
-			fileName = "HeatMaps/"+ FPaths::GetBaseFilename(fileName);
+			fileName = GetSavePath(fileName);
 			if (UGameplayStatics::DoesSaveGameExist(fileName, 0))
 			{
-				LoadHeatMap(fileName);
+				UHeatMapData* Data = Cast<UHeatMapData>(UGameplayStatics::LoadGameFromSlot(fileName, 0));
+				playerPositions.Append(Data->PlayerPositions);
 			}
 		}
+		LoadHeatMap(playerPositions);
 	}
 }
 
-void UHeatMapViewer::LoadHeatMap(const FString& MapToLoad)
+void UHeatMapViewer::Load2DHeatMaps(const TArray<FVector>& PlayerPositions)
 {
 	const FVector size = GridSquare.GetDefaultObject()->GetMeshBounds();
 	
 	TArray<GridInfo> HeatSpots;
+	
+	uint32 highestTimes = CalculateGridInfoForPositions2D(PlayerPositions, size, HeatSpots);
 
-	UHeatMapData* Data = Cast<UHeatMapData>(UGameplayStatics::LoadGameFromSlot(MapToLoad, 0));
-
-	uint32 highestTimes = 1;
-
-	for (auto& pos : Data->PlayerPositions)
+	for (size_t i = 0; i < HeatSpots.Num(); i++)
 	{
-		int32 xIndex = static_cast<int32>(pos.X) / size.X;
-		int32 yIndex = static_cast<int32>(pos.Y) / size.Y;
-		int32 zIndex = static_cast<int32>(pos.Z) / size.Z;
+		
+		UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(HeatMapMaterial, this);
+		DynamicMaterial->SetVectorParameterValue("Position", HeatSpots[i].IndexPosition);
+		DynamicMaterial->SetScalarParameterValue("Strength", HeatSpots[i].NumTimes);
+		UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), HeatMapRenderTarget, DynamicMaterial);
+	}
+}
+
+uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots)
+{
+	uint32 highestTimes = 1;
+	for (auto& pos : PlayerPositions)
+	{
+		float xIndex = static_cast<int32>(pos.X) / Size.X;
+		float yIndex = static_cast<int32>(pos.Y) / Size.Y;
+		float zIndex = static_cast<int32>(pos.Z) / Size.Z;
 
 		GridInfo info = {{xIndex, yIndex, zIndex}, 1};
 
@@ -88,7 +108,6 @@ void UHeatMapViewer::LoadHeatMap(const FString& MapToLoad)
 		if (HeatSpots.Find(info, index))
 		{
 			HeatSpots[index].NumTimes += 1;
-
 			if (HeatSpots[index].NumTimes > highestTimes)
 			{
 				highestTimes = HeatSpots[index].NumTimes;
@@ -99,6 +118,41 @@ void UHeatMapViewer::LoadHeatMap(const FString& MapToLoad)
 			HeatSpots.Add(info);
 		}	
 	}
+	return highestTimes;
+}
+
+uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots)
+{
+	uint32 highestTimes = 1;
+	for (auto& pos : PlayerPositions)
+	{
+
+		GridInfo info = {{pos.X, pos.Y, 0}, 1};
+
+		int index = 0;
+		if (HeatSpots.Find(info, index))
+		{
+			HeatSpots[index].NumTimes += 1;
+			if (HeatSpots[index].NumTimes > highestTimes)
+			{
+				highestTimes = HeatSpots[index].NumTimes;
+			}
+		}
+		else
+		{
+			HeatSpots.Add(info);
+		}	
+	}
+	return highestTimes;
+}
+
+void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
+{
+	const FVector size = GridSquare.GetDefaultObject()->GetMeshBounds();
+	
+	TArray<GridInfo> HeatSpots;
+	
+	uint32 highestTimes = CalculateGridInfoForPositions(PlayerPositions, size, HeatSpots);
 
 	for (size_t i = 0; i < HeatSpots.Num(); i++)
 	{

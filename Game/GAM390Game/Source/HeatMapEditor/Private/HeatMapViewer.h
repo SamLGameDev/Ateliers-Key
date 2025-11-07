@@ -14,7 +14,7 @@ class AHeatMapSquare;
 
 struct GridInfo
 {
-	FIntVector IndexPosition;
+	FVector IndexPosition;
 	uint32 NumTimes;
 
 	bool operator==(const GridInfo& Other) const
@@ -36,17 +36,27 @@ public:
 	UEditorUtilityButton* LoadHeatMapsButton;
 
 	UPROPERTY(meta=(BindWidget))
+	UEditorUtilityButton* Load2DHeatMapsButton;
+
+	UPROPERTY(meta=(BindWidget))
 	UTextBlock* test;
 
 	void NativeConstruct() override;
 
 	void NativeDestruct() override;
+	FString GetSavePath(const FString& fileName);
 
 	UFUNCTION()
 	void LoadHeatMaps();
 
 	UFUNCTION()
-	void LoadHeatMap(const FString& MapToLoad);
+	void Load2DHeatMaps(const TArray<FVector>& PlayerPositions);
+
+	UFUNCTION()
+	void LoadHeatMap(const TArray<FVector>& PlayerPositions);
+
+	static uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
+	static uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
 
 	UPROPERTY(EditAnywhere)
 	uint32 GridSize;
@@ -62,4 +72,13 @@ public:
 	FLinearColor SecondHighestColor;
 	UPROPERTY(EditDefaultsOnly)
 	FLinearColor HighestColor;
+
+	TArray<FString> FileNames;
+
+	UPROPERTY(EditDefaultsOnly)
+	UMaterialInterface* HeatMapMaterial;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTextureRenderTarget2D* HeatMapRenderTarget;
+	
 };
