@@ -30,11 +30,3 @@ void UGI_SanctumSettings::SyncSubtitlesSettings()
 	}
 }
 
-void UGI_SanctumSettings::UpdateScore(int Scoring) {
-	Score = Score + Scoring;
-
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("New Score: %d"), Score));
-	}
-}
-

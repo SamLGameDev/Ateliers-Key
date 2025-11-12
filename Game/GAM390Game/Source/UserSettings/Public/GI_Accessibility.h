@@ -32,12 +32,6 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	float CameraFov;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Score;
-
-	UFUNCTION(BlueprintCallable, Category = "Scoring")
-	void UpdateScore(int NewScore);
-
 	virtual void Init() override;
 
 	void SyncSubtitlesSettings();
