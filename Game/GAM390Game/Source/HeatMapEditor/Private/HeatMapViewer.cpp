@@ -45,8 +45,7 @@ void UHeatMapViewer::LoadHeatMaps()
 			TSharedPtr<SWindow> ParentWindow = FSlateApplication::Get().FindBestParentWindowForDialogs(nullptr); 
 			ParentWindowHandle = ParentWindow.IsValid() ? ParentWindow->GetNativeWindow()->GetOSWindowHandle() : nullptr;
 		}
-
-		TArray<FString> FileNames;
+		
 
 		FString DefaultPath = FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("SaveGames/HeatMaps"));
 		IFileManager::Get().MakeDirectory(*DefaultPath, true);

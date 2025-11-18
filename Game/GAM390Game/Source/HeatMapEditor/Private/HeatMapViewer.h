@@ -55,8 +55,8 @@ public:
 	UFUNCTION()
 	void LoadHeatMap(const TArray<FVector>& PlayerPositions);
 
-	static uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
-	static uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
+	static uint32 CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
+	static uint32 CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
 
 	UPROPERTY(EditAnywhere)
 	uint32 GridSize;
