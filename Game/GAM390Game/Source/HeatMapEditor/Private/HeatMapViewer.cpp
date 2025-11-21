@@ -15,6 +15,7 @@ void UHeatMapViewer::NativeConstruct()
 	Super::NativeConstruct();
 
 	LoadHeatMapsButton->OnClicked.AddDynamic(this, &UHeatMapViewer::LoadHeatMaps);
+	Load2DHeatMapsButton->OnClicked.AddDynamic(this, &UHeatMapViewer::LoadHeatMaps2D);
 }
 
 void UHeatMapViewer::NativeDestruct()
@@ -35,43 +36,18 @@ FString UHeatMapViewer::GetSavePath(const FString& fileName)
 
 void UHeatMapViewer::LoadHeatMaps()
 {
-	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
+	SelectHeatMapFiles();
+	TArray<FVector> playerPositions;
+	LoadHeatMapFiles(playerPositions);
+	LoadHeatMap(playerPositions);
+}
 
-	if (DesktopPlatform)
-	{
-		void* ParentWindowHandle = nullptr;
-		if (FSlateApplication::IsInitialized())
-		{
-			TSharedPtr<SWindow> ParentWindow = FSlateApplication::Get().FindBestParentWindowForDialogs(nullptr); 
-			ParentWindowHandle = ParentWindow.IsValid() ? ParentWindow->GetNativeWindow()->GetOSWindowHandle() : nullptr;
-		}
-		
-
-		FString DefaultPath = FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("SaveGames/HeatMaps"));
-		IFileManager::Get().MakeDirectory(*DefaultPath, true);
-		
-		DesktopPlatform->OpenFileDialog(
-			ParentWindowHandle,
-			"",
-			DefaultPath,
-			TEXT(""),
-			TEXT("Save Files (*.sav)|*.sav"),
-			EFileDialogFlags::Multiple,
-			FileNames
-		);
-
-		TArray<FVector> playerPositions;
-		for (FString& fileName: FileNames)
-		{
-			fileName = GetSavePath(fileName);
-			if (UGameplayStatics::DoesSaveGameExist(fileName, 0))
-			{
-				UHeatMapData* Data = Cast<UHeatMapData>(UGameplayStatics::LoadGameFromSlot(fileName, 0));
-				playerPositions.Append(Data->PlayerPositions);
-			}
-		}
-		LoadHeatMap(playerPositions);
-	}
+void UHeatMapViewer::LoadHeatMaps2D()
+{
+	SelectHeatMapFiles();
+	TArray<FVector> playerPositions;
+	LoadHeatMapFiles(playerPositions);
+	Load2DHeatMaps(playerPositions);
 }
 
 void UHeatMapViewer::Load2DHeatMaps(const TArray<FVector>& PlayerPositions)
@@ -82,14 +58,22 @@ void UHeatMapViewer::Load2DHeatMaps(const TArray<FVector>& PlayerPositions)
 	
 	uint32 highestTimes = CalculateGridInfoForPositions2D(PlayerPositions, size, HeatSpots);
 
+	FVector2D min = {-5000, -5110};
+	FVector2D max = {4900, 4800};
+	FVector2D dif = max - min;
+	FVector2D lengthOfOnePoint = {1024 / dif.X, 1024 / dif.Y};
+	UE_LOG(LogTemp, Warning, TEXT("POS, %0.5f, %0.5f"), lengthOfOnePoint.X, lengthOfOnePoint.Y);
+	UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(HeatMapMaterial, this);
 	for (size_t i = 0; i < HeatSpots.Num(); i++)
 	{
-		
-		UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(HeatMapMaterial, this);
-		DynamicMaterial->SetVectorParameterValue("Position", HeatSpots[i].IndexPosition);
+		FVector2D pos = FVector2D(HeatSpots[i].IndexPosition) * lengthOfOnePoint;
+		UE_LOG(LogTemp, Warning, TEXT("index, %0.5f, %0.5f"), HeatSpots[i].IndexPosition.X, HeatSpots[i].IndexPosition.Y);
+		UE_LOG(LogTemp, Warning, TEXT("POS, %0.5f, %0.5f"), pos.X, pos.Y);
+
+		DynamicMaterial->SetVectorParameterValue("Position", FVector(pos / 1024, 0));
 		DynamicMaterial->SetScalarParameterValue("Strength", HeatSpots[i].NumTimes);
-		UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), HeatMapRenderTarget, DynamicMaterial);
 	}
+	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), HeatMapRenderTarget, DynamicMaterial);
 }
 
 uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots)
@@ -125,8 +109,9 @@ uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& Pl
 	uint32 highestTimes = 1;
 	for (auto& pos : PlayerPositions)
 	{
-
-		GridInfo info = {{pos.X, pos.Y, 0}, 1};
+		FVector2D min = {-5000, -5110};
+		FVector2D newPos = FVector2D(pos);
+		GridInfo info = {FVector(newPos, 0), 1};
 
 		int index = 0;
 		if (HeatSpots.Find(info, index))
@@ -143,6 +128,48 @@ uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& Pl
 		}	
 	}
 	return highestTimes;
+}
+
+void UHeatMapViewer::LoadHeatMapFiles(TArray<FVector>& PlayerPositions)
+{
+	for (FString& fileName: FileNames)
+	{
+		fileName = GetSavePath(fileName);
+		if (UGameplayStatics::DoesSaveGameExist(fileName, 0))
+		{
+			UHeatMapData* Data = Cast<UHeatMapData>(UGameplayStatics::LoadGameFromSlot(fileName, 0));
+			PlayerPositions.Append(Data->PlayerPositions);
+		}
+	}
+}
+
+void UHeatMapViewer::SelectHeatMapFiles()
+{                                                                                                                          
+	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();                                                     
+                                                                                                                           
+	if (DesktopPlatform)
+	{
+		void* ParentWindowHandle = nullptr;                                                                                
+		if (FSlateApplication::IsInitialized())                                                                            
+		{                                                                                                                  
+			TSharedPtr<SWindow> ParentWindow = FSlateApplication::Get().FindBestParentWindowForDialogs(nullptr);           
+			ParentWindowHandle = ParentWindow.IsValid() ? ParentWindow->GetNativeWindow()->GetOSWindowHandle() : nullptr;  
+		}                                                                                                                  
+		                                                                                                                   
+                                                                                                                           
+		FString DefaultPath = FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("SaveGames/HeatMaps"));                      
+		IFileManager::Get().MakeDirectory(*DefaultPath, true);                                                             
+		                                                                                                                   
+		DesktopPlatform->OpenFileDialog(                                                                                   
+			ParentWindowHandle,                                                                                            
+			"",                                                                                                            
+			DefaultPath,                                                                                                   
+			TEXT(""),                                                                                                      
+			TEXT("Save Files (*.sav)|*.sav"),                                                                              
+			EFileDialogFlags::Multiple,                                                                                    
+			FileNames                                                                                                      
+		);
+	}
 }
 
 void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
