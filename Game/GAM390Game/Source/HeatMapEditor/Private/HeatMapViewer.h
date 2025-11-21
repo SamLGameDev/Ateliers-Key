@@ -12,12 +12,14 @@
 
 class AHeatMapSquare;
 
-struct GridInfo
+USTRUCT()
+struct FGridInfo
 {
+	GENERATED_BODY()
 	FVector IndexPosition;
 	uint32 NumTimes;
 
-	bool operator==(const GridInfo& Other) const
+	bool operator==(const FGridInfo& Other) const
 	{
 		return IndexPosition == Other.IndexPosition;
 	}
@@ -56,10 +58,13 @@ public:
 	void Load2DHeatMaps(const TArray<FVector>& PlayerPositions);
 
 	UFUNCTION()
+	void Test(uint32 index, TArray<FGridInfo> HeatSpots);
+
+	UFUNCTION()
 	void LoadHeatMap(const TArray<FVector>& PlayerPositions);
 
-	static uint32 CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
-	static uint32 CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots);
+	static uint32 CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<FGridInfo>& HeatSpots);
+	static uint32 CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<FGridInfo>& HeatSpots);
 
 	void LoadHeatMapFiles(TArray<FVector>& PlayerPositions);
 	
@@ -87,5 +92,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UTextureRenderTarget2D* HeatMapRenderTarget;
+
+	UMaterialInstanceDynamic* mat;
 	
 };

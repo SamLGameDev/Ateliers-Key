@@ -54,7 +54,7 @@ void UHeatMapViewer::Load2DHeatMaps(const TArray<FVector>& PlayerPositions)
 {
 	const FVector size = GridSquare.GetDefaultObject()->GetMeshBounds();
 	
-	TArray<GridInfo> HeatSpots;
+	TArray<FGridInfo> HeatSpots;
 	
 	uint32 highestTimes = CalculateGridInfoForPositions2D(PlayerPositions, size, HeatSpots);
 
@@ -62,21 +62,58 @@ void UHeatMapViewer::Load2DHeatMaps(const TArray<FVector>& PlayerPositions)
 	FVector2D max = {4900, 4800};
 	FVector2D dif = max - min;
 	FVector2D lengthOfOnePoint = {1024 / dif.X, 1024 / dif.Y};
+	mat = UMaterialInstanceDynamic::Create(HeatMapMaterial, this);
 	UE_LOG(LogTemp, Warning, TEXT("POS, %0.5f, %0.5f"), lengthOfOnePoint.X, lengthOfOnePoint.Y);
-	UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(HeatMapMaterial, this);
-	for (size_t i = 0; i < HeatSpots.Num(); i++)
-	{
-		FVector2D pos = FVector2D(HeatSpots[i].IndexPosition) * lengthOfOnePoint;
-		UE_LOG(LogTemp, Warning, TEXT("index, %0.5f, %0.5f"), HeatSpots[i].IndexPosition.X, HeatSpots[i].IndexPosition.Y);
-		UE_LOG(LogTemp, Warning, TEXT("POS, %0.5f, %0.5f"), pos.X, pos.Y);
 
-		DynamicMaterial->SetVectorParameterValue("Position", FVector(pos / 1024, 0));
-		DynamicMaterial->SetScalarParameterValue("Strength", HeatSpots[i].NumTimes);
-	}
-	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), HeatMapRenderTarget, DynamicMaterial);
+
+	FTimerHandle handle;
+	FTimerDelegate del;
+
+
+	del.BindUFunction(this, "Test", 0, HeatSpots);
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(del);
+
+
+
 }
 
-uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots)
+void UHeatMapViewer::Test(uint32 index, TArray<FGridInfo> HeatSpots)
+{
+	FVector2D min = { -5000, -5110 };
+	FVector2D max = { 4900, 4800 };
+	FVector2D dif = max - min;
+	FVector2D lengthOfOnePoint = { 1024 / dif.X, 1024 / dif.Y };
+
+	FVector2D pos = FVector2D(HeatSpots[index].IndexPosition) * lengthOfOnePoint;
+	FVector2D start = max / dif;
+	pos /= dif;
+	pos = start + pos;
+
+	mat->SetVectorParameterValue("Position", FVector(pos, 0));
+	mat->SetScalarParameterValue("Strength", HeatSpots[index].NumTimes);
+	index++;
+	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), HeatMapRenderTarget, mat);
+	if (index == HeatSpots.Num()) {
+
+		return;
+	}
+
+
+	FTimerHandle handle;
+	FTimerDelegate del;
+
+
+	del.BindUFunction(this, "Test", index, HeatSpots);
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(del);
+
+
+
+
+}
+
+uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<FGridInfo>& HeatSpots)
 {
 	uint32 highestTimes = 1;
 	for (auto& pos : PlayerPositions)
@@ -85,7 +122,7 @@ uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& Play
 		float yIndex = static_cast<int32>(pos.Y) / Size.Y;
 		float zIndex = static_cast<int32>(pos.Z) / Size.Z;
 
-		GridInfo info = {{xIndex, yIndex, zIndex}, 1};
+		FGridInfo info = {{xIndex, yIndex, zIndex}, 1};
 
 		int index = 0;
 		if (HeatSpots.Find(info, index))
@@ -104,14 +141,14 @@ uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& Play
 	return highestTimes;
 }
 
-uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<GridInfo>& HeatSpots)
+uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<FGridInfo>& HeatSpots)
 {
 	uint32 highestTimes = 1;
 	for (auto& pos : PlayerPositions)
 	{
 		FVector2D min = {-5000, -5110};
 		FVector2D newPos = FVector2D(pos);
-		GridInfo info = {FVector(newPos, 0), 1};
+		FGridInfo info = {FVector(newPos, 0), 1};
 
 		int index = 0;
 		if (HeatSpots.Find(info, index))
@@ -176,7 +213,7 @@ void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
 {
 	const FVector size = GridSquare.GetDefaultObject()->GetMeshBounds();
 	
-	TArray<GridInfo> HeatSpots;
+	TArray<FGridInfo> HeatSpots;
 	
 	uint32 highestTimes = CalculateGridInfoForPositions(PlayerPositions, size, HeatSpots);
 
@@ -184,7 +221,7 @@ void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
 	{
 		FActorSpawnParameters spawnInfo;
 
-		GridInfo& heatSpot = HeatSpots[i];
+		FGridInfo& heatSpot = HeatSpots[i];
 		
 		spawnInfo.Name = NAME_None;
 		spawnInfo.bNoFail = true;
