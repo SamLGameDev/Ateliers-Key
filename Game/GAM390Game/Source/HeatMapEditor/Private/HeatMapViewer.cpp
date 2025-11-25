@@ -113,9 +113,7 @@ uint32 UHeatMapViewer::CalculateGridInfoForPositions2D(const TArray<FVector>& Pl
 	uint32 highestTimes = 1;
 	for (auto& pos : PlayerPositions)
 	{
-		FVector2D min = {-5000, -5110};
-		FVector2D newPos = FVector2D(pos);
-		FGridInfo info = {FVector(newPos, 0), 1};
+		FGridInfo info = {FVector(pos.X, pos.Y, 0), 1};
 
 		int index = 0;
 		if (HeatSpots.Find(info, index))
@@ -207,6 +205,8 @@ void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
 	const FVector size = GridSquare.GetDefaultObject()->GetMeshBounds();
 	
 	TArray<FGridInfo> HeatSpots;
+
+	UE_LOG(LogTemp, Warning, TEXT("Size: %0.5f, %0.5f, %0.5f"), size.X, size.Y, size.Z);
 	
 	uint32 highestTimes = CalculateGridInfoForPositions(PlayerPositions, size, HeatSpots);
 

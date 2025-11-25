@@ -105,6 +105,8 @@ void UUBaseGameUserSettings::LoadSettings(bool bForceReload)
 			return;
 		}
 
+		const FConfigSection* section = GConfig->GetSection(TEXT("/Script/GAM390Game.UBaseGameUserSettings"), false, GGameIni);
+
 		GConfig->GetBool
 		(
 			TEXT("/Script/GAM390Game.UBaseGameUserSettings"),

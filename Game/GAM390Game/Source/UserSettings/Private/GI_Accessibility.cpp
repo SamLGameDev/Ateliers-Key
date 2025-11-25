@@ -23,6 +23,11 @@ void UGI_SanctumSettings::SyncSubtitlesSettings()
 		CameraSensitivity = gameUserSettings->CameraSensitivity;
 		CameraFov = gameUserSettings->CameraFov;
 
+		if (CameraFov == 0)
+		{
+			CameraFov = 1;
+		}
+
 	}
 	if (!UGameplayStatics::DoesSaveGameExist("settings", 0))
 	{
