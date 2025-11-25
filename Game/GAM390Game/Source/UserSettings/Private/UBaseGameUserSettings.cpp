@@ -95,6 +95,16 @@ void UUBaseGameUserSettings::LoadSettings(bool bForceReload)
 
 	if (GConfig)
 	{
+		if (!GConfig->DoesSectionExist(TEXT("/Script/GAM390Game.UBaseGameUserSettings"), GGameIni))
+		{
+
+			CameraSensitivity = 1.0f;
+			CameraFov = 1;
+			bSubtitlesEnabled = false;
+			m_Brightness = 1;
+			return;
+		}
+
 		GConfig->GetBool
 		(
 			TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
@@ -120,10 +130,10 @@ void UUBaseGameUserSettings::LoadSettings(bool bForceReload)
 
 		GConfig->GetFloat
 		(
-		TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
-		TEXT("CameraFov"),
-		CameraFov,
-		GGameIni
+			TEXT("/Script/GAM390Game.UBaseGameUserSettings"),
+			TEXT("CameraFov"),
+			CameraFov,
+			GGameIni
 		);
 	}
 }

@@ -25,7 +25,7 @@ public:
 	float CameraSensitivity;
 
 	UPROPERTY(Config)
-	float CameraFov;
+	float CameraFov = 1;
 	
 	UObject* WorldContext;
 
