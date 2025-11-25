@@ -16,6 +16,8 @@ void UHeatMapViewer::NativeConstruct()
 
 	LoadHeatMapsButton->OnClicked.AddDynamic(this, &UHeatMapViewer::LoadHeatMaps);
 	Load2DHeatMapsButton->OnClicked.AddDynamic(this, &UHeatMapViewer::LoadHeatMaps2D);
+
+	GetMapBounds(MapBoundsMin, MapBoundsMax);
 }
 
 void UHeatMapViewer::NativeDestruct()
@@ -58,60 +60,25 @@ void UHeatMapViewer::Load2DHeatMaps(const TArray<FVector>& PlayerPositions)
 	
 	uint32 highestTimes = CalculateGridInfoForPositions2D(PlayerPositions, size, HeatSpots);
 
-	FVector2D min = {-5000, -5110};
-	FVector2D max = {4900, 4800};
-	FVector2D dif = max - min;
-	FVector2D lengthOfOnePoint = {1024 / dif.X, 1024 / dif.Y};
-	mat = UMaterialInstanceDynamic::Create(HeatMapMaterial, this);
-	UE_LOG(LogTemp, Warning, TEXT("POS, %0.5f, %0.5f"), lengthOfOnePoint.X, lengthOfOnePoint.Y);
-
-
-	FTimerHandle handle;
-	FTimerDelegate del;
-
-
-	del.BindUFunction(this, "Test", 0, HeatSpots);
-
-	GetWorld()->GetTimerManager().SetTimerForNextTick(del);
-
-
-
-}
-
-void UHeatMapViewer::Test(uint32 index, TArray<FGridInfo> HeatSpots)
-{
-	FVector2D min = { -5000, -5110 };
-	FVector2D max = { 4900, 4800 };
-	FVector2D dif = max - min;
-	FVector2D lengthOfOnePoint = { 1024 / dif.X, 1024 / dif.Y };
-
-	FVector2D pos = FVector2D(HeatSpots[index].IndexPosition) * lengthOfOnePoint;
-	FVector2D start = max / dif;
-	pos /= dif;
-	pos = start + pos;
-
-	mat->SetVectorParameterValue("Position", FVector(pos, 0));
-	mat->SetScalarParameterValue("Strength", HeatSpots[index].NumTimes);
-	index++;
-	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), HeatMapRenderTarget, mat);
-	if (index == HeatSpots.Num()) {
-
-		return;
+	BaseDrawMaterial = UMaterialInstanceDynamic::Create(HeatMapMaterial, nullptr);
+	
+	for (int i = 0; i < HeatSpots.Num(); i++)
+	{
+		float posX =  FMath::GetMappedRangeValueClamped(FVector2D(MapBoundsMin.X, MapBoundsMax.X),
+	FVector2D(0, 1), HeatSpots[i].IndexPosition.X);
+		float posY =  FMath::GetMappedRangeValueClamped(FVector2D(MapBoundsMin.Y, MapBoundsMax.Y),
+		FVector2D(0, 1), HeatSpots[i].IndexPosition.Y);
+	
+		BaseDrawMaterial->SetVectorParameterValue("Position", FVector(posX, posY, 0));
+		BaseDrawMaterial->SetScalarParameterValue("Strength", HeatSpots[i].NumTimes);
+		UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), HeatMapRenderTarget, BaseDrawMaterial);
 	}
 
-
-	FTimerHandle handle;
-	FTimerDelegate del;
-
-
-	del.BindUFunction(this, "Test", index, HeatSpots);
-
-	GetWorld()->GetTimerManager().SetTimerForNextTick(del);
-
-
-
+	ColorDrawMaterial = UMaterialInstanceDynamic::Create(HeatMapColor, nullptr);
+	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), ColorHeatMapRenderTarget, ColorDrawMaterial);
 
 }
+
 
 uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<FGridInfo>& HeatSpots)
 {
@@ -209,6 +176,32 @@ void UHeatMapViewer::SelectHeatMapFiles()
 	}
 }
 
+void UHeatMapViewer::GetMapBounds(FVector2D& Min, FVector2D& Max)
+{
+	TArray<AActor*> actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), actors);
+	
+	for (AActor* actor : actors)
+	{
+		FVector actorPos = actor->GetActorLocation();
+		if (actorPos.X < Min.X)
+		{
+			Min.X = actorPos.X;
+		}
+		if (actorPos.Y < Min.Y)
+		{
+			Min.Y = actorPos.Y;
+		}
+		if (actorPos.X > Max.X)
+		{
+			Max.X = actorPos.X;
+		}
+		if (actorPos.Y > Max.Y)
+		{
+			Max.Y = actorPos.Y;
+		}
+	}
+}
 void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
 {
 	const FVector size = GridSquare.GetDefaultObject()->GetMeshBounds();

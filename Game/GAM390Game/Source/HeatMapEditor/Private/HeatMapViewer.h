@@ -58,9 +58,6 @@ public:
 	void Load2DHeatMaps(const TArray<FVector>& PlayerPositions);
 
 	UFUNCTION()
-	void Test(uint32 index, TArray<FGridInfo> HeatSpots);
-
-	UFUNCTION()
 	void LoadHeatMap(const TArray<FVector>& PlayerPositions);
 
 	static uint32 CalculateGridInfoForPositions(const TArray<FVector>& PlayerPositions, const FVector& Size, TArray<FGridInfo>& HeatSpots);
@@ -91,8 +88,21 @@ public:
 	UMaterialInterface* HeatMapMaterial;
 
 	UPROPERTY(EditDefaultsOnly)
+	UMaterialInterface* HeatMapColor;
+
+	UPROPERTY(EditDefaultsOnly)
 	UTextureRenderTarget2D* HeatMapRenderTarget;
 
-	UMaterialInstanceDynamic* mat;
+	UMaterialInstanceDynamic* BaseDrawMaterial;
+	UMaterialInstanceDynamic* ColorDrawMaterial;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTextureRenderTarget2D*	ColorHeatMapRenderTarget;
+
+	void GetMapBounds(FVector2D& Min, FVector2D& Max);
+	
+	FVector2D MapBoundsMin = FVector2D(FLT_MAX, FLT_MAX);
+
+	FVector2D MapBoundsMax = FVector2D(-FLT_MAX, -FLT_MAX);
 	
 };
