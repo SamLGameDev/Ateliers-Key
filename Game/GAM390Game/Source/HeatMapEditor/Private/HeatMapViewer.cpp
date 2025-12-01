@@ -85,9 +85,9 @@ uint32 UHeatMapViewer::CalculateGridInfoForPositions(const TArray<FVector>& Play
 	uint32 highestTimes = 1;
 	for (auto& pos : PlayerPositions)
 	{
-		float xIndex = static_cast<int32>(pos.X) / Size.X;
-		float yIndex = static_cast<int32>(pos.Y) / Size.Y;
-		float zIndex = static_cast<int32>(pos.Z) / Size.Z;
+		float xIndex = static_cast<int32>(pos.X) / static_cast<int32>(Size.X);
+		float yIndex = static_cast<int32>(pos.Y) / static_cast<int32>(Size.Y);
+		float zIndex = static_cast<int32>(pos.Z) / static_cast<int32>(Size.Z);
 
 		FGridInfo info = {{xIndex, yIndex, zIndex}, 1};
 
@@ -220,6 +220,10 @@ void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
 		spawnInfo.bNoFail = true;
 
 		const FVector pos = (FVector(heatSpot.IndexPosition) * size) + size / 2.f;
+
+		UE_LOG(LogTemp, Warning, TEXT("IndexPos: %0.5f, %0.5f, %0.5f"), heatSpot.IndexPosition.X, heatSpot.IndexPosition.Y, heatSpot.IndexPosition.Z);
+		
+		UE_LOG(LogTemp, Warning, TEXT("PositionOnGrid: %0.5f, %0.5f, %0.5f"), pos.X, pos.Y, pos.Z);
 		
 		AHeatMapSquare* square = GetWorld()->SpawnActor<AHeatMapSquare>(GridSquare, pos, FRotator::ZeroRotator, spawnInfo );
 		
