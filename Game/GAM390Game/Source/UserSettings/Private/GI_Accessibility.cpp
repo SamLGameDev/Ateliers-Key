@@ -9,6 +9,7 @@
 
 void UGI_SanctumSettings::Init()
 {
+	Super::Init();
 	SyncSubtitlesSettings();
 }
 

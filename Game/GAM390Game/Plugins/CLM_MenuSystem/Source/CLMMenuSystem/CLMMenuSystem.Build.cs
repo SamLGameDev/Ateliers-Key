@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class CommonUIMenuSystem : ModuleRules
+public class CLMMenuSystem : ModuleRules
 {
-    public CommonUIMenuSystem(ReadOnlyTargetRules Target) : base(Target)
+    public CLMMenuSystem(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
