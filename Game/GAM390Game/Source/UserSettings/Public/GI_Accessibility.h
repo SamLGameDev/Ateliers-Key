@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float m_Brightness;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ControllerVibration;
+
 	UPROPERTY(BlueprintReadOnly)
 	float CameraSensitivity;
 
