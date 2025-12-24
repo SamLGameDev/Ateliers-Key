@@ -127,6 +127,10 @@
 		{
 			"Name": "CommonUI",
 			"Enabled": true
+		},
+		{
+			"Name": "ScreenReader",
+			"Enabled": true
 		}
 	]
 }
