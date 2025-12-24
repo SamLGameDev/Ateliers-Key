@@ -201,8 +201,10 @@ void ABP_Player::Melee(UHackEffect* Hack)
 {
 	if (FHitResult MeleeHit; DetectHitEntity(MeleeHit))
 	{
-		const FHackInfo HackInfo = FHackInfo(this, MeleeHit.GetActor());
-		
+		FHackInfo HackInfo;
+		HackInfo.Instigator = this;
+		HackInfo.HackedObject = MeleeHit.GetActor();
+
 		Hack->ExecuteHack(HackInfo);
 	}
 }

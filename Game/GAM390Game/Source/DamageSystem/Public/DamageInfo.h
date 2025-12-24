@@ -21,10 +21,10 @@ public:
 	float Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
-	EDamageTransmitter DamageType;
+	EDamageTransmitter DamageType = EDamageTransmitter::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
-	EDamageResponse DamageResponse;
+	EDamageResponse DamageResponse = EDamageResponse::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
 	bool ShouldDamageInvincible;

@@ -12,10 +12,12 @@ struct FHackInfo
 	GENERATED_BODY()
 
 	UPROPERTY()
-	UObject* Instigator;
+	UObject* Instigator = nullptr;
 
 	UPROPERTY()
-	UObject* HackedObject;
+	UObject* HackedObject = nullptr;
+
+	FHackInfo() = default;
 };
 
 /**
