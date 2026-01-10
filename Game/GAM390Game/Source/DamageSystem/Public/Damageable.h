@@ -39,6 +39,9 @@ public:
 	void GetTeamNumber(int32& TeamNumber);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void SetTeamNumber(const int32& TeamNumber);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
 	void GetCurrentHealth(double& CurrentHealth);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
