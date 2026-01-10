@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using UnrealBuildTool.Rules;
 
 public class GAM390Game : ModuleRules
 {
@@ -8,7 +9,7 @@ public class GAM390Game : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GeneralUtilities", "VariableStores", "ProcEnemies", "DamageSystem", "LevelManagers", "Subtitles", "Menus", "Hacking", "UMG", "Slate", "SlateCore", "SoundManagement", "TimeManagementExtended", "AbilitySystem", "AI" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GeneralUtilities", "VariableStores", "ProcEnemies", "DamageSystem", "LevelManagers", "Subtitles", "Menus", "Hacking", "UMG", "Slate", "SlateCore", "SoundManagement", "TimeManagementExtended", "AbilitySystem", "AI", "NavigationSystem" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
