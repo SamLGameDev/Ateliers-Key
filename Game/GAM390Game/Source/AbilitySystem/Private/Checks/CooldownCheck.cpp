@@ -18,5 +18,10 @@ void UCooldownCheck::StartCooldown()
 
 float UCooldownCheck::GetCooldownRemainingPercent() const
 {
-	return GetWorld()->GetTimerManager().GetTimerRemaining(CooldownTimer) / CooldownDuration;
+    if (GetWorld()->GetTimerManager().IsTimerActive(CooldownTimer))
+    {
+	    return GetWorld()->GetTimerManager().GetTimerRemaining(CooldownTimer) / CooldownDuration;
+    }
+    return 0;
+
 }
