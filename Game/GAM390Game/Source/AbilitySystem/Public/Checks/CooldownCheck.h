@@ -22,6 +22,10 @@ class ABILITYSYSTEM_API UCooldownCheck : public UConditionCheck
 	UFUNCTION(BlueprintCallable)
 	void StartCooldown();
 
+	UFUNCTION(BlueprintCallable)
+	void CancelCooldown();
+
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float GetCooldownRemainingPercent() const;
 protected:

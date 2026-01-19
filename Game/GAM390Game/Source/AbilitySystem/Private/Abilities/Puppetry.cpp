@@ -22,6 +22,7 @@ void UPuppetry::StartExecution(AActor* Target)
 
 void UPuppetry::CancelExecution(const uint8& OriginalTeam, AActor* Puppet)
 {
+	if (!Puppet) return;
 	IDamageable::Execute_SetTeamNumber(Puppet, OriginalTeam);
 }
 

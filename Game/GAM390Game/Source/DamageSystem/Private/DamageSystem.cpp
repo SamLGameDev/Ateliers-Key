@@ -23,6 +23,8 @@ void UDamageSystem::BeginPlay()
 	// ...
 
 	CurrentHealth = MaxHealth;
+
+	MaxAttackTokens = AttackTokensCount;
 	
 }
 
@@ -124,6 +126,8 @@ void UDamageSystem::CompleteReset()
 	ResetHealth();
 	CurrentTempHealth = 0;
 	IsDead = 0;
+
+	AttackTokensCount = MaxAttackTokens;
 }
 
 
