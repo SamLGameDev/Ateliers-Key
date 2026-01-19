@@ -58,6 +58,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReturnAttackToken(int32 Amount);
 
+	UFUNCTION(BlueprintCallable)
+	void ResetHealth();
+
+	UFUNCTION(BlueprintCallable)
+	void CompleteReset();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;
 

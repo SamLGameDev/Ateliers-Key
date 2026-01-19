@@ -47,6 +47,12 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
 	void GetMaxHealth(double& MaxHealth);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UDamageable")
+	void ResetHealth();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UDamageable")
+	void CompleteReset();
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
 	void Heal(double Amount);
 };

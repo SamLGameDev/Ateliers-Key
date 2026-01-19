@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CheckPoints/Checkpoint.h"
+#include "Damageable.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -19,10 +21,29 @@ ACheckpoint::ACheckpoint()
 
 void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	FCheckpointInfo checkpoint;
-	checkpoint.RestartTransform = FTransform(GetActorRotation(), GetActorLocation(), FVector(1, 1, 1));
+	if (OtherActor->Implements<UDamageable>())
+	{
+		IDamageable::Execute_ResetHealth(OtherActor);
+		FCheckpointInfo checkpoint;
+		checkpoint.RestartLocation = GetActorLocation();
+		checkpoint.RestartRotation = GetActorRotation();
+		checkpoint.CombatEncounters = {CombatEncounter};
 
-	CurrentCheckpoint->SetObject(checkpoint);
+		if (NextCheckpoint)
+		{
+			checkpoint.CombatEncounters.Add(NextCheckpoint->CombatEncounter);
+			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, NextCheckpoint->CombatEncounter, true, false, {});
 
-	Destroy();
+		}
+
+		if (!GetWorld()->GetStreamingLevels().Contains(CombatEncounter))
+		{
+			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, CombatEncounter, true, false, {});
+		}
+
+		CurrentCheckpoint->SetObject(checkpoint);
+
+
+		Destroy();
+	}
 }

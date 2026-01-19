@@ -15,7 +15,13 @@ struct FCheckpointInfo
 public:
 
 	UPROPERTY(BlueprintReadOnly)
-	FTransform RestartTransform;
+	FVector RestartLocation;
+
+	UPROPERTY(BlueprintReadOnly)
+	FRotator RestartRotation;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<TSoftObjectPtr<UWorld>> CombatEncounters;
 };
 
 UCLASS()
@@ -46,6 +52,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UPROPERTY(EditInstanceOnly)
+	ACheckpoint* NextCheckpoint;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly)
@@ -53,6 +62,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBoxComponent* CollisionZone;
+
+	UPROPERTY(EditInstanceOnly)
+	TSoftObjectPtr<UWorld> CombatEncounter;
 
 public:	
 

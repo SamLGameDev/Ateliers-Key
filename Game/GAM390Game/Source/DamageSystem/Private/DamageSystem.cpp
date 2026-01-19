@@ -114,6 +114,19 @@ void UDamageSystem::ReturnAttackToken(int32 Amount) {
 	AttackTokensCount += Amount;
 }
 
+void UDamageSystem::ResetHealth()
+{
+	CurrentHealth = MaxHealth;
+}
+
+void UDamageSystem::CompleteReset()
+{
+	ResetHealth();
+	CurrentTempHealth = 0;
+	IsDead = 0;
+}
+
+
 void UDamageSystem::CallOnDeath(AActor* DamagedActor) {
 	DamagedActor->Destroy();
 
