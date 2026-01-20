@@ -30,4 +30,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability", meta = (AllowPrivateAccess = "true"))
 	float PuppetDuration = 5;
 	
+
 };

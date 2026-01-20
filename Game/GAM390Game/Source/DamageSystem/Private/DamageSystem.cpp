@@ -23,6 +23,8 @@ void UDamageSystem::BeginPlay()
 	// ...
 
 	CurrentHealth = MaxHealth;
+
+	MaxAttackTokens = AttackTokensCount;
 	
 }
 
@@ -113,6 +115,21 @@ bool UDamageSystem::ReserveAttackToken(int32 Amount) {
 void UDamageSystem::ReturnAttackToken(int32 Amount) {
 	AttackTokensCount += Amount;
 }
+
+void UDamageSystem::ResetHealth()
+{
+	CurrentHealth = MaxHealth;
+}
+
+void UDamageSystem::CompleteReset()
+{
+	ResetHealth();
+	CurrentTempHealth = 0;
+	IsDead = 0;
+
+	AttackTokensCount = MaxAttackTokens;
+}
+
 
 void UDamageSystem::CallOnDeath(AActor* DamagedActor) {
 	DamagedActor->Destroy();

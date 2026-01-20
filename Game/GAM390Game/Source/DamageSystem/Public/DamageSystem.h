@@ -43,6 +43,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
 	int32 AttackTokensCount;
 
+	int32 MaxAttackTokens;
+
 	UFUNCTION(BlueprintCallable)
 	void Heal(float Amount);
 
@@ -58,6 +60,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReturnAttackToken(int32 Amount);
 
+	UFUNCTION(BlueprintCallable)
+	void ResetHealth();
+
+	UFUNCTION(BlueprintCallable)
+	void CompleteReset();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;
 
@@ -69,9 +77,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float CurrentHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float MaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float CurrentTempHealth;
@@ -92,5 +97,8 @@ protected:
 	static void CallOnDeath(AActor* DamagedActor);
 
 	void CallOnDamageResponse(const FDamageInfo& DamageResponse);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float MaxHealth;
 		
 };

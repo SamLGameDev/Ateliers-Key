@@ -16,6 +16,11 @@ void UCooldownCheck::StartCooldown()
 
 }
 
+void UCooldownCheck::CancelCooldown()
+{
+	GetWorld()->GetTimerManager().ClearTimer(CooldownTimer);
+}
+
 float UCooldownCheck::GetCooldownRemainingPercent() const
 {
     if (GetWorld()->GetTimerManager().IsTimerActive(CooldownTimer))
