@@ -52,28 +52,6 @@ void ULifeSteal::StartExecution(AActor* Target)
 	StealLoop = GetWorld()->GetTimerManager().SetTimerForNextTick(LifeStealDel);
 }
 
-void ULifeSteal::HealReal()
-{
-
-	FTimerDelegate LifeStealDel;
-
-	LifeStealDel.BindUFunction(this, FName("HealQuick"), Duration);
-
-    GetWorld()->GetTimerManager().SetTimerForNextTick(LifeStealDel);
-}
-
-void ULifeSteal::HealQuick(float RemainingDuration)
-{
-	if (RemainingDuration <= 0) return;
-	DamageSystem->Heal(HealPerTick * GetWorld()->GetDeltaSeconds());
-
-	FTimerDelegate LifeStealDel;
-
-	LifeStealDel.BindUFunction(this, FName("HealQuick"), RemainingDuration - GetWorld()->GetDeltaSeconds());
-
-	GetWorld()->GetTimerManager().SetTimerForNextTick(LifeStealDel);
-}
-
 void ULifeSteal::LifeSteal(UDamageSystem* TargetDS, float RemainingDuration)
 {
 	if (RemainingDuration <= 0 || TargetDS->IsDead) return;

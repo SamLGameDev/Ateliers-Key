@@ -130,6 +130,44 @@ void UDamageSystem::CompleteReset()
 	AttackTokensCount = MaxAttackTokens;
 }
 
+void UDamageSystem::StartHealthPerTick(const float& Amount, const float& Duration, uint8& ID, const bool& TempHealth)
+{
+	while (HealthPerTickHandles.Contains(ID))
+	{
+		ID = FMath::RandRange(0, 255);
+	}
+
+	FHealFunc HealFunc;
+	if (TempHealth) HealFunc.BindDynamic(this, &UDamageSystem::HealTemp);
+	else  HealFunc.BindDynamic(this, &UDamageSystem::Heal);
+	
+	FTimerDelegate HealTickDel;
+
+	HealTickDel.BindUFunction(this, FName("HealTick"), Duration, Amount, ID, HealFunc);
+	
+	HealthPerTickHandles.Add(ID, GetWorld()->GetTimerManager().SetTimerForNextTick(HealTickDel));
+}
+void UDamageSystem::HealTick(const float Duration, const float Amount, const uint8 ID, const FHealFunc& HealFunc)
+{
+	if (Duration <= 0)
+	{
+		HealthPerTickHandles.Remove(ID);
+		return;
+	};
+	HealFunc.Execute(Amount * GetWorld()->GetDeltaSeconds());
+
+	FTimerDelegate HealTickDel;
+
+	HealTickDel.BindUFunction(this, FName("HealTick"), Duration - GetWorld()->GetDeltaSeconds(), Amount, ID, HealFunc);
+
+	HealthPerTickHandles[ID] = GetWorld()->GetTimerManager().SetTimerForNextTick(HealTickDel);
+}
+
+void UDamageSystem::CancelHealTick(const uint8& ID)
+{
+	GetWorld()->GetTimerManager().ClearTimer(HealthPerTickHandles[ID]);
+	HealthPerTickHandles.Remove(ID);
+}
 
 void UDamageSystem::CallOnDeath(AActor* DamagedActor) {
 	DamagedActor->Destroy();

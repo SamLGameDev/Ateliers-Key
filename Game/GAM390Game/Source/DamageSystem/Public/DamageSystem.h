@@ -10,6 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBlocked);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageResponse, EDamageResponse, DamageResponse, AActor*, Source);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FHealFunc, float, Amount);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DAMAGESYSTEM_API UDamageSystem : public UActorComponent
@@ -65,7 +66,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CompleteReset();
+	
+	UFUNCTION(BlueprintCallable)
+	void StartHealthPerTick(const float& Amount, const float& Duration, uint8& ID, const bool& TempHealth);
 
+	UFUNCTION()
+	void HealTick(const float Duration, const float Amount, const uint8 ID, const FHealFunc& HealFunc);
+
+	UFUNCTION()
+	void CancelHealTick(const uint8& ID);
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;
 
@@ -100,5 +110,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
-		
+
+	TMap<uint8, FTimerHandle> HealthPerTickHandles;
+	
 };

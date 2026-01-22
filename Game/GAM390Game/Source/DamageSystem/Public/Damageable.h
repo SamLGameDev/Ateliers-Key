@@ -55,4 +55,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
 	void Heal(double Amount);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void StartHealthPerTick(const float Amount, const float Duration, uint8& ID, const bool TempHealth);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="UDamageable")
+	void CancelHealTick(const uint8 ID);
+	
 };
