@@ -29,6 +29,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	void StartExecution(AActor* Target);
 
+	UFUNCTION(BlueprintCallable)
+	void HealReal();
+
+	UFUNCTION()
+	void HealQuick(float RemainingDuration);
+
 	UFUNCTION()
 	void LifeSteal(UDamageSystem* TargetDS, float RemainingDuration);
 	

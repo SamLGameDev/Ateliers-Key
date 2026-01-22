@@ -10,7 +10,7 @@ ULifeSteal::ULifeSteal()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -50,6 +50,28 @@ void ULifeSteal::StartExecution(AActor* Target)
 	LifeStealDel.BindUFunction(this, FName("LifeSteal"), TargetDS, Duration);
 
 	StealLoop = GetWorld()->GetTimerManager().SetTimerForNextTick(LifeStealDel);
+}
+
+void ULifeSteal::HealReal()
+{
+
+	FTimerDelegate LifeStealDel;
+
+	LifeStealDel.BindUFunction(this, FName("HealQuick"), Duration);
+
+    GetWorld()->GetTimerManager().SetTimerForNextTick(LifeStealDel);
+}
+
+void ULifeSteal::HealQuick(float RemainingDuration)
+{
+	if (RemainingDuration <= 0) return;
+	DamageSystem->HealTemp(HealPerTick * GetWorld()->GetDeltaSeconds());
+
+	FTimerDelegate LifeStealDel;
+
+	LifeStealDel.BindUFunction(this, FName("HealQuick"), RemainingDuration - GetWorld()->GetDeltaSeconds());
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(LifeStealDel);
 }
 
 void ULifeSteal::LifeSteal(UDamageSystem* TargetDS, float RemainingDuration)
