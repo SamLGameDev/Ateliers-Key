@@ -23,7 +23,6 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 {
 	if (OtherActor->Implements<UDamageable>())
 	{
-		IDamageable::Execute_ResetHealth(OtherActor);
 		FCheckpointInfo checkpoint;
 		checkpoint.RestartLocation = GetActorLocation();
 		checkpoint.RestartRotation = GetActorRotation();
