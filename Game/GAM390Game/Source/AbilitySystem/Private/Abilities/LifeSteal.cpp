@@ -65,7 +65,7 @@ void ULifeSteal::HealReal()
 void ULifeSteal::HealQuick(float RemainingDuration)
 {
 	if (RemainingDuration <= 0) return;
-	DamageSystem->HealTemp(HealPerTick * GetWorld()->GetDeltaSeconds());
+	DamageSystem->Heal(HealPerTick * GetWorld()->GetDeltaSeconds());
 
 	FTimerDelegate LifeStealDel;
 
