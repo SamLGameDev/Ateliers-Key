@@ -19,6 +19,7 @@ void ULockEntity::CancelExecution()
 void ULockEntity::StartExecution(AActor* Target)
 {
 	APawn* target = Cast<APawn>(Target);
+	UE_LOG(LogTemp, Warning, TEXT("EndLockCall"));
 
 	if (AController* controller = target->GetController())
 	{
@@ -28,11 +29,12 @@ void ULockEntity::StartExecution(AActor* Target)
 		{
 			return;
 		}
+		UE_LOG(LogTemp, Warning, TEXT("StartedLock"));
 
 		StopId = TargetController->StopAIForDuration(Duration);
 		
 	}
-
+	UE_LOG(LogTemp, Warning, TEXT("EndLockCall"));
 }
 
 void ULockEntity::StartPlayerLock(APawn* Player)

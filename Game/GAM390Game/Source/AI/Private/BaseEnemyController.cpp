@@ -23,7 +23,8 @@ uint8 ABaseEnemyController::StopAIForDuration(float Duration)
 	Delegate.BindUFunction(this, FName("RequestAiCanMove"), id);
 	
 	GetWorld()->GetTimerManager().SetTimer(Handle, Delegate, Duration, false, -1);
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("LockedAI"));
 	
 	return id;
 }
