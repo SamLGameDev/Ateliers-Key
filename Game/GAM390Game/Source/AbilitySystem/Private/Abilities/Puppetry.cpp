@@ -12,7 +12,7 @@ void UPuppetry::StartExecution(AActor* Target)
 		int32 originalTeamNumber;
 		IDamageable::Execute_GetTeamNumber(Target, originalTeamNumber);
 		IDamageable::Execute_SetTeamNumber(Target, PuppetTeam);
-		
+		Target->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(OverlayMat);
 		FTimerDelegate puppetDelegate;
 		puppetDelegate.BindUFunction(this, "CancelExecution", originalTeamNumber, Target);
 		FTimerHandle puppetTimer;
@@ -24,5 +24,6 @@ void UPuppetry::CancelExecution(const uint8& OriginalTeam, AActor* Puppet)
 {
 	if (!Puppet) return;
 	IDamageable::Execute_SetTeamNumber(Puppet, OriginalTeam);
+	Puppet->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
 }
 

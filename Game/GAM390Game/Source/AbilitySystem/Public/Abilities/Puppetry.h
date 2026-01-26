@@ -29,6 +29,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability", meta = (AllowPrivateAccess = "true"))
 	float PuppetDuration = 5;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability", meta = (AllowPrivateAccess = "true"))
+	UMaterial* OverlayMat;
 	
 
 };
