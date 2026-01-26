@@ -26,6 +26,9 @@ public:
 
 	virtual void CancelExecution() PURE_VIRTUAL(UAbility::CancelExecution);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability")
+	bool bIsUnlocked;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
