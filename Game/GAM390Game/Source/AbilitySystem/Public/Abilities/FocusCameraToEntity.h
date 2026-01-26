@@ -25,7 +25,7 @@ public:
 	void StartExecution(AActor* Target, const float Duration);
 
 	UFUNCTION()
-	void LookTowardsTarget(const FVector From, const FVector To, const float Delta, APawn* Owner, const float Duration);
+	void LookTowardsTarget(const FVector From, const float Delta, APawn* Owner, const float Duration, const AActor* Target);
 
 protected:
 

@@ -2,17 +2,16 @@
 
 
 #include "Abilities/FocusCameraToEntity.h"
+#include "GameFramework/Character.h"
+#include "Camera/CameraComponent.h"
 
 void UFocusCameraToEntity::StartExecution(AActor* Target, const float Duration)
 {
-	AActor* owner = GetOwner();
+	ACharacter* owner = Cast<ACharacter>(GetOwner());
 	FVector from = owner->GetActorForwardVector();
-	FVector dirToTarget = (Target->GetActorLocation() - owner->GetActorLocation()).GetSafeNormal();
-
 	
-
 	FTimerDelegate LookDel;
-	LookDel.BindUFunction(this, "LookTowardsTarget", from, dirToTarget, 0, owner, Duration);
+	LookDel.BindUFunction(this, "LookTowardsTarget", from, 0, owner, Duration, Target);
 
 	LookHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(LookDel);
 
@@ -20,16 +19,18 @@ void UFocusCameraToEntity::StartExecution(AActor* Target, const float Duration)
 
 }
 
-void UFocusCameraToEntity::LookTowardsTarget(const FVector From, const FVector To, const float Delta, APawn* Owner, const float Duration)
+void UFocusCameraToEntity::LookTowardsTarget(const FVector From, const float Delta, APawn* Owner, const float Duration, const AActor* Target)
 {
 	if (Duration <= 0) return;
-
-	FRotator newRot = FVector::SlerpNormals(From, To, Delta).ToOrientationRotator();
+	if (!Target) return;
+	UCameraComponent* cam = Owner->GetComponentByClass<UCameraComponent>();
+	FVector dirToTarget = (Target->GetActorLocation() - cam->GetComponentLocation()).GetSafeNormal();
+	FRotator newRot = FVector::SlerpNormals(From, dirToTarget, Delta).Rotation();
 
 	Owner->GetController()->SetControlRotation(newRot);
 
 	FTimerDelegate LookDel;
-	LookDel.BindUFunction(this, "LookTowardsTarget", From, To, FMath::Clamp(Delta + (Speed * GetWorld()->GetDeltaSeconds()),0, 1), Owner, Duration - GetWorld()->GetDeltaSeconds());
+	LookDel.BindUFunction(this, "LookTowardsTarget", From, FMath::Clamp(Delta + (Speed * GetWorld()->GetDeltaSeconds()),0, 1), Owner, Duration - GetWorld()->GetDeltaSeconds(), Target);
 	
 	LookHandle = GetWorld()->GetTimerManager().SetTimerForNextTick(LookDel);
 }
