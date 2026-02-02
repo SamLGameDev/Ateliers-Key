@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Hacks/HackEffect.h"
+#include "Ability.h"
 #include "BP_Player.generated.h"
 
 class UInputMappingContext;
@@ -150,6 +151,7 @@ protected:
 
 	FTimerHandle LockInputHandle;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -184,6 +186,12 @@ public:
 	void SimulateUIMouseClick();
 
 
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> EquipedWeapons;
+
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UAbility*> UnlockedAbilities;
 	
 
 };

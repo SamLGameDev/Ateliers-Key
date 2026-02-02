@@ -3,7 +3,9 @@
 #include "CheckPoints/Checkpoint.h"
 #include "Damageable.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "GI_Accessibility.h"
+#include "CheckPoints/AtelierSaveGame.h"
+#include "BP_Player.h"
 // Sets default values
 ACheckpoint::ACheckpoint()
 {
@@ -45,4 +47,24 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 
 		Destroy();
 	}
+}
+
+void ACheckpoint::SaveToSlot(ABP_Player* Player)
+{
+	UGI_SanctumSettings* gInstance =  Cast<UGI_SanctumSettings>(GetGameInstance());
+
+	const FString& slotName = gInstance->GetSaveSlot();
+
+	UAtelierSaveGame* save = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
+
+	save->BaseMap = GetWorld()->GetName();
+
+	save->CombatEncounters = { CombatEncounter->GetName(), NextCheckpoint->CombatEncounter->GetName() };
+
+	save->RestartLocation = GetActorLocation();
+
+	save->RestartRotation = GetActorRotation();
+
+	Player->EquipedWeapons.                                                    
+
 }

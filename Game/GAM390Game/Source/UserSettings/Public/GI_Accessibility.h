@@ -32,11 +32,26 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	float CameraSensitivity;
 
+	UFUNCTION(BlueprintCallable)
+	void SetSaveSlot(const FString& SlotName);
+
+	UFUNCTION(BlueprintCallable)
+	const FString& GetSaveSlot()
+	{
+		return CurrentSaveSlot;
+	}
+
 	UPROPERTY(BlueprintReadOnly)
 	float CameraFov;
 
 	virtual void Init() override;
 
 	void SyncSubtitlesSettings();
+
+protected:
+
+	UPROPERTY(BlueprintReadOnly)
+	FString CurrentSaveSlot;
+
 	
 };

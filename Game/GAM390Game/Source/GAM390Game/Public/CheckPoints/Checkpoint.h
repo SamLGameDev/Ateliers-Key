@@ -8,6 +8,8 @@
 #include "Components/BoxComponent.h"
 #include "Checkpoint.generated.h"
 
+class ABP_Player;
+
 USTRUCT(BlueprintType)
 struct FCheckpointInfo
 {
@@ -51,6 +53,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
+	UFUNCTION(BlueprintCallable)
+	void SaveToSlot(ABP_Player* Player);
 
 	UPROPERTY(EditInstanceOnly)
 	ACheckpoint* NextCheckpoint;
