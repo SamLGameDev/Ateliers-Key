@@ -65,6 +65,6 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	save->RestartRotation = GetActorRotation();
 
-	Player->EquipedWeapons.                                                    
+	//Player->EquipedWeapons.                                                    
 
 }
