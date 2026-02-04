@@ -23,7 +23,7 @@ void UTimeManager::RemoveToken(UTimeDialationToken* Token)
 {
 	CurrentDialations.Remove(Token);
 	CurrentDialations.Sort();
-
+	
 	if (CurrentDialations.IsEmpty())
 	{
 		CurrentTimeDialation = GetWorldSettings(Token)->SetTimeDilation(1);
