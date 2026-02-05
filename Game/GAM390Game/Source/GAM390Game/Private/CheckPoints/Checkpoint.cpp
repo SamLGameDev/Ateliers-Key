@@ -6,6 +6,9 @@
 #include "GI_Accessibility.h"
 #include "CheckPoints/AtelierSaveGame.h"
 #include "BP_Player.h"
+#include "Abilities/LifeSteal.h"
+#include "Abilities/LockEntity.h"
+#include "Abilities/Puppetry.h"
 // Sets default values
 ACheckpoint::ACheckpoint()
 {
@@ -65,6 +68,44 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	save->RestartRotation = GetActorRotation();
 
-	//Player->EquipedWeapons.                                                    
+	for (const auto& weapon : Player->EquipedWeapons)
+	{
+		if (weapon->ActorHasTag("AssultRifle"))
+		{
+			save->bHasAssultRifle = true;
+			continue;
+		}
+		if (weapon->ActorHasTag("SniperRifle"))
+		{
+			save->bHasSniper = true;
+			continue;
+		}
+		if (weapon->ActorHasTag("Shotgun"))
+		{
+			save->bHasShotgun = true;
+			continue;
+		}
+	}
 
+	for (const auto& ability : Player->UnlockedAbilities)
+	{
+		if (ability->IsA(ULifeSteal::StaticClass()))
+		{
+			save->bHasLifeSteal = true;
+			continue;
+		};
+		if (ability->IsA(ULockEntity::StaticClass()))
+		{
+			save->bHasLockEntity = true;
+			continue;
+		};
+		if (ability->IsA(UPuppetry::StaticClass()))
+		{
+			save->bHasPuppetry = true;
+			continue;
+		};
+
+	}
+
+	UGameplayStatics::AsyncSaveGameToSlot(save, slotName, 0);
 }

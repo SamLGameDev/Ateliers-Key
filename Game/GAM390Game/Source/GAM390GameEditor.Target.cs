@@ -9,7 +9,7 @@ public class GAM390GameEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
         ExtraModuleNames.AddRange(new string[] { "GAM390Game", "ProcEnemies", "GeneralUtilities", "VariableStores", "DamageSystem", "UserSettings", "LevelManagers", "Subtitles", "Menus", "Hacking", "SoundManagement", "TimeManagementExtended" });
         RegisterModulesCreatedByRider();
 	}
