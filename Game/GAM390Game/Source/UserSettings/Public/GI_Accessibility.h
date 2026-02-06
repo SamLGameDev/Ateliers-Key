@@ -51,7 +51,7 @@ public:
 protected:
 
 	UPROPERTY(BlueprintReadOnly)
-	FString CurrentSaveSlot;
+	FString CurrentSaveSlot = "Save0";
 
 	
 };

@@ -47,7 +47,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 
 		CurrentCheckpoint->SetObject(checkpoint);
 
-
+		SaveToSlot(Cast<ABP_Player>(OtherActor));
 		Destroy();
 	}
 }
@@ -62,7 +62,8 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	save->BaseMap = GetWorld()->GetName();
 
-	save->CombatEncounters = { CombatEncounter->GetName(), NextCheckpoint->CombatEncounter->GetName() };
+	if (CombatEncounter) save->CombatEncounters.Add(CombatEncounter->GetName());
+	if (NextCheckpoint && NextCheckpoint->CombatEncounter) save->CombatEncounters.Add(NextCheckpoint->CombatEncounter->GetName());
 
 	save->RestartLocation = GetActorLocation();
 
@@ -70,7 +71,7 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	for (const auto& weapon : Player->EquipedWeapons)
 	{
-		if (weapon->ActorHasTag("AssultRifle"))
+		if (weapon->ActorHasTag("AssaultRifle"))
 		{
 			save->bHasAssultRifle = true;
 			continue;
