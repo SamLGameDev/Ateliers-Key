@@ -48,6 +48,9 @@ public:
 
 	void SyncSubtitlesSettings();
 
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> QuestTable;
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly)
