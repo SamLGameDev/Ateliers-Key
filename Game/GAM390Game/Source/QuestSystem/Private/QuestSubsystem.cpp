@@ -12,10 +12,18 @@
 #include "QuestLibrary.h"
 #include "QuestStageData.h"
 
+static TAutoConsoleVariable<int32> CVarQuestEnabled(
+	TEXT("QuestSystem.Enabled"),
+	1,
+	TEXT("Disable the quest system = 0, Enable = 1"),
+	ECVF_Default);
+
 void UQuestSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
+	if (CVarQuestEnabled.GetValueOnAnyThread() == 0) return;
+	
 	UGI_SanctumSettings* gameInstance = Cast<UGI_SanctumSettings>(GetGameInstance());
 	QuestTable = gameInstance->QuestTable;
 
@@ -62,6 +70,7 @@ void UQuestSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UQuestSubsystem::StartQuestAt(UQuestData* QuestToStart)
 {
+	if (CVarQuestEnabled.GetValueOnAnyThread() == 0) return;
 	TArray<FQuest*> Rows;
 	QuestTable->GetAllRows("", Rows);
 	
@@ -83,6 +92,7 @@ void UQuestSubsystem::StartQuestAt(UQuestData* QuestToStart)
 
 void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint8& Progress)
 {
+	if (CVarQuestEnabled.GetValueOnAnyThread() == 0) return;
 	Quest->ParentQuest->TimesCompleted = FMath::Clamp(Quest->ParentQuest->TimesCompleted + Progress, 0, Quest->ParentQuest->Quantity);
 	Quest->OnQuestProgress.Broadcast();
 	if (Quest->ParentQuest->TimesCompleted < Quest->ParentQuest->Quantity) return;
