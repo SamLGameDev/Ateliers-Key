@@ -7,7 +7,10 @@
 #include "GI_Accessibility.h"
 #include "HeadMountedDisplayTypes.h"
 #include "QuestData.h"
+#include "QuestObjectiveData.h"
+#include "WholeQuest.h"
 #include "QuestLibrary.h"
+#include "QuestStageData.h"
 
 void UQuestSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -23,6 +26,8 @@ void UQuestSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	FQuest* LastQuest = nullptr;
 	for (auto* Row : Rows)
 	{
+		Row->QuestData->ParentQuest = Row;
+		Row->bIsCompleted = false;
 		if (LastQuest != nullptr)
 		{
 			LastQuest->NextQuest = Row;
@@ -31,6 +36,7 @@ void UQuestSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		FQuestStage* LastStage = nullptr;
 		for (auto& stage : Row->Stages)
 		{
+			stage.bIsCompleted = false;
 			if (LastStage != nullptr)
 			{
 				LastStage->NextStage = &stage;
@@ -39,9 +45,16 @@ void UQuestSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 			stage.ParentQuest = Row;
 			for (auto& objective : stage.Objectives)
 			{
+				if (objective.bIsAlwaysActive)
+				{
+					objective.QuestData->bIsActive = true;
+				}
+				objective.bIsCompleted = false;
+				
+				objective.TimesCompleted = 0;
 				objective.ParentStage = &stage;
 				checkf(objective.QuestData, TEXT("Quest data is not set!"));
-				objective.QuestData->ParentQuest = objective;
+				objective.QuestData->ParentQuest = &objective;
 			}
 		}
 	}
@@ -68,31 +81,35 @@ void UQuestSubsystem::StartQuestAt(UQuestData* QuestToStart)
 
 }
 
-void UQuestSubsystem::NotifyQuestProgress(UQuestData* Quest, const uint8& Progress)
+void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint8& Progress)
 {
-	Quest->ParentQuest.TimesCompleted = FMath::Clamp(Quest->ParentQuest.TimesCompleted + Progress, 0, Quest->ParentQuest.Quantity);
+	Quest->ParentQuest->TimesCompleted = FMath::Clamp(Quest->ParentQuest->TimesCompleted + Progress, 0, Quest->ParentQuest->Quantity);
 	Quest->OnQuestProgress.Broadcast();
-	if (Quest->ParentQuest.TimesCompleted < Quest->ParentQuest.Quantity) return;
+	if (Quest->ParentQuest->TimesCompleted < Quest->ParentQuest->Quantity) return;
 	
-	Quest->OnQuestCompleted.Broadcast();
+	Quest->OnQuestCompleted.Broadcast(Quest);
 	Quest->bIsActive = false;
-
+	Quest->ParentQuest->bIsCompleted = true;
 	bool bAllObjectivesComplete = true;
-	for (const auto& objective : Quest->ParentQuest.ParentStage->Objectives)
+	for (const auto& objective : Quest->ParentQuest->ParentStage->Objectives)
 	{
-		if (objective.QuestData->bIsActive) bAllObjectivesComplete = false;
+		if (!objective.bIsCompleted && !objective.bIsOptional) bAllObjectivesComplete = false;
 	}
 	if (!bAllObjectivesComplete) return;
 
-	FQuestStage* ParentStage = Quest->ParentQuest.ParentStage;
+	FQuestStage* ParentStage = Quest->ParentQuest->ParentStage;
 	ParentStage->bIsCompleted = true;
 
+	if (!ParentStage->QuestData->bIsActive) return;
+	ParentStage->QuestData->bIsActive = false;
 	while (ParentStage->bIsCompleted)
 	{
+		ParentStage->QuestData->OnQuestCompleted.Broadcast(ParentStage->QuestData);
 		if (ParentStage->NextStage == nullptr)
 		{
 			FQuest* ParentQuest = ParentStage->ParentQuest;
 			ParentQuest->bIsCompleted = true;
+			ParentQuest->QuestData->OnQuestCompleted.Broadcast(ParentQuest->QuestData);
 			while (ParentQuest->bIsCompleted)
 			{
 				if (ParentQuest->NextQuest == nullptr) return;
@@ -105,19 +122,43 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestData* Quest, const uint8& Progre
 		
 		ParentStage = ParentStage->NextStage;
 	}
+	
+			
+	OnAnyStageStarted.Broadcast(ParentStage->QuestData);
+	ParentStage->QuestData->OnQuestStarted.Broadcast();
+	ParentStage->QuestData->bIsActive = true;
 
 	for (const auto& objective : ParentStage->Objectives)
 	{
+		if (objective.bIsCompleted) continue;
+		
 		objective.QuestData->bIsActive = true;
+		OnAnyObjectiveStarted.Broadcast(objective.QuestData);
+		objective.QuestData->OnQuestStarted.Broadcast();
 	}
 	
 }
 
-void UQuestSubsystem::StartQuest(const FQuest* Quest, UQuestData* QuestData)
+void UQuestSubsystem::StartQuest(FQuest* Quest, UQuestData* QuestData)
 {
-	OnAnyQuestStarted.Broadcast(QuestData);
+	OnAnyQuestStarted.Broadcast(Quest->QuestData);
 	QuestData->OnQuestStarted.Broadcast();
 	QuestData->bIsActive = true;
-	
-	
+	for (auto& stage : Quest->Stages)
+	{
+		if (stage.bIsCompleted) continue;
+
+		OnAnyStageStarted.Broadcast(stage.QuestData);
+		stage.QuestData->OnQuestStarted.Broadcast();
+		stage.QuestData->bIsActive = true;
+		
+		for (const auto& objective : stage.Objectives)
+		{
+			objective.QuestData->bIsActive = true;
+			OnAnyObjectiveStarted.Broadcast(objective.QuestData);
+			objective.QuestData->OnQuestStarted.Broadcast();
+		}
+		return;
+		
+	}
 }

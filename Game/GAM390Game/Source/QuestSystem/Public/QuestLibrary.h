@@ -7,6 +7,9 @@
 #include "QuestLibrary.generated.h"
 
 class UQuestData;
+class UQuestObjectiveData;
+class UQuestStageData;
+class UWholeQuest;
 
 /**
  * 
@@ -29,13 +32,22 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	uint8 Quantity;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	bool bIsOptional;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	bool bIsAlwaysActive;
+	
+	bool bIsCompleted = false;
 
 	uint8 TimesCompleted = 0;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TObjectPtr<UQuestData> QuestData;
+	TObjectPtr<UQuestObjectiveData> QuestData;
 
 	FQuestStage* ParentStage;
+	
 	
 };
 
@@ -57,6 +69,9 @@ public:
 
 	FQuestStage* NextStage;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UQuestStageData> QuestData;
+
 	bool bIsCompleted = false;
 	
 };
@@ -71,6 +86,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TArray<FQuestStage> Stages;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UWholeQuest> QuestData;
 
 	bool bIsCompleted = false;
 
@@ -88,10 +106,14 @@ public:
 	static void StartQuestAt(UQuestData* QuestToStart, UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static FText GetParentQuestName(UQuestData* Quest);
+	static FText GetParentQuestName(UQuestObjectiveData* Quest);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static FText GetQuestDisplayName(UQuestData* QuestData);
+	static FText GetQuestDisplayName(UQuestObjectiveData* QuestData);
 
 	
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FText GetQuestName(UWholeQuest* Quest);
+
 };

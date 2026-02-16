@@ -6,13 +6,15 @@
 #include "Engine/DataAsset.h"
 #include "QuestLibrary.h"
 #include "QuestData.generated.h"
+
+
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, NotBlueprintable)
 class QUESTSYSTEM_API UQuestData : public UPrimaryDataAsset
 {
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnQuestCompleted);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, UQuestData*, CompletedQuest);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnQuestStarted);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnQuestProgressMade);
 	GENERATED_BODY()
@@ -25,9 +27,6 @@ public:
 	FOnQuestStarted OnQuestStarted;
 	UPROPERTY(BlueprintAssignable)
 	FOnQuestProgressMade OnQuestProgress;
-
-	UFUNCTION(BlueprintCallable)
-	void NotifyProgressMade(const uint8 Quantity, UObject* WorldContextObject);
 
 	bool bIsActive = false;
 	

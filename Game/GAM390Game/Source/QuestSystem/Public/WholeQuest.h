@@ -13,5 +13,11 @@ UCLASS()
 class QUESTSYSTEM_API UWholeQuest : public UQuestData
 {
 	GENERATED_BODY()
+
+public:
+	FQuest* ParentQuest;
 	
+protected:
+
+
 };

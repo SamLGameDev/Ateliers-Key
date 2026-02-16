@@ -2,4 +2,11 @@
 
 
 #include "QuestObjectiveData.h"
+#include "QuestSubsystem.h"
 
+void UQuestObjectiveData::NotifyProgressMade(const uint8 Quantity, UObject* WorldContextObject)
+{
+	if (!bIsActive) return;
+
+    WorldContextObject->GetWorld()->GetGameInstance()->GetSubsystem<UQuestSubsystem>()->NotifyQuestProgress(this, Quantity);
+}

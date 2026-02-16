@@ -9,12 +9,14 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class QUESTSYSTEM_API UQuestObjectiveData : public UQuestData
 {
 	GENERATED_BODY()
 public:
-		
-	UPROPERTY(BlueprintReadOnly)
-	FQuestObjective ParentQuest;
+	FQuestObjective* ParentQuest;
+
+	UFUNCTION(BlueprintCallable)
+	void NotifyProgressMade(const uint8 Quantity, UObject* WorldContextObject);
+
 };

@@ -7,13 +7,18 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "QuestSubsystem.generated.h"
 
+
+class UQuestObjectiveData;
+
 /**
  * 
  */
 UCLASS()
 class QUESTSYSTEM_API UQuestSubsystem : public UGameInstanceSubsystem
 {
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyQuestStarted, UQuestData*, StartedQuest);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyQuestStarted, UWholeQuest*, StartedQuest);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyStageStarted, UQuestStageData*, StartedQuest);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyObjectiveStarted, UQuestObjectiveData*, StartedQuest);
 	
 	GENERATED_BODY()
 public:
@@ -22,7 +27,7 @@ public:
 
 	void StartQuestAt(UQuestData* QuestToStart);
 
-	void NotifyQuestProgress(UQuestData* Quest, const uint8& Progress);
+	void NotifyQuestProgress(UQuestObjectiveData* Quest, const uint8& Progress);
 	
 
 protected:
@@ -30,10 +35,20 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UDataTable> QuestTable;
 
-	void StartQuest(const FQuest* Quest, UQuestData* QuestData);
+	void StartQuest(FQuest* Quest, UQuestData* QuestData);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAnyQuestStarted OnAnyQuestStarted;
+
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAnyStageStarted OnAnyStageStarted;
+
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAnyObjectiveStarted OnAnyObjectiveStarted;
+	
+	
 
 	TArray<FQuest*> ActiveQuests;
 	
