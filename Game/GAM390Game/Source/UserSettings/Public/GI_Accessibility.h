@@ -7,6 +7,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "GI_Accessibility.generated.h"
 
+static TAutoConsoleVariable<int32> CVarSavingEnabled(
+	TEXT("SavingSystem.Enabled"),
+	1,
+	TEXT("Disable the save system = 0, Enable = 1"),
+	ECVF_Default);
+
 /**
  * rename from GI_Accessibility, but references are still that, so you might be looking for that
  */
@@ -35,11 +41,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetSaveSlot(const FString& SlotName);
 
-	UFUNCTION(BlueprintCallable)
-	const FString& GetSaveSlot()
-	{
-		return CurrentSaveSlot;
-	}
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FString GetSaveSlot();
 
 	UPROPERTY(BlueprintReadOnly)
 	float CameraFov;

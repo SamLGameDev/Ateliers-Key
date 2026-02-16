@@ -54,9 +54,12 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 
 void ACheckpoint::SaveToSlot(ABP_Player* Player)
 {
+	
 	UGI_SanctumSettings* gInstance =  Cast<UGI_SanctumSettings>(GetGameInstance());
 
-	const FString& slotName = gInstance->GetSaveSlot();
+	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
+
+	FString slotName = gInstance->GetSaveSlot();
 
 	UAtelierSaveGame* save = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
 
