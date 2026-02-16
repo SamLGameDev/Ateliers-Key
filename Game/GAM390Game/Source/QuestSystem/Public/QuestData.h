@@ -31,7 +31,4 @@ public:
 
 	bool bIsActive = false;
 	
-	UPROPERTY(BlueprintReadOnly)
-	FQuestObjective ParentQuest;
-	
 };
