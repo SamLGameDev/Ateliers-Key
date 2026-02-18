@@ -5,7 +5,6 @@
 
 #include "Constraint.h"
 #include "GI_Accessibility.h"
-#include "HeadMountedDisplayTypes.h"
 #include "QuestData.h"
 #include "QuestObjectiveData.h"
 #include "WholeQuest.h"
