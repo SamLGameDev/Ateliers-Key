@@ -14,7 +14,7 @@ class UQuestObjectiveData;
  * 
  */
 UCLASS()
-class QUESTSYSTEM_API UQuestSubsystem : public UGameInstanceSubsystem
+class QUESTSYSTEM_API UQuestSubsystem : public UWorldSubsystem
 {
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyQuestStarted, UWholeQuest*, StartedQuest);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyStageStarted, UQuestStageData*, StartedQuest);
