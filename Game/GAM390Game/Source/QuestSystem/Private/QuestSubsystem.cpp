@@ -23,7 +23,8 @@ void UQuestSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	if (CVarQuestEnabled.GetValueOnAnyThread() == 0) return;
 	
-	UGI_SanctumSettings* gameInstance = Cast<UGI_SanctumSettings>(GetGameInstance());
+	UGI_SanctumSettings* gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
+	if (gameInstance == nullptr) return;
 	QuestTable = gameInstance->QuestTable;
 
 	checkf(QuestTable, TEXT("Quest table is not set!"));

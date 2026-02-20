@@ -8,5 +8,5 @@ void UQuestObjectiveData::NotifyProgressMade(const uint8 Quantity, UObject* Worl
 {
 	if (!bIsActive) return;
 
-    WorldContextObject->GetWorld()->GetGameInstance()->GetSubsystem<UQuestSubsystem>()->NotifyQuestProgress(this, Quantity);
+    WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>()->NotifyQuestProgress(this, Quantity);
 }

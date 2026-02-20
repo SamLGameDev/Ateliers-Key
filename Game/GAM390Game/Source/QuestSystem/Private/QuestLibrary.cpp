@@ -11,7 +11,7 @@ void UQuestLibrary::StartQuestAt(UQuestData* QuestToStart, UObject* WorldContext
 {
 	if (!QuestToStart) return;
 	
-	UQuestSubsystem* questSubsystem = WorldContextObject->GetWorld()->GetGameInstance()->GetSubsystem<UQuestSubsystem>();
+	UQuestSubsystem* questSubsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
 
 	questSubsystem->StartQuestAt(QuestToStart);
 	
