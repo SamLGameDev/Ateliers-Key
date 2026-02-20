@@ -90,6 +90,15 @@ void UQuestSubsystem::StartQuestAt(UQuestData* QuestToStart)
 
 }
 
+void UQuestSubsystem::StartQuestAt(const uint8 QuestToStart, const uint8 QuestStageToStart)
+{
+	if (CVarQuestEnabled.GetValueOnAnyThread() == 0) return;
+	TArray<FQuest*> Rows;
+	QuestTable->GetAllRows("", Rows);
+	
+	StartQuest(Rows[QuestToStart], Rows[QuestToStart]->Stages[QuestStageToStart].QuestData);
+}
+
 void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint8& Progress)
 {
 	if (CVarQuestEnabled.GetValueOnAnyThread() == 0) return;
@@ -128,6 +137,7 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 
 			checkf(ParentQuest->Stages.IsEmpty(), TEXT("Quest has no stages, either add some or remove it")) 
 			ParentStage = &ParentQuest->Stages[0];
+			ActiveQuest = ParentQuest;
 		}
 		
 		ParentStage = ParentStage->NextStage;
@@ -137,6 +147,7 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 	OnAnyStageStarted.Broadcast(ParentStage->QuestData);
 	ParentStage->QuestData->OnQuestStarted.Broadcast();
 	ParentStage->QuestData->bIsActive = true;
+	ActiveStage = ParentStage;
 
 	for (const auto& objective : ParentStage->Objectives)
 	{
@@ -149,11 +160,43 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 	
 }
 
+uint8 UQuestSubsystem::GetActiveStageIndex() const
+{
+	TArray<FQuest*> Rows;
+	QuestTable->GetAllRows("", Rows);
+	for (auto* Row : Rows)
+	{
+		for (uint8 i = 0 ; i < Row->Stages.Num(); i++)
+		{
+			FQuestStage* stage = &Row->Stages[i];
+			if (stage == ActiveStage)
+			{
+				return i;
+			}
+		}
+	}
+	return 0;
+}
+
+uint8 UQuestSubsystem::GetActiveQuestIndex() const
+{
+	TArray<FQuest*> Rows;
+	QuestTable->GetAllRows("", Rows);
+	for (uint8 i = 0; i < Rows.Num(); i++)
+	{
+		if (Rows[i] == ActiveQuest) return i; 
+	}
+	return 0;
+}
+
 void UQuestSubsystem::StartQuest(FQuest* Quest, UQuestData* QuestData)
 {
 	OnAnyQuestStarted.Broadcast(Quest->QuestData);
 	QuestData->OnQuestStarted.Broadcast();
 	QuestData->bIsActive = true;
+	
+	ActiveQuest = Quest;
+	
 	for (auto& stage : Quest->Stages)
 	{
 		if (stage.bIsCompleted) continue;
@@ -161,6 +204,8 @@ void UQuestSubsystem::StartQuest(FQuest* Quest, UQuestData* QuestData)
 		OnAnyStageStarted.Broadcast(stage.QuestData);
 		stage.QuestData->OnQuestStarted.Broadcast();
 		stage.QuestData->bIsActive = true;
+		
+		ActiveStage = &stage;
 		
 		for (const auto& objective : stage.Objectives)
 		{

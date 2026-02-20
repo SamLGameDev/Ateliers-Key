@@ -38,7 +38,10 @@ public:
 	bool bHasShotgun;
 	
 	UPROPERTY(BlueprintReadOnly)
-	int QuestStage;
+	uint8 QuestStage;
+	
+	UPROPERTY(BlueprintReadOnly)
+	uint8 Quest;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bHasLifeSteal;

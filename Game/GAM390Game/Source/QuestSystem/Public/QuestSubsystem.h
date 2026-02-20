@@ -26,10 +26,13 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	void StartQuestAt(UQuestData* QuestToStart);
+	void StartQuestAt(uint8 QuestToStart, uint8 QuestStageToStart);
 
 	void NotifyQuestProgress(UQuestObjectiveData* Quest, const uint8& Progress);
-	
 
+	uint8 GetActiveStageIndex() const;
+	
+	uint8 GetActiveQuestIndex() const;
 protected:
 
 	UPROPERTY()
@@ -51,5 +54,9 @@ protected:
 	
 
 	TArray<FQuest*> ActiveQuests;
+	
+	FQuestStage* ActiveStage;
+	
+	FQuest* ActiveQuest;
 	
 };

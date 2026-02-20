@@ -104,6 +104,9 @@ class QUESTSYSTEM_API UQuestLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable)
 	static void StartQuestAt(UQuestData* QuestToStart, UObject* WorldContextObject);
+	
+	UFUNCTION(BlueprintCallable)
+	static void StartQuestAtIndex(uint8 QuestToStart, uint8 QuestStageToStart, UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FText GetParentQuestName(UQuestObjectiveData* Quest);
@@ -111,8 +114,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FText GetQuestDisplayName(UQuestObjectiveData* QuestData);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static uint8 GetActiveStageIndex(const UObject* WorldContextObject);
 	
-
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static uint8 GetActiveQuestIndex(const UObject* WorldContextObject);
+	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FText GetQuestName(UWholeQuest* Quest);
 

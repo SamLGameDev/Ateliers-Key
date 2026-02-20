@@ -9,6 +9,7 @@
 #include "Abilities/LifeSteal.h"
 #include "Abilities/LockEntity.h"
 #include "Abilities/Puppetry.h"
+#include "QuestLibrary.h"
 // Sets default values
 ACheckpoint::ACheckpoint()
 {
@@ -108,8 +109,10 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 			save->bHasPuppetry = true;
 			continue;
 		};
-
 	}
+	
+	save->QuestStage = UQuestLibrary::GetActiveStageIndex(this);
+	save->Quest = UQuestLibrary::GetActiveQuestIndex(this);
 
 	UGameplayStatics::AsyncSaveGameToSlot(save, slotName, 0);
 }

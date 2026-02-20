@@ -17,6 +17,13 @@ void UQuestLibrary::StartQuestAt(UQuestData* QuestToStart, UObject* WorldContext
 	
 }
 
+void UQuestLibrary::StartQuestAtIndex(const uint8 QuestToStart, const uint8 QuestStageToStart, UObject* WorldContextObject)
+{
+	UQuestSubsystem* questSubsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+
+	questSubsystem->StartQuestAt(QuestToStart, QuestStageToStart);
+}
+
 FText UQuestLibrary::GetParentQuestName(UQuestObjectiveData* Quest)
 {
 	return Quest->ParentQuest->ParentStage->ParentQuest->QuestName;
@@ -33,6 +40,20 @@ FText UQuestLibrary::GetQuestDisplayName(UQuestObjectiveData* QuestData)
 		counter = "(" + FString::FromInt(QuestData->ParentQuest->TimesCompleted) + "/" + FString::FromInt(QuestData->ParentQuest->Quantity) + ")";
 	}
 	return FText::FromString(name + counter);
+}
+
+uint8 UQuestLibrary::GetActiveStageIndex(const UObject* WorldContextObject)
+{
+	const UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+	
+	return subsystem->GetActiveStageIndex();
+}
+
+uint8 UQuestLibrary::GetActiveQuestIndex(const UObject* WorldContextObject)
+{
+	const UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+	
+	return subsystem->GetActiveQuestIndex();
 }
 
 FText UQuestLibrary::GetQuestName(UWholeQuest* Quest)
