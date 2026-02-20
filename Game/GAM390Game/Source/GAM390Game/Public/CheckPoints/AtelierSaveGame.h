@@ -23,6 +23,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FString>  CombatEncounters;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FString>  WorldsToLoad;
 
 	UPROPERTY(BlueprintReadOnly)
 	FString BaseMap;
@@ -49,5 +52,10 @@ public:
 	bool bHasLockEntity;
 	UPROPERTY(BlueprintReadOnly)
 	bool bHasPuppetry;
+	
+	UPROPERTY()
+	TArray<FString> HitCheckpoint;
+	
+	
 
 };

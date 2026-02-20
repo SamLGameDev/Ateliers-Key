@@ -169,7 +169,7 @@ uint8 UQuestSubsystem::GetActiveStageIndex() const
 		for (uint8 i = 0 ; i < Row->Stages.Num(); i++)
 		{
 			FQuestStage* stage = &Row->Stages[i];
-			if (stage == ActiveStage)
+			if (stage->QuestData == ActiveStage->QuestData)
 			{
 				return i;
 			}
@@ -184,7 +184,7 @@ uint8 UQuestSubsystem::GetActiveQuestIndex() const
 	QuestTable->GetAllRows("", Rows);
 	for (uint8 i = 0; i < Rows.Num(); i++)
 	{
-		if (Rows[i] == ActiveQuest) return i; 
+		if (Rows[i]->QuestData == ActiveQuest->QuestData) return i; 
 	}
 	return 0;
 }
@@ -199,6 +199,12 @@ void UQuestSubsystem::StartQuest(FQuest* Quest, UQuestData* QuestData)
 	
 	for (auto& stage : Quest->Stages)
 	{
+		if (stage.QuestData != QuestData)
+		{
+			stage.bIsCompleted = true;
+			continue;
+		}
+		
 		if (stage.bIsCompleted) continue;
 
 		OnAnyStageStarted.Broadcast(stage.QuestData);

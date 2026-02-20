@@ -71,6 +71,8 @@ protected:
 
 	UPROPERTY(EditInstanceOnly)
 	TSoftObjectPtr<UWorld> CombatEncounter;
+	UPROPERTY(EditInstanceOnly)
+	TArray<TSoftObjectPtr<UWorld>> WorldsToLoad;
 
 public:	
 

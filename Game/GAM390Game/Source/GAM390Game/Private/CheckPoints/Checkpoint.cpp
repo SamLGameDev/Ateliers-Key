@@ -10,6 +10,7 @@
 #include "Abilities/LockEntity.h"
 #include "Abilities/Puppetry.h"
 #include "QuestLibrary.h"
+#include "CheckPoints/SaveSubsystem.h"
 // Sets default values
 ACheckpoint::ACheckpoint()
 {
@@ -61,14 +62,32 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
 
 	FString slotName = gInstance->GetSaveSlot();
+	
+	UAtelierSaveGame* save;
+	
+	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
+	{
+		save = Cast<UAtelierSaveGame>(UGameplayStatics::LoadGameFromSlot(slotName, 0));
+	}
+	else
+	{
+		save = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
+	}
+	
+	if (save->HitCheckpoint.Contains(GetName())) return;
 
-	UAtelierSaveGame* save = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
 
 	save->BaseMap = GetWorld()->GetName();
-
+	save->CombatEncounters.Empty();
 	if (CombatEncounter) save->CombatEncounters.Add(CombatEncounter->GetName());
 	if (NextCheckpoint && NextCheckpoint->CombatEncounter) save->CombatEncounters.Add(NextCheckpoint->CombatEncounter->GetName());
-
+	
+	save->WorldsToLoad.Empty();
+	
+	for (const auto& world : WorldsToLoad)
+	{
+		save->WorldsToLoad.Add(world->GetName());
+	}
 	save->RestartLocation = GetActorLocation();
 
 	save->RestartRotation = GetActorRotation();
@@ -113,6 +132,12 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 	
 	save->QuestStage = UQuestLibrary::GetActiveStageIndex(this);
 	save->Quest = UQuestLibrary::GetActiveQuestIndex(this);
+	
+	save->HitCheckpoint.Add(GetName());
+	
+	GetWorld()->GetSubsystem<USaveSubsystem>()->OnCheckpointSave.Broadcast();
 
 	UGameplayStatics::AsyncSaveGameToSlot(save, slotName, 0);
+	
+	
 }
