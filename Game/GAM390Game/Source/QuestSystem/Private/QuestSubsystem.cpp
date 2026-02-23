@@ -189,6 +189,65 @@ uint8 UQuestSubsystem::GetActiveQuestIndex() const
 	return 0;
 }
 
+void UQuestSubsystem::ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStageToReset)
+{
+	TArray<FQuest*> Rows;
+	QuestTable->GetAllRows("", Rows);
+	for (uint8 ActiveQuestIndex = GetActiveQuestIndex(); ActiveQuestIndex != QuestToReset; ActiveQuestIndex--)
+	{
+		FQuest* quest = Rows[ActiveQuestIndex];
+		quest->bIsCompleted = false;
+		quest->QuestData->bIsActive = false;
+		
+		for (uint8 i = 0; i < quest->Stages.Num(); i++)
+		{
+			FQuestStage* stage = &quest->Stages[i];
+			stage->bIsCompleted = false;
+			stage->QuestData->bIsActive = false;
+			for (uint8 j = 0; j < stage->Objectives.Num(); j++)
+			{
+				FQuestObjective* objective = &stage->Objectives[j];
+				objective->bIsCompleted = false;
+				if (objective->bIsAlwaysActive) objective->QuestData->bIsActive = true;
+				else objective->QuestData->bIsActive = false;
+				
+				objective->TimesCompleted = 0;
+			}
+		}
+	}
+	
+	for (uint8 ActiveStageIndex = GetActiveStageIndex(); ActiveStageIndex != QuestStageToReset; ActiveStageIndex)
+	{
+		FQuestStage* stage = &Rows[QuestToReset]->Stages[ActiveStageIndex];
+		stage->bIsCompleted = false;
+		stage->QuestData->bIsActive = false;
+		for (uint8 i = 0; i < stage->Objectives.Num(); i++)
+		{
+			FQuestObjective* objective = &stage->Objectives[i];
+			objective->bIsCompleted = false;
+			if (objective->bIsAlwaysActive) objective->QuestData->bIsActive = true;
+			else objective->QuestData->bIsActive = false;
+				
+			objective->TimesCompleted = 0;
+		}
+	}
+	FQuestStage* stage = &Rows[QuestToReset]->Stages[QuestStageToReset];
+	stage->bIsCompleted = false;
+	stage->QuestData->bIsActive = false;
+	for (uint8 i = 0; i < stage->Objectives.Num(); i++)
+	{
+		FQuestObjective* objective = &stage->Objectives[i];
+		objective->bIsCompleted = false;
+		if (objective->bIsAlwaysActive) objective->QuestData->bIsActive = true;
+		else objective->QuestData->bIsActive = false;
+				
+		objective->TimesCompleted = 0;
+	}
+	OnQuestReset.Broadcast();
+	StartQuest(Rows[QuestToReset], stage->QuestData);
+
+}
+
 void UQuestSubsystem::StartQuest(FQuest* Quest, UQuestData* QuestData)
 {
 	OnAnyQuestStarted.Broadcast(Quest->QuestData);

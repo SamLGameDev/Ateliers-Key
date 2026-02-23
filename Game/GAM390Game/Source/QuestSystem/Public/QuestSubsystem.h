@@ -19,6 +19,7 @@ class QUESTSYSTEM_API UQuestSubsystem : public UWorldSubsystem
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyQuestStarted, UWholeQuest*, StartedQuest);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyStageStarted, UQuestStageData*, StartedQuest);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnyObjectiveStarted, UQuestObjectiveData*, StartedQuest);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnQuestReset);
 	
 	GENERATED_BODY()
 public:
@@ -33,6 +34,9 @@ public:
 	uint8 GetActiveStageIndex() const;
 	
 	uint8 GetActiveQuestIndex() const;
+	
+	void ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStageToReset);
+	
 protected:
 
 	UPROPERTY()
@@ -51,7 +55,8 @@ protected:
 	UPROPERTY(BlueprintAssignable)
 	FOnAnyObjectiveStarted OnAnyObjectiveStarted;
 	
-	
+	UPROPERTY(BlueprintAssignable)
+	FOnQuestReset OnQuestReset;
 
 	TArray<FQuest*> ActiveQuests;
 	
