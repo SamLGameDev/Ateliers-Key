@@ -4,8 +4,10 @@
 #include "SoundManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "SettingsSave.h"
+#include "Sound/SoundClass.h"
 
 UDataTable* USoundManager::SoundDataTable;
+float USoundManager::BlendSpeed = 1;
 
 TWeakObjectPtr<UAudioComponent> USoundManager::CurrentMusicComponent;
 
@@ -125,6 +127,33 @@ void USoundManager::FilterRows(TArray<FSoundRow*>& Rows, const ESoundUse Type, c
 	Rows = FilteredRows;
 }
 
+void USoundManager::BlendMusicDown()
+{
+	if (CurrentMusicComponent.IsValid())
+	{
+		CurrentMusicComponent->FadeOut(BlendSpeed, 0);
+	}
+	
+	
+}
+
+void USoundManager::BlendMusicIn(const UObject* WorldContextObject, USoundCue* Sound, const float Volume,
+	const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency)
+{
+	CurrentMusicComponent = TWeakObjectPtr<UAudioComponent>(UGameplayStatics::CreateSound2D
+	(
+		WorldContextObject,
+		Sound,
+		Volume,
+		PitchMultiplier,
+		StartTime,
+		Concurrency,
+	false,
+	true
+	));
+	CurrentMusicComponent.Pin()->FadeIn(BlendSpeed, Volume);
+}
+
 void USoundManager::SyncVolume()
 {
 	if (CurrentMusicComponent.IsValid())
@@ -132,6 +161,34 @@ void USoundManager::SyncVolume()
 		USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
 		CurrentMusicComponent.Pin()->SetVolumeMultiplier(Save->MusicVolume);
 	}
+}
+
+void USoundManager::PlayRandomMusicBlend(const UObject* WorldContextObject, const FName SubType, const FName Map,
+	const float StartTime)
+{
+	BlendMusicDown();
+	
+	
+	StopMusic();
+
+	TArray<FSoundRow*> Rows;
+	GetRandomSound(Rows, ESoundUse::Music, SubType, Map);
+
+	if (Rows.Num() == 0)
+	{
+		return;
+	}
+
+	int SoundIndex = FMath::RandRange(0, Rows.Num() -1);
+
+	USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
+	
+	FTimerDelegate Delegate;
+	Delegate.BindStatic(&USoundManager::BlendMusicIn, WorldContextObject, Rows[SoundIndex]->Sound, 
+		Save->MusicVolume, Rows[SoundIndex]->PitchMultiplier, StartTime, Rows[SoundIndex]->Concurrency);
+	FTimerHandle DelegateHandle;
+	
+	WorldContextObject->GetWorld()->GetTimerManager().SetTimer(DelegateHandle, Delegate, BlendSpeed, false);
 }
 
 const bool USoundManager::IsMatchingType(const FSoundRow* row, const ESoundUse Type)
