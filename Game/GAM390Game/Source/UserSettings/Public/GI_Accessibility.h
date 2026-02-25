@@ -54,6 +54,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDataTable> QuestTable;
 
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> SoundsTable;
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly)

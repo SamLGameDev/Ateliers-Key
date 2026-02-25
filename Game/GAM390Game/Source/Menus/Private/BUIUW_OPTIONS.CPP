@@ -15,6 +15,7 @@
 #include "Styling/SlateTypes.h"
 #include "SubtitleWidget.h"
 #include "SoundManager.h"
+#include "SoundSubsystem.h"
 
 void UBUIUW_Options::OnResolutionHigherClicked()
 {
@@ -629,7 +630,7 @@ void UBUIUW_Options::SaveVariables()
 	m_Settings->ApplySettings(false);
 	SetPlayerFOV(Save->FOVValue);
 	UGameplayStatics::SaveGameToSlot(Save, "settings", 0);
-	USoundManager::SyncVolume();
+	GetGameInstance()->GetSubsystem<USoundSubsystem>()->SyncVolume();
 }
 
 void UBUIUW_Options::ApplyBrightnessSettings(const float value)

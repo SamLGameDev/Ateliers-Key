@@ -56,7 +56,10 @@
 		{
 			"Name": "SoundManagement",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		},
 		{
 			"Name": "TimeManagementExtended",
