@@ -24,6 +24,11 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<TSoftObjectPtr<UWorld>> CombatEncounters;
+	
+	UPROPERTY(BlueprintReadOnly)
+	uint8 CheckpointQuest;
+	UPROPERTY(BlueprintReadOnly)
+	uint8 CheckpointQuestStage;
 };
 
 UCLASS()

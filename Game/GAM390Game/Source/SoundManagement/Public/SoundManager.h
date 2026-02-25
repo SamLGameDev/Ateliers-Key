@@ -87,6 +87,10 @@ public:
 	};
 
 	static void SyncVolume();
+	
+	UFUNCTION(BlueprintCallable)
+	static void PlayRandomMusicBlend(const UObject* WorldContextObject, const FName SubType = "None", const FName Map = "None", const float StartTime = 0.0f);
+	
 
 private:
 
@@ -97,7 +101,13 @@ private:
 	static const bool IsMatchingMap(const FSoundRow* row, const FName Map);
 
 	static void FilterRows(TArray<FSoundRow*>& Rows, const ESoundUse Type, const FName& SubType, const FName& Map);
+	
+	static void BlendMusicDown();
+	
+	static void BlendMusicIn(const UObject* WorldContextObject, USoundCue* Sound, const float Volume, const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency);
 
 	static UDataTable* SoundDataTable;
 	static TWeakObjectPtr<UAudioComponent> CurrentMusicComponent;
+	
+	static float BlendSpeed;
 };

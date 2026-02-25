@@ -122,5 +122,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FText GetQuestName(UWholeQuest* Quest);
+	
+	UFUNCTION(BlueprintCallable)
+	static void ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStageToReset, UObject* WorldContextObject);
 
 };
