@@ -35,7 +35,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 		checkpoint.RestartRotation = GetActorRotation();
 		checkpoint.CombatEncounters = {CombatEncounter};
 
-		if (NextCheckpoint)
+		if (NextCheckpoint && NextCheckpoint->CombatEncounter.IsValid())
 		{
 			checkpoint.CombatEncounters.Add(NextCheckpoint->CombatEncounter);
 			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, NextCheckpoint->CombatEncounter, true, false, {});
