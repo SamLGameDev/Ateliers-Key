@@ -37,7 +37,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 		
 		USaveSubsystem* Subsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
 		
-		if (Subsystem->LoadedSave->HitCheckpoint.Contains(GetName()))
+		if (Subsystem->LoadedSave && Subsystem->LoadedSave->HitCheckpoint.Contains(GetName()))
 		{
 			checkpoint.CheckpointQuest = Subsystem->LoadedSave->Quest;
 			checkpoint.CheckpointQuestStage = Subsystem->LoadedSave->QuestStage;
