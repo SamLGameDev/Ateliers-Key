@@ -140,6 +140,9 @@ void USoundManager::BlendMusicDown()
 void USoundManager::BlendMusicIn(const UObject* WorldContextObject, USoundCue* Sound, const float Volume,
 	const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency)
 {
+
+	if (!CurrentMusicComponent.IsValid()) return;
+	
 	CurrentMusicComponent = TWeakObjectPtr<UAudioComponent>(UGameplayStatics::CreateSound2D
 	(
 		WorldContextObject,
