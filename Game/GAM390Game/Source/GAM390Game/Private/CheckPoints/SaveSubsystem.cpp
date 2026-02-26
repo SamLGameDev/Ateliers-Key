@@ -34,8 +34,10 @@ TArray<TSoftObjectPtr<UWorld>> USaveSubsystem::GetLoadedCombatEncounters()
 	
 	for (const auto& levelName : LoadedSave->CombatEncounters)
 	{
-		ULevelStreaming* level = GetWorld()->GetLevelStreamingForPackageName(FName(levelName));
-		LoadedCombatEncounters.Add(level->GetWorldAsset());
+		TSoftObjectPtr<UWorld> WorldAsset = TSoftObjectPtr<UWorld>(
+			FSoftObjectPath(levelName)
+		);
+		LoadedCombatEncounters.Add(WorldAsset);
 	}
 	return LoadedCombatEncounters;
 	
