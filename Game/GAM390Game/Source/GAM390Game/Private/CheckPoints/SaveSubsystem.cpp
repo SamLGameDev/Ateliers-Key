@@ -25,3 +25,19 @@ void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	
 	OnCheckpointLoad.Broadcast();
 }
+
+TArray<TSoftObjectPtr<UWorld>> USaveSubsystem::GetLoadedCombatEncounters()
+{
+	TArray<TSoftObjectPtr<UWorld>> LoadedCombatEncounters;
+	
+	if (!LoadedSave) return LoadedCombatEncounters;
+	
+	for (const auto& levelName : LoadedSave->CombatEncounters)
+	{
+		ULevelStreaming* level = GetWorld()->GetLevelStreamingForPackageName(FName(levelName));
+		LoadedCombatEncounters.Add(level->GetWorldAsset());
+	}
+	return LoadedCombatEncounters;
+	
+	
+}

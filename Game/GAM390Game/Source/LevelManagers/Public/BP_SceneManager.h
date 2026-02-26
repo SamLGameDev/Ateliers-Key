@@ -40,6 +40,10 @@ public:
 	static void AddToTimersList(UObject* object) {
 		ObjectsWithTimers.Add(object);
 	}
+	
+	UFUNCTION(BlueprintCallable, Category = "SceneManager|Level Loading")
+	static void FlushLevelStreamingFull(UObject* WorldContextObject);
+	
 
 private:
 
