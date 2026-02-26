@@ -10,7 +10,8 @@ public class AI : ModuleRules
             new string[]
             {
                 "Core",
-                "AIModule"
+                "AIModule",
+                "DamageSystem"
             }
         );
 

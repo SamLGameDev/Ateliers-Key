@@ -94,6 +94,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxTempHealth;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float MaxHealth;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
 	int TeamNumber;
 
@@ -108,8 +111,7 @@ protected:
 
 	void CallOnDamageResponse(const FDamageInfo& DamageResponse);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float MaxHealth;
+	
 
 	TMap<uint8, FTimerHandle> HealthPerTickHandles;
 	
