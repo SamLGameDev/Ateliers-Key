@@ -216,7 +216,7 @@ void UQuestSubsystem::ResetQuestTo(const uint8 QuestToReset, const uint8 QuestSt
 		}
 	}
 	
-	for (uint8 ActiveStageIndex = GetActiveStageIndex(); ActiveStageIndex != QuestStageToReset; ActiveStageIndex)
+	for (uint8 ActiveStageIndex = GetActiveStageIndex(); ActiveStageIndex != QuestStageToReset; ActiveStageIndex--)
 	{
 		FQuestStage* stage = &Rows[QuestToReset]->Stages[ActiveStageIndex];
 		stage->bIsCompleted = false;

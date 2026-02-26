@@ -6,6 +6,7 @@
 #include "GI_Accessibility.h"
 #include "CheckPoints/AtelierSaveGame.h"
 #include "BP_Player.h"
+#include "BP_SceneManager.h"
 #include "Abilities/LifeSteal.h"
 #include "Abilities/LockEntity.h"
 #include "Abilities/Puppetry.h"
@@ -47,16 +48,11 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 			checkpoint.CheckpointQuest = UQuestLibrary::GetActiveQuestIndex(this);
 			checkpoint.CheckpointQuestStage = UQuestLibrary::GetActiveStageIndex(this);
 		}
-		if (NextCheckpoint)
-		{
-			checkpoint.CombatEncounters.Add(NextCheckpoint->CombatEncounter);
-			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, NextCheckpoint->CombatEncounter, true, false, {});
-
-		}
 
 		if (!GetWorld()->GetStreamingLevels().Contains(CombatEncounter))
 		{
-			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, CombatEncounter, true, false, {});
+			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, CombatEncounter, true, true, {});
+			//UBP_SceneManager::FlushLevelStreamingFull(this);
 		}
 
 		CurrentCheckpoint->SetObject(checkpoint);
@@ -91,8 +87,8 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	save->BaseMap = GetWorld()->GetName();
 	save->CombatEncounters.Empty();
-	if (CombatEncounter) save->CombatEncounters.Add(CombatEncounter->GetName());
-	if (NextCheckpoint && NextCheckpoint->CombatEncounter) save->CombatEncounters.Add(NextCheckpoint->CombatEncounter->GetName());
+	save->CombatEncounters.Add(CombatEncounter.GetAssetName());
+	if (NextCheckpoint) save->CombatEncounters.Add(NextCheckpoint->CombatEncounter.GetAssetName());
 	
 	save->WorldsToLoad.Empty();
 	
