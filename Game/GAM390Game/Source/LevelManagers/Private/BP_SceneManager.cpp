@@ -6,6 +6,11 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 
+void UBP_SceneManager::FlushLevelStreamingFull(UObject* WorldContextObject)
+{
+	WorldContextObject->GetWorld()->BlockTillLevelStreamingCompleted();
+}
+
 TArray<UObject*> UBP_SceneManager::ObjectsWithTimers;
 
 void UBP_SceneManager::Quit(UObject* WorldContextObject, APlayerController* Controller)

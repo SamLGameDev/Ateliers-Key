@@ -25,3 +25,21 @@ void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	
 	OnCheckpointLoad.Broadcast();
 }
+
+TArray<TSoftObjectPtr<UWorld>> USaveSubsystem::GetLoadedCombatEncounters()
+{
+	TArray<TSoftObjectPtr<UWorld>> LoadedCombatEncounters;
+	
+	if (!LoadedSave) return LoadedCombatEncounters;
+	
+	for (const auto& levelName : LoadedSave->CombatEncounters)
+	{
+		TSoftObjectPtr<UWorld> WorldAsset = TSoftObjectPtr<UWorld>(
+			FSoftObjectPath(levelName)
+		);
+		LoadedCombatEncounters.Add(WorldAsset);
+	}
+	return LoadedCombatEncounters;
+	
+	
+}
