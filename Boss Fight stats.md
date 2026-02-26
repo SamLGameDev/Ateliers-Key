@@ -4,9 +4,9 @@
 
 #### Height range to activate movement:
 
-Vert: 
+Vert:
 
-* 900 - hand clips floor slightly 
+* 900 - hand clips floor slightly
 * 800 - Hand still clips floor, if player is close its unnoticeable, however if they move then it is possible to see, good height for the 1st level
 * 700 - Still clipping floor, same as 800; slightly worse for the 1dst floor as you begin to see more of the plate so could cause clipping issues/collision when falling off from key
 * 600 - No longer clipping, however the plate is same level as player so could feel awkward when falling to bottom level to unlock the plates ---- dependent on how far away the player is and reach of hands on boss
@@ -45,7 +45,7 @@ At 600 level
 * 200  - floor clips into boss
 * 0    - Decent distance boss can still hit player however plate issue mentioned above applies to such
 * -100 - Boss can hit player but will be more of a fingertip than palm dependent on player pos
-* -200 - Boss misses player completely 
+* -200 - Boss misses player completely
 
 
 
@@ -73,7 +73,9 @@ At 800 level
 
 
 
+**Notes:**
 
+**Ensure that the curved elevated platform is tighter around the boss so that the boss can hand slam it with ease**
 
-
+**Keep most things in the environment above where the boss is relatively clear so player can grapple high**
 
