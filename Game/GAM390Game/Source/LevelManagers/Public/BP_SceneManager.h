@@ -43,6 +43,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "SceneManager|Level Loading")
 	static void FlushLevelStreamingFull(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "SceneManager|Level Loading")
+	static FString GetLevelName(TSoftObjectPtr<UWorld> Level);
 	
 
 private:

@@ -29,6 +29,13 @@ public:
 	uint8 CheckpointQuest;
 	UPROPERTY(BlueprintReadWrite)
 	uint8 CheckpointQuestStage;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasAssultRifle = false;
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasShotgun = false;
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasSniper = false;
 };
 
 UCLASS()

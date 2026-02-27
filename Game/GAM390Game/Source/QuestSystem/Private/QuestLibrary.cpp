@@ -66,3 +66,21 @@ void UQuestLibrary::ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStag
 	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
 	subsystem->ResetQuestTo(QuestToReset, QuestStageToReset);
 }
+
+uint8 UQuestLibrary::GetStageIndex(UQuestStageData* Stage, UObject* WorldContextObject)
+{
+	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+	return subsystem->GetStageIndex(Stage);
+}
+
+uint8 UQuestLibrary::GetStageIndexFromObjective(UQuestObjectiveData* Stage, UObject* WorldContextObject)
+{
+	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+	return subsystem->GetStageIndex(Stage);
+}
+
+bool UQuestLibrary::AreQuestsActive(UObject* WorldContextObject)
+{
+	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+	return subsystem->AreQuestsActive();
+}

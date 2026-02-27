@@ -55,9 +55,31 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 			//UBP_SceneManager::FlushLevelStreamingFull(this);
 		}
 
+		ABP_Player* player = Cast<ABP_Player>(OtherActor);
+		
+		for (const auto& weapon : player->EquipedWeapons)
+		{
+			if (weapon->ActorHasTag("AssaultRifle"))
+			{
+				checkpoint.bHasAssultRifle = true;
+				continue;
+			}
+			if (weapon->ActorHasTag("SniperRifle"))
+			{
+				checkpoint.bHasSniper = true;
+				continue;
+			}
+			if (weapon->ActorHasTag("Shotgun"))
+			{
+				checkpoint.bHasShotgun = true;
+				continue;
+			}
+		}
+
+		
 		CurrentCheckpoint->SetObject(checkpoint);
 
-		SaveToSlot(Cast<ABP_Player>(OtherActor));
+		SaveToSlot(player);
 		Destroy();
 	}
 }
@@ -90,13 +112,7 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	FString levelName = CombatEncounter.GetAssetName();
 	
-	if (!levelName.IsEmpty()) save->CombatEncounters.Add(CombatEncounter.GetAssetName());
-	
-	if (NextCheckpoint)
-	{
-		levelName = NextCheckpoint->CombatEncounter.GetAssetName();
-		if (!levelName.IsEmpty()) save->CombatEncounters.Add(levelName);
-	}
+	if (!levelName.IsEmpty()) save->CombatEncounters.Add(CombatEncounter);
 	
 	save->WorldsToLoad.Empty();
 	

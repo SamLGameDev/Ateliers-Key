@@ -11,6 +11,11 @@ void UBP_SceneManager::FlushLevelStreamingFull(UObject* WorldContextObject)
 	WorldContextObject->GetWorld()->BlockTillLevelStreamingCompleted();
 }
 
+FString UBP_SceneManager::GetLevelName(TSoftObjectPtr<UWorld> Level)
+{
+	return Level.GetAssetName();
+}
+
 TArray<UObject*> UBP_SceneManager::ObjectsWithTimers;
 
 void UBP_SceneManager::Quit(UObject* WorldContextObject, APlayerController* Controller)

@@ -34,8 +34,5 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAtelierSaveGame> LoadedSave = nullptr;
-	
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	TArray<TSoftObjectPtr<UWorld>> GetLoadedCombatEncounters();
-	
+
 };

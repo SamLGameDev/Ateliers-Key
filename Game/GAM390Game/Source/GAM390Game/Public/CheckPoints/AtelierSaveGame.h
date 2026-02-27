@@ -22,7 +22,7 @@ public:
 	FRotator RestartRotation;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FString>  CombatEncounters;
+	TArray<TSoftObjectPtr<UWorld>>  CombatEncounters;
 	
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FString>  WorldsToLoad;

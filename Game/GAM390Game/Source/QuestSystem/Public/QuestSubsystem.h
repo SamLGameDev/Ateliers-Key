@@ -34,6 +34,11 @@ public:
 	uint8 GetActiveStageIndex() const;
 	
 	uint8 GetActiveQuestIndex() const;
+
+	uint8 GetStageIndex(TObjectPtr<UQuestStageData> Stage) const;
+	uint8 GetStageIndex(TObjectPtr<UQuestObjectiveData> Stage) const;
+
+	bool AreQuestsActive() const;
 	
 	void ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStageToReset);
 	
@@ -60,8 +65,8 @@ protected:
 
 	TArray<FQuest*> ActiveQuests;
 	
-	FQuestStage* ActiveStage;
+	FQuestStage* ActiveStage = nullptr;
 	
-	FQuest* ActiveQuest;
+	FQuest* ActiveQuest = nullptr;
 	
 };

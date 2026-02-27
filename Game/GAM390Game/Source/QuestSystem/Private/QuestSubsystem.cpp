@@ -189,6 +189,47 @@ uint8 UQuestSubsystem::GetActiveQuestIndex() const
 	return 0;
 }
 
+uint8 UQuestSubsystem::GetStageIndex(TObjectPtr<UQuestStageData> Stage) const
+{
+	TArray<FQuest*> Rows;
+	QuestTable->GetAllRows("", Rows);
+	for (auto* Row : Rows)
+	{
+		for (uint8 i = 0 ; i < Row->Stages.Num(); i++)
+		{
+			FQuestStage* stage = &Row->Stages[i];
+			if (stage->QuestData == Stage)
+			{
+				return i;
+			}
+		}
+	}
+	return 0;
+}
+
+uint8 UQuestSubsystem::GetStageIndex(TObjectPtr<UQuestObjectiveData> Stage) const
+{
+	TArray<FQuest*> Rows;
+	QuestTable->GetAllRows("", Rows);
+	for (auto* Row : Rows)
+	{
+		for (uint8 i = 0 ; i < Row->Stages.Num(); i++)
+		{
+			FQuestStage* stage = &Row->Stages[i];
+			if (stage->QuestData == Stage->ParentQuest->ParentStage->QuestData)
+			{
+				return i;
+			}
+		}
+	}
+	return 0;
+}
+
+bool UQuestSubsystem::AreQuestsActive() const
+{
+	return ActiveStage != nullptr;
+}
+
 void UQuestSubsystem::ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStageToReset)
 {
 	TArray<FQuest*> Rows;

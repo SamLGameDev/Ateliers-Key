@@ -126,4 +126,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStageToReset, UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static uint8 GetStageIndex(UQuestStageData* Stage, UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static uint8 GetStageIndexFromObjective(UQuestObjectiveData* Stage, UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static bool AreQuestsActive(UObject* WorldContextObject);
+
 };
