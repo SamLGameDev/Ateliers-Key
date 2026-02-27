@@ -87,8 +87,16 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	save->BaseMap = GetWorld()->GetName();
 	save->CombatEncounters.Empty();
-	save->CombatEncounters.Add(CombatEncounter.GetAssetName());
-	if (NextCheckpoint) save->CombatEncounters.Add(NextCheckpoint->CombatEncounter.GetAssetName());
+
+	FString levelName = CombatEncounter.GetAssetName();
+	
+	if (!levelName.IsEmpty()) save->CombatEncounters.Add(CombatEncounter.GetAssetName());
+	
+	if (NextCheckpoint)
+	{
+		levelName = NextCheckpoint->CombatEncounter.GetAssetName();
+		if (!levelName.IsEmpty()) save->CombatEncounters.Add(levelName);
+	}
 	
 	save->WorldsToLoad.Empty();
 	
