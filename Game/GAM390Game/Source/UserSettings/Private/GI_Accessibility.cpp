@@ -8,6 +8,7 @@
 
 void UGI_SanctumSettings::SetSaveSlot(const FString& SlotName)
 {
+	CurrentSaveSlot = SlotName;
 }
 
 FString UGI_SanctumSettings::GetSaveSlot()
