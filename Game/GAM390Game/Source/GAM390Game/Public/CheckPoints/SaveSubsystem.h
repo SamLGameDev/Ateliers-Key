@@ -21,12 +21,16 @@ public:
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckpointSave);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckpointLoad);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckpointRestart);
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnCheckpointSave OnCheckpointSave;
 	
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnCheckpointLoad OnCheckpointLoad;
+	
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnCheckpointLoad OnCheckpointRestart;
 	
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAtelierSaveGame> LoadedSave = nullptr;
