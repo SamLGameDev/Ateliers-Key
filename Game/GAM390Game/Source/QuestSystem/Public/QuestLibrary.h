@@ -133,6 +133,9 @@ public:
 	static uint8 GetStageIndexFromObjective(UQuestObjectiveData* Stage, UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static uint8 GetQuestIndexFromObjective(UQuestObjectiveData* Stage, UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static bool AreQuestsActive(UObject* WorldContextObject);
 
 };

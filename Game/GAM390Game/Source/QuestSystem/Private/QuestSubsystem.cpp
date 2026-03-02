@@ -5,6 +5,7 @@
 
 #include "Constraint.h"
 #include "GI_Accessibility.h"
+#include "IPropertyTable.h"
 #include "QuestData.h"
 #include "QuestObjectiveData.h"
 #include "WholeQuest.h"
@@ -134,11 +135,14 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 				if (ParentQuest->NextQuest == nullptr) return;
 				ParentQuest = ParentQuest->NextQuest;
 			}
+			//checkf(ParentQuest->Stages.IsEmpty(), TEXT("Quest has no stages, either add some or remove it"))
 
-			checkf(ParentQuest->Stages.IsEmpty(), TEXT("Quest has no stages, either add some or remove it")) 
+			OnAnyQuestStarted.Broadcast(ParentQuest->QuestData);
 			ParentStage = &ParentQuest->Stages[0];
 			ActiveQuest = ParentQuest;
 		}
+
+		if (ParentStage->NextStage == nullptr) break;
 		
 		ParentStage = ParentStage->NextStage;
 	}
@@ -219,6 +223,25 @@ uint8 UQuestSubsystem::GetStageIndex(TObjectPtr<UQuestObjectiveData> Stage) cons
 			if (stage->QuestData == Stage->ParentQuest->ParentStage->QuestData)
 			{
 				return i;
+			}
+		}
+	}
+	return 0;
+}
+
+uint8 UQuestSubsystem::GetQuestIndex(TObjectPtr<UQuestObjectiveData> Quest) const
+{
+	TArray<FQuest*> Rows;
+	QuestTable->GetAllRows("", Rows);
+	for (uint8 rowNum = 0; rowNum < Rows.Num(); rowNum++)
+	{
+		const auto& row = Rows[rowNum];
+		for (uint8 i = 0 ; i < row->Stages.Num(); i++)
+		{
+			FQuestStage* stage = &row->Stages[i];
+			if (stage->QuestData == Quest->ParentQuest->ParentStage->QuestData)
+			{
+				return rowNum;
 			}
 		}
 	}

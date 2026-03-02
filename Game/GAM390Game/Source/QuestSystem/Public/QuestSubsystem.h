@@ -37,6 +37,7 @@ public:
 
 	uint8 GetStageIndex(TObjectPtr<UQuestStageData> Stage) const;
 	uint8 GetStageIndex(TObjectPtr<UQuestObjectiveData> Stage) const;
+	uint8 GetQuestIndex(TObjectPtr<UQuestObjectiveData> Quest) const;
 
 	bool AreQuestsActive() const;
 	

@@ -79,6 +79,12 @@ uint8 UQuestLibrary::GetStageIndexFromObjective(UQuestObjectiveData* Stage, UObj
 	return subsystem->GetStageIndex(Stage);
 }
 
+uint8 UQuestLibrary::GetQuestIndexFromObjective(UQuestObjectiveData* Stage, UObject* WorldContextObject)
+{
+	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+	return subsystem->GetQuestIndex(Stage);
+}
+
 bool UQuestLibrary::AreQuestsActive(UObject* WorldContextObject)
 {
 	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
