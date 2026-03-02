@@ -29,6 +29,26 @@ ACheckpoint::ACheckpoint()
 
 void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+	UGI_SanctumSettings* gInstance =  Cast<UGI_SanctumSettings>(GetGameInstance());
+
+	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
+
+	FString slotName = gInstance->GetSaveSlot();
+	
+	UAtelierSaveGame* save;
+	
+	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
+	{
+		save = Cast<UAtelierSaveGame>(UGameplayStatics::LoadGameFromSlot(slotName, 0));
+	}
+	else
+	{
+		save = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
+	}
+	
+	if (save->HitCheckpoint.Contains(GetName()) && save->HitCheckpoint.Last() != GetName()) return;
+	
 	if (OtherActor->Implements<UDamageable>())
 	{
 		FCheckpointInfo checkpoint;
