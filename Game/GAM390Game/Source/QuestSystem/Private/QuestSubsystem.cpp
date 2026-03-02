@@ -3,9 +3,7 @@
 
 #include "QuestSubsystem.h"
 
-#include "Constraint.h"
 #include "GI_Accessibility.h"
-#include "IPropertyTable.h"
 #include "QuestData.h"
 #include "QuestObjectiveData.h"
 #include "WholeQuest.h"
