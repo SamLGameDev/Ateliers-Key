@@ -31,8 +31,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 {
 
 	UGI_SanctumSettings* gInstance =  Cast<UGI_SanctumSettings>(GetGameInstance());
-
-	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
+	
 
 	FString slotName = gInstance->GetSaveSlot();
 	
@@ -98,7 +97,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 
 		
 		CurrentCheckpoint->SetObject(checkpoint);
-
+		if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
 		SaveToSlot(player);
 		Destroy();
 	}
