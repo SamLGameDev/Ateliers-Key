@@ -164,6 +164,8 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 
 uint8 UQuestSubsystem::GetActiveStageIndex() const
 {
+	if (!ActiveStage) return 0;
+	
 	TArray<FQuest*> Rows;
 	QuestTable->GetAllRows("", Rows);
 	for (auto* Row : Rows)
@@ -182,6 +184,8 @@ uint8 UQuestSubsystem::GetActiveStageIndex() const
 
 uint8 UQuestSubsystem::GetActiveQuestIndex() const
 {
+	if (!ActiveQuest) return 0;
+	
 	TArray<FQuest*> Rows;
 	QuestTable->GetAllRows("", Rows);
 	for (uint8 i = 0; i < Rows.Num(); i++)

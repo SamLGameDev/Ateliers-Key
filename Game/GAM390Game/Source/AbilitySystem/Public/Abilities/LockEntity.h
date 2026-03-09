@@ -44,4 +44,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	UInputMappingContext* PlayerLockedMap;
 	
+	UPROPERTY()
+	TObjectPtr<AActor> TargetForLock;
+	
+	UPROPERTY(EditAnywhere, Category = "Ability")
+	UMaterial* OverlayMat;
+	
 };

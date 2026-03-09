@@ -14,6 +14,7 @@ void ULockEntity::CancelExecution()
 		return;
 	}
 	TargetController->RequestAiCanMove(StopId);
+	TargetForLock->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
 }
 
 void ULockEntity::StartExecution(AActor* Target)
@@ -30,8 +31,14 @@ void ULockEntity::StartExecution(AActor* Target)
 			return;
 		}
 		UE_LOG(LogTemp, Warning, TEXT("StartedLock"));
-
+		TargetForLock = Target;
+		TargetForLock->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(OverlayMat);
 		StopId = TargetController->StopAIForDuration(Duration);
+		FTimerDelegate CancelDel;
+
+		CancelDel.BindUFunction(this, FName("CancelExecution"));
+		FTimerHandle CancelHandle;
+		GetWorld()->GetTimerManager().SetTimer(CancelHandle, CancelDel, Duration, false);
 		
 	}
 	UE_LOG(LogTemp, Warning, TEXT("EndLockCall"));

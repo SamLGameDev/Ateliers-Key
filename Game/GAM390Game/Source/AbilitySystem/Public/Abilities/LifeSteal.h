@@ -44,6 +44,12 @@ protected:
 	float HealPerTick;
 	
 	FTimerHandle StealLoop;
+	
+	UPROPERTY()
+	TObjectPtr<AActor> TargetForDrain;
+	
+	UPROPERTY(EditAnywhere, Category = "Ability")
+	UMaterial* OverlayMat;
 
 public:
 	// Called every frame

@@ -31,6 +31,7 @@ void ULifeSteal::BeginPlay()
 void ULifeSteal::CancelExecution()
 {
 	GetWorld()->GetTimerManager().ClearTimer(StealLoop);
+	TargetForDrain->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
 }
 
 void ULifeSteal::StartExecution(AActor* Target)
@@ -45,6 +46,8 @@ void ULifeSteal::StartExecution(AActor* Target)
 
 	if (!TargetDS) return;
 	
+	TargetForDrain = Target;
+	TargetForDrain->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(OverlayMat);
 	FTimerDelegate LifeStealDel;
 
 	LifeStealDel.BindUFunction(this, FName("LifeSteal"), TargetDS, Duration);
@@ -54,8 +57,12 @@ void ULifeSteal::StartExecution(AActor* Target)
 
 void ULifeSteal::LifeSteal(UDamageSystem* TargetDS, float RemainingDuration)
 {
-	if (RemainingDuration <= 0 || TargetDS->IsDead) return;
-
+	if (RemainingDuration <= 0 || TargetDS->IsDead)
+	{
+		CancelExecution();
+		return;
+	}
+	
 	FDamageInfo DamageInfo;
 	DamageInfo.Amount = DamagePerTick * GetWorld()->GetDeltaSeconds();
 	
