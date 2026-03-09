@@ -131,9 +131,9 @@ void USoundSubsystem::SyncVolume() const
 	}
 }
 
-void USoundSubsystem::PlayRandomMusicBlend(const FName SubType, const FName Map, const float StartTime)
+void USoundSubsystem::PlayRandomMusicBlend(const FName SubType, const FName Map, const float StartTime, const float BlendSpeed)
 {
-	BlendMusicDown();
+	BlendMusicDown(BlendSpeed);
 	TArray<FSoundRow*> Rows;
 	GetRandomSound(Rows, ESoundUse::Music, SubType, Map);
 
@@ -148,7 +148,8 @@ void USoundSubsystem::PlayRandomMusicBlend(const FName SubType, const FName Map,
 	
 	FTimerDelegate Delegate;
 	Delegate.BindUFunction(this, "BlendMusicIn", Rows[SoundIndex]->Sound, 
-		Save->MusicVolume, Rows[SoundIndex]->PitchMultiplier, StartTime, Rows[SoundIndex]->Concurrency);
+		Save->MusicVolume, Rows[SoundIndex]->PitchMultiplier, 
+		StartTime, Rows[SoundIndex]->Concurrency, BlendSpeed);
 	FTimerHandle DelegateHandle;
 	
 	GetWorld()->GetTimerManager().SetTimer(DelegateHandle, Delegate, BlendSpeed, false);
@@ -182,7 +183,7 @@ void USoundSubsystem::FilterRows(TArray<FSoundRow*>& Rows, const ESoundUse Type,
 	Rows = FilteredRows;
 }
 
-void USoundSubsystem::BlendMusicDown() const
+void USoundSubsystem::BlendMusicDown(const float BlendSpeed) const
 {
 	if (CurrentMusicComponent.IsValid())
 	{
@@ -191,7 +192,7 @@ void USoundSubsystem::BlendMusicDown() const
 }
 
 void USoundSubsystem::BlendMusicIn(USoundCue* Sound, const float Volume, const float PitchMultiplier,
-	const float StartTime, USoundConcurrency* Concurrency)
+                                   const float StartTime, USoundConcurrency* Concurrency, const float BlendSpeed)
 {
 	CurrentMusicComponent = TWeakObjectPtr<UAudioComponent>(UGameplayStatics::CreateSound2D
 	(

@@ -83,7 +83,7 @@ public:
 	void SyncVolume() const;
     	
 	UFUNCTION(BlueprintCallable)
-	void PlayRandomMusicBlend(const FName SubType = "None", const FName Map = "None", const float StartTime = 0.0f);
+	void PlayRandomMusicBlend(const FName SubType = "None", const FName Map = "None", const float StartTime = 0.0f, float BlendSpeed = 0);
     	
     
     private:
@@ -95,15 +95,14 @@ public:
 
 		static void FilterRows(TArray<FSoundRow*>& Rows, const ESoundUse Type, const FName& SubType, const FName& Map);
     	UFUNCTION()
-    	void BlendMusicDown() const;
+    	void BlendMusicDown(float BlendSpeed) const;
     	UFUNCTION()
-    	void BlendMusicIn(USoundCue* Sound, const float Volume, const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency);
+    	void BlendMusicIn(USoundCue* Sound, const float Volume, const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency, float
+	                      BlendSpeed);
 
 		UPROPERTY()
     	TObjectPtr<UDataTable> SoundDataTable;
 		UPROPERTY()
     	TWeakObjectPtr<UAudioComponent> CurrentMusicComponent;
-    	
-    	float BlendSpeed = 1;
 	
 };
