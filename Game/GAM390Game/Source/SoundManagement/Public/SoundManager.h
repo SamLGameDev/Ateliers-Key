@@ -34,5 +34,5 @@ public:
 	static void StopMusic(UObject* WorldContextObject);
 	
 	UFUNCTION(BlueprintCallable)
-	static void PlayRandomMusicBlend(const UObject* WorldContextObject, const FName SubType = "None", const FName Map = "None", const float StartTime = 0.0f);
+	static void PlayRandomMusicBlend(const UObject* WorldContextObject, const FName SubType = "None", const FName Map = "None", const float StartTime = 0.0f, const float BlendSpeed = 1);
 };
