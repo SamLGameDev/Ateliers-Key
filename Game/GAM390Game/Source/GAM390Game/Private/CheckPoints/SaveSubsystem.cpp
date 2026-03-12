@@ -26,3 +26,22 @@ void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	OnCheckpointLoad.Broadcast();
 }
 
+UAtelierSaveGame* USaveSubsystem::GetSaveGame()
+{
+	if (LoadedSave) return LoadedSave;
+	
+	TObjectPtr<UGI_SanctumSettings> gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
+	
+	if (!gameInstance) return nullptr;
+	const FString& slotName = gameInstance->GetSaveSlot();
+	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
+	{
+		LoadedSave = Cast<UAtelierSaveGame>(UGameplayStatics::LoadGameFromSlot(slotName, 0));
+	}
+	else
+	{
+		LoadedSave = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
+	}
+	return LoadedSave;
+}
+

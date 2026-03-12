@@ -29,23 +29,10 @@ ACheckpoint::ACheckpoint()
 
 void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
-	UGI_SanctumSettings* gInstance =  Cast<UGI_SanctumSettings>(GetGameInstance());
 	
-
-	FString slotName = gInstance->GetSaveSlot();
+	USaveSubsystem* sSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
 	
-	UAtelierSaveGame* save;
-	
-	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
-	{
-		save = Cast<UAtelierSaveGame>(UGameplayStatics::LoadGameFromSlot(slotName, 0));
-	}
-	else
-	{
-		save = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
-	}
-	
+	UAtelierSaveGame* save = sSubsystem->GetSaveGame();
 	if (save->HitCheckpoint.Contains(GetName()) && save->HitCheckpoint.Last() != GetName()) return;
 	
 	if (OtherActor->Implements<UDamageable>())
@@ -106,22 +93,13 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 void ACheckpoint::SaveToSlot(ABP_Player* Player)
 {
 	
-	UGI_SanctumSettings* gInstance =  Cast<UGI_SanctumSettings>(GetGameInstance());
+
 
 	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
-
-	FString slotName = gInstance->GetSaveSlot();
+	USaveSubsystem* sSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
 	
-	UAtelierSaveGame* save;
+	UAtelierSaveGame* save = sSubsystem->GetSaveGame();
 	
-	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
-	{
-		save = Cast<UAtelierSaveGame>(UGameplayStatics::LoadGameFromSlot(slotName, 0));
-	}
-	else
-	{
-		save = Cast<UAtelierSaveGame>(UGameplayStatics::CreateSaveGameObject(UAtelierSaveGame::StaticClass()));
-	}
 	
 	if (save->HitCheckpoint.Contains(GetName())) return;
 
@@ -187,6 +165,10 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 	save->HitCheckpoint.Add(GetName());
 	
 	GetWorld()->GetSubsystem<USaveSubsystem>()->OnCheckpointSave.Broadcast();
+	TObjectPtr<UGI_SanctumSettings> gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
+	const FString& slotName = gameInstance->GetSaveSlot();
+	
+	
 
 	UGameplayStatics::AsyncSaveGameToSlot(save, slotName, 0);
 	

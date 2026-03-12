@@ -23,6 +23,9 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckpointLoad);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckpointRestart);
 	
+	UFUNCTION(BlueprintCallable)
+	UAtelierSaveGame* GetSaveGame();
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnCheckpointSave OnCheckpointSave;
 	

@@ -56,6 +56,9 @@ public:
 	UPROPERTY()
 	TArray<FString> HitCheckpoint;
 	
+	UPROPERTY(BlueprintReadWrite)
+	bool QuickTimePassed = false;
+	
 	
 
 };
