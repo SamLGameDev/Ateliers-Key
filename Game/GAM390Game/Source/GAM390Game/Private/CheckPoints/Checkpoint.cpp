@@ -29,6 +29,9 @@ ACheckpoint::ACheckpoint()
 
 void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	ABP_Player* player = Cast<ABP_Player>(OtherActor);
+
+	if (!player) return;
 	
 	USaveSubsystem* sSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
 	
@@ -60,8 +63,6 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, CombatEncounter, true, true, {});
 			//UBP_SceneManager::FlushLevelStreamingFull(this);
 		}
-
-		ABP_Player* player = Cast<ABP_Player>(OtherActor);
 		
 		for (const auto& weapon : player->EquipedWeapons)
 		{
