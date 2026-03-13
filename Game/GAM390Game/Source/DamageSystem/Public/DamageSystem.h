@@ -9,6 +9,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBlocked);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHeal);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageResponse, EDamageResponse, DamageResponse, AActor*, Source);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FHealFunc, float, Amount);
 
@@ -34,6 +35,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnBlocked OnBlocked;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnHeal OnHeal;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnHeal OnHealTemp;
 
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDamageResponse OnDamageResponse;

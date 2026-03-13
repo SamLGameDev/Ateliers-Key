@@ -31,6 +31,9 @@ void ULifeSteal::BeginPlay()
 void ULifeSteal::CancelExecution()
 {
 	GetWorld()->GetTimerManager().ClearTimer(StealLoop);
+	
+	if (!TargetForDrain) return;
+	
 	TargetForDrain->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
 }
 

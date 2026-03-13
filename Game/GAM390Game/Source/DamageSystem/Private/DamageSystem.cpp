@@ -42,6 +42,8 @@ void UDamageSystem::Heal(float Amount) {
 		CurrentHealth += Amount;
 
 		CurrentHealth = FMath::Clamp(CurrentHealth, 0.0f, MaxHealth);
+		
+		OnHeal.Broadcast();
 	}
 }
 
@@ -51,6 +53,8 @@ void UDamageSystem::HealTemp(float Amount)
 		CurrentTempHealth += Amount;
 
 		CurrentTempHealth = FMath::Clamp(CurrentTempHealth, 0.0f, MaxTempHealth);
+		
+		OnHealTemp.Broadcast();
 	}
 }
 
@@ -77,6 +81,11 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 
 			if (CurrentTempHealth <= 0.0f) {
 				CurrentTempHealth = 0;
+				if (CurrentHealth < CriticalHealthThreashold)
+				{
+					OnCriticalThreasholdReached.Broadcast(DamageInfo.DamageResponse, Source);
+				}
+				
 				return;
 			}
 			return;

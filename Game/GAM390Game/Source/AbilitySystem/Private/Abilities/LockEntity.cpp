@@ -14,6 +14,7 @@ void ULockEntity::CancelExecution()
 		return;
 	}
 	TargetController->RequestAiCanMove(StopId);
+	if (!TargetForLock) return;
 	TargetForLock->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
 }
 
