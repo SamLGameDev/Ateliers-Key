@@ -36,6 +36,6 @@ void USoundManager::PlayRandomMusicBlend(const UObject* WorldContextObject, cons
 	const float StartTime, const float BlendSpeed)
 {
 	USoundSubsystem* subsystem =  WorldContextObject->GetWorld()->GetGameInstance()->GetSubsystem<USoundSubsystem>();
-	subsystem->PlayRandomMusicBlend(SubType, Map, StartTime);
+	subsystem->PlayRandomMusicBlend(SubType, Map, StartTime, BlendSpeed);
 }
 
