@@ -34,6 +34,8 @@ void ABaseEnemyController::RequestAiCanMove(uint8 ID)
 	StopRequests.Remove(ID);
 	if (StopRequests.IsEmpty())
 	{
+		if (!GetBrainComponent()) return;
+		
 		GetBrainComponent()->StartLogic();
 	}
 }

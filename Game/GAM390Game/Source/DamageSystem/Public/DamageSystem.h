@@ -41,7 +41,23 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnHeal OnHealTemp;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnHeal OnGainingTempHealth;
 
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnHeal OnStartGainingTempHealth;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnHeal OnEndGainingTempHealth;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnHeal OnStartGainingHealth;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Damage")
+	FOnHeal OnEndGainingHealth;
+	
+	
 	UPROPERTY(BlueprintAssignable, Category = "Damage")
 	FOnDamageResponse OnDamageResponse;
 

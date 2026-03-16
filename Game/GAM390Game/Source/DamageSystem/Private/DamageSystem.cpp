@@ -50,8 +50,11 @@ void UDamageSystem::Heal(float Amount) {
 void UDamageSystem::HealTemp(float Amount)
 {
 	if (!IsDead) {
+		
+		if (CurrentTempHealth <= 0 && Amount > 0) OnGainingTempHealth.Broadcast();
+		
 		CurrentTempHealth += Amount;
-
+  
 		CurrentTempHealth = FMath::Clamp(CurrentTempHealth, 0.0f, MaxTempHealth);
 		
 		OnHealTemp.Broadcast();
@@ -145,22 +148,35 @@ void UDamageSystem::StartHealthPerTick(const float& Amount, const float& Duratio
 	{
 		ID = FMath::RandRange(0, 255);
 	}
-
+	
 	FHealFunc HealFunc;
-	if (TempHealth) HealFunc.BindDynamic(this, &UDamageSystem::HealTemp);
-	else  HealFunc.BindDynamic(this, &UDamageSystem::Heal);
+	if (TempHealth)
+	{
+		HealFunc.BindDynamic(this, &UDamageSystem::HealTemp);
+		OnStartGainingTempHealth.Broadcast();
+	}
+	else
+	{
+		HealFunc.BindDynamic(this, &UDamageSystem::Heal);
+		OnStartGainingHealth.Broadcast();
+	}
 	
 	FTimerDelegate HealTickDel;
-
+	
 	HealTickDel.BindUFunction(this, FName("HealTick"), Duration, Amount, ID, HealFunc);
 	
 	HealthPerTickHandles.Add(ID, GetWorld()->GetTimerManager().SetTimerForNextTick(HealTickDel));
+	
 }
 void UDamageSystem::HealTick(const float Duration, const float Amount, const uint8 ID, const FHealFunc& HealFunc)
 {
 	if (Duration <= 0)
 	{
 		HealthPerTickHandles.Remove(ID);
+		
+		if (HealFunc.GetFunctionName() == FName("HealTemp")) OnEndGainingTempHealth.Broadcast();
+		else OnEndGainingHealth.Broadcast();
+		
 		return;
 	};
 	HealFunc.Execute(Amount * GetWorld()->GetDeltaSeconds());
