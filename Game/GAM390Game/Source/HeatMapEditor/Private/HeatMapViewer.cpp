@@ -8,6 +8,7 @@
 #include "IDesktopPlatform.h"
 #include "Kismet/GameplayStatics.h"
 #include "HeatMapSquare.h"
+#include "Engine/LevelBounds.h"
 #include "Kismet/KismetRenderingLibrary.h"
 
 void UHeatMapViewer::NativeConstruct()
@@ -176,29 +177,14 @@ void UHeatMapViewer::SelectHeatMapFiles()
 
 void UHeatMapViewer::GetMapBounds(FVector2D& Min, FVector2D& Max)
 {
-	TArray<AActor*> actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), actors);
+	ALevelBounds* levelBounds = Cast<ALevelBounds>(UGameplayStatics::GetActorOfClass(GetWorld(), ALevelBounds::StaticClass()));
 	
-	for (AActor* actor : actors)
-	{
-		FVector actorPos = actor->GetActorLocation();
-		if (actorPos.X < Min.X)
-		{
-			Min.X = actorPos.X;
-		}
-		if (actorPos.Y < Min.Y)
-		{
-			Min.Y = actorPos.Y;
-		}
-		if (actorPos.X > Max.X)
-		{
-			Max.X = actorPos.X;
-		}
-		if (actorPos.Y > Max.Y)
-		{
-			Max.Y = actorPos.Y;
-		}
-	}
+	FVector origin, extends;
+	
+	levelBounds->GetActorBounds(true, origin, extends, false);
+	
+	Min = FVector2D(-extends);
+	Max = FVector2D(extends);
 }
 void UHeatMapViewer::LoadHeatMap(const TArray<FVector>& PlayerPositions)
 {
