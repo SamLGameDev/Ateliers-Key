@@ -31,6 +31,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "SceneManager|Level Loading")
 	static void ReloadLevel(UObject* WorldContextObject);
+	
+	UFUNCTION(BlueprintCallable, Category = "SceneManager|Level Loading")
+	static void ReloadLevelStream(UObject* WorldContextObject, UWorld* ReloadedLevel);
 
 	/// <summary>
 	/// this is a list if timers to be cleared when changing scenes to stop crahses related to timers on objects that have been deleted;

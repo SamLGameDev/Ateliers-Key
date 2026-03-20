@@ -28,6 +28,14 @@ void UBP_SceneManager::ReloadLevel(UObject* WorldContextObject)
 	LoadLevel(WorldContextObject->GetWorld()->GetFName(), WorldContextObject);
 }
 
+void UBP_SceneManager::ReloadLevelStream(UObject* WorldContextObject, UWorld* ReloadedLevel)
+{
+	FLatentActionInfo info;
+	UGameplayStatics::UnloadStreamLevelBySoftObjectPtr(WorldContextObject, ReloadedLevel, info, true);
+	
+	UGameplayStatics::LoadStreamLevelBySoftObjectPtr(WorldContextObject, ReloadedLevel, true, true, info);
+}
+
 void UBP_SceneManager::LoadLevel(FName Level, UObject* WorldContextObject)
 {
 
