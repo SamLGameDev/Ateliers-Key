@@ -21,10 +21,18 @@ class ABILITYSYSTEM_API UAbility : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UAbility();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
+	UTexture2D* AbilityIcon;
 
 	virtual void StartExecution() PURE_VIRTUAL(UAbility::StartExecution);
 
 	virtual void CancelExecution() PURE_VIRTUAL(UAbility::CancelExecution);
+	
+	UFUNCTION(BlueprintCallable, Category = "Ability", BlueprintPure)
+	UTexture2D* GetAbilityIcon()
+	{
+		return AbilityIcon;
+	};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability")
 	bool bIsUnlocked;

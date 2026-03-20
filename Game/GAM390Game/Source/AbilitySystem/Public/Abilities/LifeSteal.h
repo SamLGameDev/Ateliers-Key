@@ -16,7 +16,7 @@ class ABILITYSYSTEM_API ULifeSteal : public UAbility
 public:
 	// Sets default values for this component's properties
 	ULifeSteal();
-
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
