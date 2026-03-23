@@ -16,6 +16,8 @@ void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	
 	if (!gameInstance) return;
 	
+	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
+	
 	const FString& slotName = gameInstance->GetSaveSlot();
 	
 	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
@@ -33,6 +35,9 @@ UAtelierSaveGame* USaveSubsystem::GetSaveGame()
 	TObjectPtr<UGI_SanctumSettings> gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
 	
 	if (!gameInstance) return nullptr;
+	
+	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return nullptr;
+	
 	const FString& slotName = gameInstance->GetSaveSlot();
 	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
 	{

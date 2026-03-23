@@ -36,6 +36,9 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 	USaveSubsystem* sSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
 	
 	UAtelierSaveGame* save = sSubsystem->GetSaveGame();
+	
+	if (!save) return;
+	
 	if (save->HitCheckpoint.Contains(GetName()) && save->HitCheckpoint.Last() != GetName()) return;
 	
 	if (OtherActor->Implements<UDamageable>())
