@@ -59,6 +59,22 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool QuickTimePassed = false;
 	
+	UPROPERTY(BlueprintReadWrite)
+	bool HealthBarVisible = false;
 	
-
+	UPROPERTY(BlueprintReadWrite)
+	bool ShieldBarVisible = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool GunVisible = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool CompassVisible = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool QuestsVisible = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool AbilitiesVisible = false;
+	
 };
