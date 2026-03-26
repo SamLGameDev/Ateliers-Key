@@ -90,3 +90,8 @@ bool UQuestLibrary::AreQuestsActive(UObject* WorldContextObject)
 	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
 	return subsystem->AreQuestsActive();
 }
+
+bool UQuestLibrary::ShouldQuestBeDisplayed(UQuestObjectiveData* Data)
+{
+	return Data->ParentQuest->bIsDisplayed;
+}

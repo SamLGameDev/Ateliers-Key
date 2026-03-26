@@ -39,6 +39,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bIsAlwaysActive;
 	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	bool bIsDisplayed = true;
+	
 	bool bIsCompleted = false;
 
 	uint8 TimesCompleted = 0;
@@ -137,5 +140,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static bool AreQuestsActive(UObject* WorldContextObject);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static bool ShouldQuestBeDisplayed(UQuestObjectiveData* Data);
 
 };
