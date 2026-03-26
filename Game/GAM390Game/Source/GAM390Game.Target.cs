@@ -16,6 +16,6 @@ public class GAM390GameTarget : TargetRules
 
 	private void RegisterModulesCreatedByRider()
 	{
-		ExtraModuleNames.AddRange(new string[] {"AbilitySystem", "AI", "HeatMap", "QuestSystem", "DisplayControlsSystem"});
+		ExtraModuleNames.AddRange(new string[] {"AbilitySystem", "AI", "HeatMap", "QuestSystem", "DisplayControlsSystem", "NotifySystem" });
 	}
 }
