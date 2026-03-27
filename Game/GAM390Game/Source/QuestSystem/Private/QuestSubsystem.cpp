@@ -138,6 +138,8 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 			OnAnyQuestStarted.Broadcast(ParentQuest->QuestData);
 			ParentStage = &ParentQuest->Stages[0];
 			ActiveQuest = ParentQuest;
+			
+			if (!ParentQuest->bIsCompleted) break;
 		}
 
 		if (ParentStage->NextStage == nullptr) break;
@@ -248,6 +250,11 @@ uint8 UQuestSubsystem::GetQuestIndex(TObjectPtr<UQuestObjectiveData> Quest) cons
 		}
 	}
 	return 0;
+}
+
+FText UQuestSubsystem::GetActiveQuestName() const
+{
+	return ActiveQuest->QuestName;
 }
 
 bool UQuestSubsystem::AreQuestsActive() const

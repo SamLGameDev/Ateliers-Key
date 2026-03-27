@@ -11,7 +11,7 @@ class UNotification;
  * 
  */
 UCLASS()
-class NOTIFYSYSTEM_API UNotifyCondition : public UPrimaryDataAsset
+class NOTIFYSYSTEM_API UNotifyCondition : public UDataAsset
 {
 	GENERATED_BODY()
 public:
@@ -29,10 +29,18 @@ public:
 		return bPassed;
 	}
 	
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override
+	{
+		return FPrimaryAssetId("NotifyCondition", NAME_None);
+	}
+	
+	void MarkUnComplete();
+	
 protected:
 	UPROPERTY(VisibleAnywhere, NonPIEDuplicateTransient)
 	
 	TArray<TSoftObjectPtr<UNotification>> Notifications;
-		
+	
+	UPROPERTY(VisibleAnywhere)
 	bool bPassed = false;
 };

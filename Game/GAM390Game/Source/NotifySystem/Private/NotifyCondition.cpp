@@ -24,3 +24,8 @@ void UNotifyCondition::Complete()
 		notification->OnConditionPassed.Broadcast();
 	}
 }
+
+void UNotifyCondition::MarkUnComplete()
+{
+	bPassed = false;
+}

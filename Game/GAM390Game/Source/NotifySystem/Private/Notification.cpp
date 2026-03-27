@@ -3,7 +3,6 @@
 
 #include "Notification.h"
 
-#include "FileHelpers.h"
 #include "NotifyCondition.h"
 #include "UObject/SavePackage.h"
 
@@ -18,6 +17,26 @@ UNotification::UNotification(const FObjectInitializer& Initializer)
 	}
 }
 
+void UNotification::BindToNotification(FOnNotifBind event)
+{
+	if (IsComplete())
+	{
+		event.Execute();
+		return;
+	}
+	OnAllConditionsPassed.Add(event);
+}
+
+bool UNotification::IsComplete()
+{
+	for (const auto& condition : Conditions)
+	{
+		if (!condition) continue;
+		if (!condition->IsComplete()) return false;
+	}
+	return true;
+}
+
 void UNotification::EvaluateConditions()
 {
 	for (const auto& condition : Conditions)
@@ -26,7 +45,6 @@ void UNotification::EvaluateConditions()
 		
 		if (!condition->IsComplete()) return;
 	}
-	if (OnAllConditionsPassed.IsBound()) UE_LOG(LogTemp, Warning, TEXT("Conditions have been changed"));
 	
 	OnAllConditionsPassed.Broadcast();
 }
@@ -45,8 +63,11 @@ void UNotification::PostEditChangeProperty(struct FPropertyChangedEvent& Propert
 		
 		UPackage* package = Condition->GetOutermost();
 		package->MarkPackageDirty();
+		const FString PackageName = package->GetName();
+		const FString PackageFileName = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
 		FSavePackageArgs args;
-		package->Save(package, Condition.Get(), GetData(package->GetName()), args);
+		//GEditor->SavePackage(package, Condition.Get(), GetData(package->GetName()), args);
+		package->Save(package, Condition.Get(), *PackageFileName, args);
 	}
 	
 }

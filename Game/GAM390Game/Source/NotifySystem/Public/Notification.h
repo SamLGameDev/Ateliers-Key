@@ -21,12 +21,20 @@ class NOTIFYSYSTEM_API UNotification : public UPrimaryDataAsset
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllConditionsPassed);
 	
+	DECLARE_DYNAMIC_DELEGATE(FOnNotifBind);
+	
 public:
 	
 	FOnConditionPassed OnConditionPassed;
 	
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable )
 	FOnAllConditionsPassed OnAllConditionsPassed;
+	
+	UFUNCTION(BlueprintCallable)
+	void BindToNotification(FOnNotifBind event);
+	
+	UFUNCTION(BlueprintCallable)
+	bool IsComplete();
 
 protected:
 	

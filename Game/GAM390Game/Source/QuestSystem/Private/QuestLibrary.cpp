@@ -61,6 +61,13 @@ FText UQuestLibrary::GetQuestName(UWholeQuest* Quest)
 	return Quest->ParentQuest->QuestName;
 }
 
+FText UQuestLibrary::GetActiveQuestName(const UObject* WorldContextObject)
+{
+	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
+	return subsystem->GetActiveQuestName();
+}
+
+
 void UQuestLibrary::ResetQuestTo(const uint8 QuestToReset, const uint8 QuestStageToReset, UObject* WorldContextObject)
 {
 	UQuestSubsystem* subsystem = WorldContextObject->GetWorld()->GetSubsystem<UQuestSubsystem>();
