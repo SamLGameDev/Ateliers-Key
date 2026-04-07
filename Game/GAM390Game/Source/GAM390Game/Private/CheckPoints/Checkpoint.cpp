@@ -96,9 +96,6 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 
 void ACheckpoint::SaveToSlot(ABP_Player* Player)
 {
-	
-
-
 	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
 	USaveSubsystem* sSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
 	

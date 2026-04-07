@@ -11,10 +11,13 @@ class UNotification;
  * 
  */
 UCLASS()
-class NOTIFYSYSTEM_API UNotifyCondition : public UDataAsset
+class NOTIFYSYSTEM_API UNotifyCondition : public UObject
 {
 	GENERATED_BODY()
+
 public:
+
+	UNotifyCondition();
 	
 	void AddNotification(UNotification* Notification);
 	void RemoveNotification(UNotification* Notification);
@@ -41,6 +44,6 @@ protected:
 	
 	TArray<TSoftObjectPtr<UNotification>> Notifications;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Transient)
 	bool bPassed = false;
 };

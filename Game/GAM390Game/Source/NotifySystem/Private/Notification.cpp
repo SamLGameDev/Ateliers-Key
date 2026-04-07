@@ -34,7 +34,28 @@ bool UNotification::IsComplete()
 		if (!condition) continue;
 		if (!condition->IsComplete()) return false;
 	}
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Yellow, GetName());
 	return true;
+}
+
+void UNotification::PrintConditions()
+{
+	for (const auto& condition : Conditions)
+	{
+		FString name = condition->GetName();
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Yellow, name);
+	}
+}
+
+void UNotification::SetAllConditionsUncomplete()
+{
+	for (const auto& condition : Conditions)
+	{
+		if (!condition) continue;
+		condition->MarkUnComplete();
+	}
 }
 
 void UNotification::EvaluateConditions()

@@ -33,8 +33,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BindToNotification(FOnNotifBind event);
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsComplete();
+
+	UFUNCTION(BlueprintCallable)
+	void PrintConditions();
+
+	UFUNCTION(BlueprintCallable)
+	void SetAllConditionsUncomplete();
 
 protected:
 	

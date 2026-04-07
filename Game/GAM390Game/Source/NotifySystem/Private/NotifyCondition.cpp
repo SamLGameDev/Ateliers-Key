@@ -5,6 +5,11 @@
 
 #include "Notification.h"
 
+UNotifyCondition::UNotifyCondition()
+{
+	bPassed = false;
+}
+
 void UNotifyCondition::AddNotification(UNotification* Notification)
 {
 	if (Notifications.Contains(Notification)) return;
