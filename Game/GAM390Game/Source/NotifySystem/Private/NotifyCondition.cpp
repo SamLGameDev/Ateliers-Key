@@ -26,6 +26,7 @@ void UNotifyCondition::Complete()
 	bPassed = true;
 	for (const auto& notification : Notifications)
 	{
+		if (!notification) continue;
 		notification->OnConditionPassed.Broadcast();
 	}
 }
