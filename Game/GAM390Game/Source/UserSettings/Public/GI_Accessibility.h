@@ -57,6 +57,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDataTable> SoundsTable;
 
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UPrimaryDataAsset> PoolingConfig;
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly)
