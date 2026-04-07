@@ -31,11 +31,10 @@ bool UNotification::IsComplete()
 {
 	for (const auto& condition : Conditions)
 	{
-		if (!condition) continue;
+		if (!condition) return false;
 		if (!condition->IsComplete()) return false;
 	}
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Yellow, GetName());
+	
 	return true;
 }
 
