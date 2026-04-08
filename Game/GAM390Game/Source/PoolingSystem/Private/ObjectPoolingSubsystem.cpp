@@ -3,6 +3,7 @@
 
 #include "ObjectPoolingSubsystem.h"
 #include "GI_Accessibility.h"
+#include "PooledObject.h"
 #include "PoolingConfig.h"
 
 void UObjectPoolingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -17,13 +18,18 @@ void UObjectPoolingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	for (const auto& pool : PoolingConfig->Pools)
 	{
+		checkf(pool.PoolClass->ImplementsInterface(UPooledObject::StaticClass()),
+			TEXT("Interface PooledObject not implemented on %s"),
+			*pool.PoolClass->GetName());
+		
 		FObjectPool newPool;
 		newPool.Info = pool;
 
 		for (int32 i = 0; i < pool.InitialSize; i++)
 		{
-			newPool.Objects.Add(GetWorld()->SpawnActor(pool.PoolClass));
-			newPool.Objects.Last()->SetActorHiddenInGame(true);
+			AActor* actor = GetWorld()->SpawnActor(pool.PoolClass);
+			newPool.Objects.Add(actor);
+			IPooledObject::Execute_OnDisable(actor);
 		}
 		
 		Pools.Add(pool.PoolClass, newPool);
@@ -37,7 +43,7 @@ AActor* UObjectPoolingSubsystem::GetActorFromPool(TSubclassOf<AActor> Class)
 	if (Pools[Class].Objects.IsEmpty())
 	{
 		Pools[Class].Objects.Add(GetWorld()->SpawnActor(Class));
-		Pools[Class].Objects.Last()->SetActorHiddenInGame(true);
+		IPooledObject::Execute_OnDisable(Pools[Class].Objects.Last());
 	}
 	
 	AActor* actor = Pools[Class].Objects.Pop(EAllowShrinking::No);
@@ -47,14 +53,15 @@ AActor* UObjectPoolingSubsystem::GetActorFromPool(TSubclassOf<AActor> Class)
 void UObjectPoolingSubsystem::ReturnActorToPool(AActor* Actor)
 {
 	Pools[Actor->GetClass()].Objects.Push(Actor);
-	Actor->SetActorHiddenInGame(true);
+	IPooledObject::Execute_OnDisable(Actor);
 }
 
-AActor* UObjectPoolingSubsystem::GetActorFromPoolAtTransform(TSubclassOf<AActor> Class, FTransform Transform)
+AActor* UObjectPoolingSubsystem::GetActorFromPoolAtTransform(TSubclassOf<AActor> Class, FTransform Transform, AActor* Owner)
 {
 	AActor* actor = GetActorFromPool(Class);
 	actor->SetActorTransform(Transform);
-	actor->SetActorHiddenInGame(false);
+	IPooledObject::Execute_SetPoolObjectOwner(actor, Owner);
+	IPooledObject::Execute_OnEnable(actor);
 	return actor;
 	
 }

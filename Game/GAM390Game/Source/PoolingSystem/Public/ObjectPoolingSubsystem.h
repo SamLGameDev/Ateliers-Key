@@ -7,6 +7,7 @@
 #include "ObjectPoolingSubsystem.generated.h"
 
 
+class IPooledObject;
 class UPoolingConfig;
 
 USTRUCT(BlueprintType)
@@ -38,14 +39,13 @@ class POOLINGSYSTEM_API UObjectPoolingSubsystem : public UWorldSubsystem
 public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	
 	AActor* GetActorFromPool(TSubclassOf<AActor> Class);
 
 	UFUNCTION(BlueprintCallable)
 	void ReturnActorToPool(AActor* Actor);
 
 	UFUNCTION(BlueprintCallable)
-	AActor* GetActorFromPoolAtTransform(TSubclassOf<AActor> Class, FTransform Transform);
+	AActor* GetActorFromPoolAtTransform(TSubclassOf<AActor> Class, FTransform Transform, AActor* Owner);
 
 protected:
 	
