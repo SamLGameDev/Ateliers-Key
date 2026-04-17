@@ -86,6 +86,12 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 			}
 		}
 
+		checkpoint.WorldsToLoad.Empty();
+		
+		for (const auto& world : WorldsToLoad)
+		{
+			checkpoint.WorldsToLoad.Add(world->GetName());
+		}
 		
 		CurrentCheckpoint->SetObject(checkpoint);
 		if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;

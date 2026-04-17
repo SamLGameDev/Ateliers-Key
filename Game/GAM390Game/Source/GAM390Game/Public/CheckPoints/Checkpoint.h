@@ -36,6 +36,9 @@ public:
 	bool bHasShotgun = false;
 	UPROPERTY(BlueprintReadWrite)
 	bool bHasSniper = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FString> WorldsToLoad;
 };
 
 UCLASS()
