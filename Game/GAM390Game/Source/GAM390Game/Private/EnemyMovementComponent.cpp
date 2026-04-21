@@ -3,9 +3,6 @@
 
 #include "EnemyMovementComponent.h"
 
-#include "InteractiveGizmo.h"
-#include "NiagaraVolumeRendererProperties.h"
-
 
 UEnemyMovementComponent::UEnemyMovementComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
