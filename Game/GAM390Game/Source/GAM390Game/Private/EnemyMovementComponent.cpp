@@ -41,60 +41,45 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	{
 		return;
 	}
-	FRootMotionMovementParams RootMotion = Mesh->ConsumeRootMotion();
-	if (RootMotion.bHasRootMotion)
-	{
-		FTransform RootMotionTransform = RootMotion.GetRootMotionTransform();
-		FVector Translation = RootMotionTransform.GetTranslation();
-		FRotator Rotation = RootMotionTransform.GetRotation().Rotator();
+	AddInputVector(FVector::DownVector);
 
-		// Apply translation and rotation to the actor
-		FHitResult Hit;
-		MoveUpdatedComponent(Translation, (UpdatedComponent->GetComponentRotation() + Rotation).Quaternion(), true, &Hit, ETeleportType::None);
-		
-	}
-	else
+	if (IsExceedingMaxSpeed(MaxSpeed) == true)
 	{
-		AddInputVector(FVector::DownVector);
+		Velocity = Velocity.GetUnsafeNormal() * MaxSpeed;
+	}
+
+	bPositionCorrected = false;
+	// Move actor
+	FVector Delta = Velocity * DeltaTime;
+
+	FRotator newRotation = FMath::Lerp<FRotator>(PawnOwner->GetActorRotation(), Controller->GetDesiredRotation(), RotationSpeed * DeltaTime);
 	
-		if (IsExceedingMaxSpeed(MaxSpeed) == true)
+	newRotation.Yaw = bIgnoreYaw ? PawnOwner->GetActorRotation().Yaw : newRotation.Yaw;
+	newRotation.Pitch = bIgnorePitch ? PawnOwner->GetActorRotation().Pitch : newRotation.Pitch;
+	newRotation.Roll = bIgnoreRoll ? PawnOwner->GetActorRotation().Roll : newRotation.Roll;
+	
+	PawnOwner->SetActorRotation(newRotation);
+
+	// Get (and then clear) the movement vector that we set in ACollidingPawn::Tick
+	if (!Delta.IsNearlyZero())
+	{
+		const FVector OldLocation = UpdatedComponent->GetComponentLocation();
+		const FQuat Rotation = UpdatedComponent->GetComponentQuat();
+	
+		FHitResult Hit;
+		SafeMoveUpdatedComponent(Delta, Rotation, true, Hit);
+
+		// If we bumped into something, try to slide along it
+		if (Hit.IsValidBlockingHit())
 		{
-			Velocity = Velocity.GetUnsafeNormal() * MaxSpeed;
+			HandleImpact(Hit, DeltaTime, Delta);
+			SlideAlongSurface(Delta, 1.f - Hit.Time, Hit.Normal, Hit);
 		}
 	
-		bPositionCorrected = false;
-		// Move actor
-		FVector Delta = Velocity * DeltaTime;
-	
-		FRotator newRotation = FMath::Lerp<FRotator>(PawnOwner->GetActorRotation(), Controller->GetDesiredRotation(), RotationSpeed * DeltaTime);
-		
-		newRotation.Yaw = bIgnoreYaw ? PawnOwner->GetActorRotation().Yaw : newRotation.Yaw;
-		newRotation.Pitch = bIgnorePitch ? PawnOwner->GetActorRotation().Pitch : newRotation.Pitch;
-		newRotation.Roll = bIgnoreRoll ? PawnOwner->GetActorRotation().Roll : newRotation.Roll;
-		
-		PawnOwner->SetActorRotation(newRotation);
-	
-		// Get (and then clear) the movement vector that we set in ACollidingPawn::Tick
-		if (!Delta.IsNearlyZero())
+		if (!bPositionCorrected)
 		{
-			const FVector OldLocation = UpdatedComponent->GetComponentLocation();
-			const FQuat Rotation = UpdatedComponent->GetComponentQuat();
-		
-			FHitResult Hit;
-			SafeMoveUpdatedComponent(Delta, Rotation, true, Hit);
- 
-			// If we bumped into something, try to slide along it
-			if (Hit.IsValidBlockingHit())
-			{
-				HandleImpact(Hit, DeltaTime, Delta);
-				SlideAlongSurface(Delta, 1.f - Hit.Time, Hit.Normal, Hit);
-			}
-		
-			if (!bPositionCorrected)
-			{
-				const FVector NewLocation = UpdatedComponent->GetComponentLocation();
-				Velocity = ((NewLocation - OldLocation) / DeltaTime);
-			}
+			const FVector NewLocation = UpdatedComponent->GetComponentLocation();
+			Velocity = ((NewLocation - OldLocation) / DeltaTime);
 		}
 	}
 	UpdateComponentVelocity();
