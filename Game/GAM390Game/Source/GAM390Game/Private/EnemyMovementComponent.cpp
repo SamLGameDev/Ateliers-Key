@@ -15,7 +15,7 @@ UEnemyMovementComponent::UEnemyMovementComponent(const FObjectInitializer& Objec
 	bIgnoreYaw = false;
 	bIgnorePitch = false;
 	bIgnoreRoll = false;
-	
+	GravityScale = 5.f;
 	ResetMoveState();
 }
 
@@ -29,16 +29,19 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
                                             FActorComponentTickFunction* ThisTickFunction)
 {
 	
-	if (ShouldSkipUpdate(DeltaTime)) return;
+	if (ShouldSkipUpdate(DeltaTime))
+	{
+		return;
+	}
 	
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	AController* Controller = GetController();
 	// Make sure that everything is still valid, and that we are allowed to move.
 	if (!PawnOwner || !UpdatedComponent || !Controller)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 100, FColor::Red, "wwhyhyhyewf");
 		return;
 	}
-	AddInputVector(FVector::DownVector);
 
 	if (IsExceedingMaxSpeed(MaxSpeed) == true)
 	{
@@ -47,7 +50,7 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	bPositionCorrected = false;
 	// Move actor
-	FVector Delta = Velocity * DeltaTime;
+	FVector Delta = FVector(Velocity.X, Velocity.Y, Velocity.Z +  (GetGravityZ() * GravityScale)) * DeltaTime;
 
 	FRotator newRotation = FMath::Lerp<FRotator>(PawnOwner->GetActorRotation(), Controller->GetDesiredRotation(), RotationSpeed * DeltaTime);
 	

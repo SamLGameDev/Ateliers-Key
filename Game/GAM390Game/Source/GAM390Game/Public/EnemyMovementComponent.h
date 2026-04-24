@@ -38,7 +38,12 @@ public:
 	/** Deceleration applied when there is no input (rate of change of velocity) */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=EnemyMovement)
 	float Deceleration;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=EnemyMovement)
+	float GravityScale;;
 
+	
+	
 	/**
 	 * Setting affecting extra force applied when changing direction, making turns have less drift and become more responsive.
 	 * Velocity magnitude is not allowed to increase, that only happens due to normal acceleration. It may decrease with large direction changes.
