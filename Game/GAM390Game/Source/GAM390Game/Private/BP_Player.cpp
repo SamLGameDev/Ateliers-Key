@@ -55,11 +55,7 @@ void ABP_Player::SwitchToCoreMap()
 void ABP_Player::BeginPlay()
 {
 	Super::BeginPlay();
-
 	SwitchToCoreMap();
-	HackingMenu = CreateWidget<UGUI_HackingMenu>(GetWorld(), BPHackingMenu, "HackingMenu");
-	HackSelector = CreateWidget<UGUI_HackSelector>(GetWorld(), BPHackSelector, "HackSelector");
-	SetUpInputActions();
 }
 
 void ABP_Player::SetUpMenuControls()
