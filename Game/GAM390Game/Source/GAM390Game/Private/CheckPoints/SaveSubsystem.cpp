@@ -36,8 +36,6 @@ UAtelierSaveGame* USaveSubsystem::GetSaveGame()
 	
 	if (!gameInstance) return nullptr;
 	
-	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return nullptr;
-	
 	const FString& slotName = gameInstance->GetSaveSlot();
 	if (UGameplayStatics::DoesSaveGameExist(slotName, 0))
 	{
