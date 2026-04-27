@@ -37,9 +37,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 	
 	UAtelierSaveGame* save = sSubsystem->GetSaveGame();
 	
-	if (!save) return;
-	
-	if (save->HitCheckpoint.Contains(GetName()) && save->HitCheckpoint.Last() != GetName()) return;
+	if (CVarSavingEnabled.GetValueOnAnyThread() == 1 && save->HitCheckpoint.Contains(GetName()) && save->HitCheckpoint.Last() != GetName()) return;
 	
 	if (OtherActor->Implements<UDamageable>())
 	{
