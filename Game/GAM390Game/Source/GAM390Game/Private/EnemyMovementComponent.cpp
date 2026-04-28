@@ -39,7 +39,6 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	// Make sure that everything is still valid, and that we are allowed to move.
 	if (!PawnOwner || !UpdatedComponent || !Controller)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 100, FColor::Red, "wwhyhyhyewf");
 		return;
 	}
 
