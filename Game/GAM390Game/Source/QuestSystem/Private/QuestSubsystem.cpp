@@ -288,20 +288,20 @@ void UQuestSubsystem::ResetQuestTo(const uint8 QuestToReset, const uint8 QuestSt
 			}
 		}
 	}
-	
-	for (uint8 ActiveStageIndex = GetActiveStageIndex(); ActiveStageIndex != QuestStageToReset; ActiveStageIndex--)
+	FQuest* quest = Rows[QuestToReset];
+	for (uint8 ActiveStageIndex = quest->Stages.Num() - 1; ActiveStageIndex != QuestStageToReset; ActiveStageIndex--)
 	{
-		FQuestStage* stage = &Rows[QuestToReset]->Stages[ActiveStageIndex];
+		FQuestStage* stage = &quest->Stages[ActiveStageIndex];
 		stage->bIsCompleted = false;
 		stage->QuestData->bIsActive = false;
 		for (uint8 i = 0; i < stage->Objectives.Num(); i++)
 		{
-			FQuestObjective* objective = &stage->Objectives[i];
-			objective->bIsCompleted = false;
-			if (objective->bIsAlwaysActive) objective->QuestData->bIsActive = true;
-			else objective->QuestData->bIsActive = false;
-				
-			objective->TimesCompleted = 0;
+			 FQuestObjective* objective = &stage->Objectives[i];
+			 objective->bIsCompleted = false;
+			 if (objective->bIsAlwaysActive) objective->QuestData->bIsActive = true;
+			 else objective->QuestData->bIsActive = false;
+			 	
+			 objective->TimesCompleted = 0;
 		}
 	}
 	FQuestStage* stage = &Rows[QuestToReset]->Stages[QuestStageToReset];
