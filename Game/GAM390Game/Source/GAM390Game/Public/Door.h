@@ -20,7 +20,10 @@ public:
 	ADoor();
 		UFUNCTION(BlueprintCallable)
     	float const Fall();
-    
+		
+		UFUNCTION(BlueprintCallable)
+		const void Close();
+	
     protected:
     
     	UPROPERTY(EditAnywhere)

@@ -33,13 +33,24 @@ float const ADoor::Fall()
 	return Path->GetSplineLength() / m_Speed;
 }
 
+const void ADoor::Close()
+{
+	FTransform EndPos;
+	if (Path)
+	{ 
+		EndPos = Path->GetTransformAtDistanceAlongSpline(0, ESplineCoordinateSpace::World);
+	}
+	if (Path && EndPos.IsValid()) {
+		MeshRoot->SetWorldLocation(EndPos.GetLocation());;
+	}
+}
+
 
 void ADoor::MoveMeshTowardsEnd(const float alpha)
 {
 	FTransform EndPos;
 	if (Path)
 	{
-		const FVector currentPos = MeshRoot->GetComponentLocation();
 		EndPos = Path->GetTransformAtDistanceAlongSpline(alpha, ESplineCoordinateSpace::World);
 	}
 	if (Path && EndPos.IsValid()) {
