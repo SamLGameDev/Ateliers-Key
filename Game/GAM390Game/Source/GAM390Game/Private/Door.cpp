@@ -22,7 +22,7 @@ ADoor::ADoor()
 	m_Mesh->SetupAttachment(RootComponent);
 }
 
-float const ADoor::Fall()
+float const ADoor::Fall(const TArray<UStaticMeshComponent*> DoorsToMove)
 {
 	FTimerDelegate params;
 	params.BindUFunction(this, NAMEOF(MoveMeshTowardsEnd), 0);

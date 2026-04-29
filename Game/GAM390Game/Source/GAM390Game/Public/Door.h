@@ -19,7 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	ADoor();
 		UFUNCTION(BlueprintCallable)
-    	float const Fall();
+    	float const Fall(const TArray<UStaticMeshComponent*> DoorsToMove);
     
     protected:
     

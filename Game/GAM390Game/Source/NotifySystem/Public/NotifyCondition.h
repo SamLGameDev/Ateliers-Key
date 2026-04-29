@@ -10,7 +10,7 @@ class UNotification;
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class NOTIFYSYSTEM_API UNotifyCondition : public UObject
 {
 	GENERATED_BODY()
