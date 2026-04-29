@@ -14,15 +14,18 @@ ADoor::ADoor()
 
 	m_RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("m_RootComp"));
 	RootComponent = m_RootComp;
-
+	
+	MeshRoot = CreateDefaultSubobject<USceneComponent>(TEXT("m_MeshRoot"));
+	MeshRoot->SetupAttachment(RootComponent);
+	
 	Path = CreateDefaultSubobject<USplineComponent>(TEXT("Path"));
 	Path->SetupAttachment(RootComponent);
 
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	m_Mesh->SetupAttachment(RootComponent);
+	m_Mesh->SetupAttachment(MeshRoot);
 }
 
-float const ADoor::Fall(const TArray<UStaticMeshComponent*> DoorsToMove)
+float const ADoor::Fall()
 {
 	FTimerDelegate params;
 	params.BindUFunction(this, NAMEOF(MoveMeshTowardsEnd), 0);
@@ -36,11 +39,11 @@ void ADoor::MoveMeshTowardsEnd(const float alpha)
 	FTransform EndPos;
 	if (Path)
 	{
-		const FVector currentPos = m_Mesh->GetComponentLocation();
+		const FVector currentPos = MeshRoot->GetComponentLocation();
 		EndPos = Path->GetTransformAtDistanceAlongSpline(alpha, ESplineCoordinateSpace::World);
 	}
 	if (Path && EndPos.IsValid()) {
-		m_Mesh->SetWorldLocation(EndPos.GetLocation());;
+		MeshRoot->SetWorldLocation(EndPos.GetLocation());;
 	}
 	if (alpha >= Path->GetSplineLength()) return;
 	

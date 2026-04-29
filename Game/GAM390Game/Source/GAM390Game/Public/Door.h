@@ -19,7 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	ADoor();
 		UFUNCTION(BlueprintCallable)
-    	float const Fall(const TArray<UStaticMeshComponent*> DoorsToMove);
+    	float const Fall();
     
     protected:
     
@@ -34,8 +34,11 @@ public:
     
     	UPROPERTY(EditAnywhere)
     	float m_Speed;
-    
+		
+		UPROPERTY(EditAnywhere)
+		USceneComponent* MeshRoot;
+	
     	UFUNCTION()
-    	void MoveMeshTowardsEnd(const float alpha);
+    	void MoveMeshTowardsEnd(float alpha);
 
 };
