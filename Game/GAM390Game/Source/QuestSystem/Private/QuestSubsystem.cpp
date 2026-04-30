@@ -136,6 +136,11 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 			//checkf(ParentQuest->Stages.IsEmpty(), TEXT("Quest has no stages, either add some or remove it"))
 
 			OnAnyQuestStarted.Broadcast(ParentQuest->QuestData);
+			if (ParentQuest->Stages.IsEmpty())
+			{
+				ParentStage= nullptr;
+				break;
+			}
 			ParentStage = &ParentQuest->Stages[0];
 			ActiveQuest = ParentQuest;
 			
@@ -146,8 +151,9 @@ void UQuestSubsystem::NotifyQuestProgress(UQuestObjectiveData* Quest, const uint
 		
 		ParentStage = ParentStage->NextStage;
 	}
+
+	if (!ParentStage) return;
 	
-			
 	OnAnyStageStarted.Broadcast(ParentStage->QuestData);
 	ParentStage->QuestData->OnQuestStarted.Broadcast();
 	ParentStage->QuestData->bIsActive = true;
