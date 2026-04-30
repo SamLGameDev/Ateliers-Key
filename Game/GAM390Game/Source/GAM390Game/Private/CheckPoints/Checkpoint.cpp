@@ -41,17 +41,15 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 	
 	if (OtherActor->Implements<UDamageable>())
 	{
-		FCheckpointInfo checkpoint;
+		FCheckpointInfo& checkpoint = sSubsystem->CurrentCheckpoint;
 		checkpoint.RestartLocation = GetActorLocation();
 		checkpoint.RestartRotation = GetActorRotation();
 		checkpoint.CombatEncounters = {CombatEncounter};
 		
-		USaveSubsystem* Subsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
-		
-		if (Subsystem->LoadedSave && Subsystem->LoadedSave->HitCheckpoint.Contains(GetName()))
+		if (sSubsystem->LoadedSave && sSubsystem->LoadedSave->HitCheckpoint.Contains(GetName()))
 		{
-			checkpoint.CheckpointQuest = Subsystem->LoadedSave->Quest;
-			checkpoint.CheckpointQuestStage = Subsystem->LoadedSave->QuestStage;
+			checkpoint.CheckpointQuest = sSubsystem->LoadedSave->Quest;
+			checkpoint.CheckpointQuestStage = sSubsystem->LoadedSave->QuestStage;
 		}
 		else
 		{
@@ -90,8 +88,6 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 		{
 			checkpoint.WorldsToLoad.Add(world->GetName());
 		}
-		
-		CurrentCheckpoint->SetObject(checkpoint);
 		if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
 		SaveToSlot(player);
 		Destroy();
@@ -164,8 +160,8 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 		};
 	}
 	
-	save->QuestStage = CurrentCheckpoint->GetRegisteredObject().CheckpointQuestStage;
-	save->Quest = CurrentCheckpoint->GetRegisteredObject().CheckpointQuest;
+	save->QuestStage = sSubsystem->CurrentCheckpoint.CheckpointQuestStage;
+	save->Quest = sSubsystem->CurrentCheckpoint.CheckpointQuest;
 	
 	save->HitCheckpoint.Add(GetName());
 	

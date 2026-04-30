@@ -3,8 +3,40 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseVariableStore.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "SaveSubsystem.generated.h"
+
+USTRUCT(BlueprintType)
+struct FCheckpointInfo
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector RestartLocation;
+
+	UPROPERTY(BlueprintReadWrite)
+	FRotator RestartRotation;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<TSoftObjectPtr<UWorld>> CombatEncounters;
+	
+	UPROPERTY(BlueprintReadWrite)
+	uint8 CheckpointQuest;
+	UPROPERTY(BlueprintReadWrite)
+	uint8 CheckpointQuestStage;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasAssultRifle = false;
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasShotgun = false;
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasSniper = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FString> WorldsToLoad;
+};
 
 class UAtelierSaveGame;
 /**
@@ -37,5 +69,8 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAtelierSaveGame> LoadedSave = nullptr;
+
+	UPROPERTY(BlueprintReadWrite)
+	FCheckpointInfo CurrentCheckpoint;
 
 };

@@ -10,53 +10,6 @@
 
 class ABP_Player;
 
-USTRUCT(BlueprintType)
-struct FCheckpointInfo
-{
-	GENERATED_BODY()
-public:
-
-	UPROPERTY(BlueprintReadWrite)
-	FVector RestartLocation;
-
-	UPROPERTY(BlueprintReadWrite)
-	FRotator RestartRotation;
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<TSoftObjectPtr<UWorld>> CombatEncounters;
-	
-	UPROPERTY(BlueprintReadWrite)
-	uint8 CheckpointQuest;
-	UPROPERTY(BlueprintReadWrite)
-	uint8 CheckpointQuestStage;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bHasAssultRifle = false;
-	UPROPERTY(BlueprintReadWrite)
-	bool bHasShotgun = false;
-	UPROPERTY(BlueprintReadWrite)
-	bool bHasSniper = false;
-	
-	UPROPERTY(BlueprintReadWrite)
-	TArray<FString> WorldsToLoad;
-};
-
-UCLASS()
-class GAM390GAME_API UCheckpointInfoStore : public UPrimaryDataAsset, public BaseVariableStore<FCheckpointInfo>
-{
-	GENERATED_BODY()
-
-public:
-
-	UFUNCTION(BlueprintCallable, Category = "VariableStores")
-	virtual void SetObject(FCheckpointInfo Object) override { BaseVariableStore<FCheckpointInfo>::SetObject(Object); };
-
-	UFUNCTION(BlueprintCallable, Category = "VariableStores")
-	virtual FCheckpointInfo GetRegisteredObject() const override { return BaseVariableStore<FCheckpointInfo>::GetRegisteredObject(); };
-
-};
-
-
 UCLASS()
 class GAM390GAME_API ACheckpoint : public AActor
 {
@@ -77,9 +30,6 @@ public:
 	ACheckpoint* NextCheckpoint;
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly)
-	UCheckpointInfoStore* CurrentCheckpoint;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBoxComponent* CollisionZone;
