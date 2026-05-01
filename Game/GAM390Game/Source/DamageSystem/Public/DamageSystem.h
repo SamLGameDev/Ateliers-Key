@@ -101,6 +101,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsDead;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	bool canUseSiphonOnEnemy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsInvincible;

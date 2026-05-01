@@ -52,6 +52,8 @@ void ULifeSteal::StartExecution(AActor* Target)
 
 	if (!TargetDS) return;
 	
+	if (!TargetDS->canUseSiphonOnEnemy) return;
+	
 	TargetForDrain = Target;
 	TargetForDrain->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(OverlayMat);
 	FTimerDelegate LifeStealDel;
