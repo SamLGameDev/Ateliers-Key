@@ -50,7 +50,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "SceneManager|Level Loading")
 	static FString GetLevelName(TSoftObjectPtr<UWorld> Level);
 	
-
 private:
 
 	static TArray<UObject*> ObjectsWithTimers;

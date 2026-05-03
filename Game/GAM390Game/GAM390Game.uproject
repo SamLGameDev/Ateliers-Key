@@ -37,7 +37,10 @@
 		{
 			"Name": "LevelManagers",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		},
 		{
 			"Name": "Subtitles",
