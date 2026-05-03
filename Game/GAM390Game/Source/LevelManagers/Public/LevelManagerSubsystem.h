@@ -58,7 +58,7 @@ protected:
 
 	static constexpr float LevelsUnloadedCheckRate = 0.1f;
 
-	static constexpr float ExtraWaitTimeCheckRate = 5.f;
+	static constexpr float ExtraWaitTimeCheckRate = 0.01f;
 
 	void ScheduleLevelsUnloadedCheck(const TArray<TSoftObjectPtr<UWorld>>& Levels, ULevelLoadWaitToken* Token);
 	void ScheduleLevelsLoadedCheck(const TArray<TSoftObjectPtr<UWorld>>& Levels, ULevelLoadWaitToken* Token);

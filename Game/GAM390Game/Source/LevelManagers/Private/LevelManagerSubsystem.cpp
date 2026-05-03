@@ -3,6 +3,7 @@
 
 #include "LevelManagerSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "WorldPartition/Cook/WorldPartitionCookPackage.h"
 
 
 ULevelLoadWaitToken* ULevelManagerSubsystem::ReloadLevels(const TArray<TSoftObjectPtr<UWorld>>& Levels)
@@ -91,7 +92,7 @@ void ULevelManagerSubsystem::WaitForLevelsToBeLoaded(const TArray<FName>& Levels
 			return;
 		}
 	}
-
+	UGameplayStatics::FlushLevelStreaming(GetWorld());
 	FTimerHandle timerHandle;
 	FTimerDelegate timerDelegate;
 	timerDelegate.BindUFunction(this, "SignalLevelsLoaded", Token);
