@@ -5,13 +5,72 @@
 #include "Kismet/GameplayStatics.h"
 
 
+ULevelLoadWaitToken* ULevelManagerSubsystem::ReloadLevels(const TArray<TSoftObjectPtr<UWorld>>& Levels)
+{
+	ULevelLoadWaitToken* token = NewObject<ULevelLoadWaitToken>();
+	FTimerDelegate timerDelegate;
+	timerDelegate.BindUFunction(this, "UnloadLevels", Levels,token);
+	GetWorld()->GetTimerManager().SetTimerForNextTick(timerDelegate);
+	CurrentTokens.Add(token);
+	return token;
+}
+
+void ULevelManagerSubsystem::UnloadLevels(const TArray<TSoftObjectPtr<UWorld>>& Levels, ULevelLoadWaitToken* Token)
+{
+	for (const auto& level : Levels)
+	{
+		if (!level.IsValid()) continue;
+		ULevelStreaming* streamingLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), FName(level.GetAssetName()));
+		if (streamingLevel->IsLevelVisible() && !streamingLevel->IsStreamingStatePending())
+		{
+			UGameplayStatics::UnloadStreamLevelBySoftObjectPtr(GetWorld(), level, {}, true);
+
+			ScheduleLevelsUnloadedCheck(Levels, Token);
+			return;
+		}
+	}
+}
+
+void ULevelManagerSubsystem::ScheduleLevelsUnloadedCheck(const TArray<TSoftObjectPtr<UWorld>>& Levels, ULevelLoadWaitToken* Token)
+{
+	FTimerHandle timerHandle;
+	FTimerDelegate timerDelegate;
+	timerDelegate.BindUFunction(this, "UnloadLevels", Levels, Token);
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, timerDelegate, LevelsUnloadedCheckRate, false);
+}
+
+void ULevelManagerSubsystem::LoadLevels(const TArray<TSoftObjectPtr<UWorld>>& Levels, ULevelLoadWaitToken* Token)
+{
+	for (const auto& level : Levels)
+	{
+		if (!level.IsValid()) continue;
+		ULevelStreaming* streamingLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), FName(level.GetAssetName()));
+		if (!streamingLevel->IsLevelVisible() && !streamingLevel->IsStreamingStatePending())
+		{
+			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(GetWorld(), level, true, true, {});
+			ScheduleLevelsLoadedCheck(Levels, Token);
+			return;
+		}
+	}
+
+	SignalLevelsLoaded(Token);
+}
+
+void ULevelManagerSubsystem::ScheduleLevelsLoadedCheck(const TArray<TSoftObjectPtr<UWorld>>& Levels, ULevelLoadWaitToken* Token)
+{
+	FTimerHandle timerHandle;
+	FTimerDelegate timerDelegate;
+	timerDelegate.BindUFunction(this, "LoadLevels", Levels, Token);
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, timerDelegate, LevelsUnloadedCheckRate, false);
+}
+
 ULevelLoadWaitToken* ULevelManagerSubsystem::WaitUntilLevelsAreVisible(const TArray<FName>& Levels)
 {
 	ULevelLoadWaitToken* token = NewObject<ULevelLoadWaitToken>();
 	FTimerDelegate timerDelegate;
 	timerDelegate.BindUFunction(this, "WaitForLevelsToBeLoaded", Levels,token);
 	GetWorld()->GetTimerManager().SetTimerForNextTick(timerDelegate);
-	CurrentWaitTokens.Add(token);
+	CurrentTokens.Add(token);
 	return token;
 }
 
@@ -42,6 +101,6 @@ void ULevelManagerSubsystem::ScheduleLevelLoadedCheck(const TArray<FName>& Level
 void ULevelManagerSubsystem::SignalLevelsLoaded(ULevelLoadWaitToken* Token)
 {
 	Token->OnComplete.Broadcast();
-	CurrentWaitTokens.Remove(Token);
+	CurrentTokens.Remove(Token);
 }
 
