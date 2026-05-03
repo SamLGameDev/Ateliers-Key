@@ -19,7 +19,7 @@ void ULevelManagerSubsystem::UnloadLevels(const TArray<TSoftObjectPtr<UWorld>>& 
 {
 	for (const auto& level : Levels)
 	{
-		if (!level.IsValid()) continue;
+		if (level.IsNull()) continue;
 		ULevelStreaming* streamingLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), FName(level.GetAssetName()));
 		if (streamingLevel->IsLevelVisible() && !streamingLevel->IsStreamingStatePending())
 		{
@@ -29,6 +29,8 @@ void ULevelManagerSubsystem::UnloadLevels(const TArray<TSoftObjectPtr<UWorld>>& 
 			return;
 		}
 	}
+
+	LoadLevels(Levels, Token);
 }
 
 void ULevelManagerSubsystem::ScheduleLevelsUnloadedCheck(const TArray<TSoftObjectPtr<UWorld>>& Levels, ULevelLoadWaitToken* Token)
@@ -43,7 +45,7 @@ void ULevelManagerSubsystem::LoadLevels(const TArray<TSoftObjectPtr<UWorld>>& Le
 {
 	for (const auto& level : Levels)
 	{
-		if (!level.IsValid()) continue;
+		if (level.IsNull()) continue;
 		ULevelStreaming* streamingLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), FName(level.GetAssetName()));
 		if (!streamingLevel->IsLevelVisible() && !streamingLevel->IsStreamingStatePending())
 		{
@@ -79,15 +81,21 @@ void ULevelManagerSubsystem::WaitForLevelsToBeLoaded(const TArray<FName>& Levels
 	for (const auto& level : Levels)
 	{
 		ULevelStreaming* streamedLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), level);
-		if (!streamedLevel) continue;
-		if (!streamedLevel->IsLevelVisible())
+		if (!streamedLevel)
+		{
+			continue;	
+		}
+		if (!streamedLevel->IsLevelVisible() || streamedLevel->IsStreamingStatePending())
 		{
 			ScheduleLevelLoadedCheck(Levels, Token);
 			return;
 		}
 	}
 
-	SignalLevelsLoaded(Token);
+	FTimerHandle timerHandle;
+	FTimerDelegate timerDelegate;
+	timerDelegate.BindUFunction(this, "SignalLevelsLoaded", Token);
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, timerDelegate, ExtraWaitTimeCheckRate, false);
 }
 
 void ULevelManagerSubsystem::ScheduleLevelLoadedCheck(const TArray<FName>& Levels, ULevelLoadWaitToken* Token)
