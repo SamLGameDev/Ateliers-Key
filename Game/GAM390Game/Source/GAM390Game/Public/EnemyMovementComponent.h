@@ -15,6 +15,8 @@ class GAM390GAME_API UEnemyMovementComponent : public UPawnMovementComponent
 	GENERATED_BODY()
 
 public:
+	
+
 	UEnemyMovementComponent(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
@@ -42,8 +44,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=EnemyMovement)
 	float GravityScale;;
 
-	
-	
+	UFUNCTION(BlueprintCallable)
+	void Launch(const FVector& LaunchVel, bool bXYOverride, bool bZOverride);
 	/**
 	 * Setting affecting extra force applied when changing direction, making turns have less drift and become more responsive.
 	 * Velocity magnitude is not allowed to increase, that only happens due to normal acceleration. It may decrease with large direction changes.
@@ -62,6 +64,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=EnemyMovement)
 	bool bIgnorePitch;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Falling)
+	float FallingMaxSpeed;
+	
 protected:
 	UPROPERTY(Transient)
 	uint32 bPositionCorrected:1;
@@ -70,5 +75,22 @@ protected:
 	ResolvePenetrationImpl(const FVector& Adjustment, const FHitResult& Hit, const FQuat& NewRotation) override;
 	
 	TObjectPtr<USkeletalMeshComponent> Mesh;
+	
+	FVector PendingLaunchVelocity = FVector::ZeroVector;
+	
+	UFUNCTION()
+	bool HandlePendingLaunch();
+	
+	FVector NewFallVelocity(const FVector& InitialVelocity, FVector Gravity, float DeltaTime);
+
+	static constexpr FVector GetGravityDirection() {return FVector::DownVector;}
+	
+	enum EMovementMode : uint8
+	{
+		Walking,
+		Falling
+	};
+	
+	EMovementMode MovementMode = Walking;
 	
 };
