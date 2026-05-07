@@ -7,7 +7,7 @@
 #include "AimAssistable.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType)
 class UAimAssistable : public UInterface
 {
 	GENERATED_BODY()
