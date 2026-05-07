@@ -84,7 +84,11 @@ public:
     	
 	UFUNCTION(BlueprintCallable)
 	void PlayRandomMusicBlend(const FName SubType = "None", const FName Map = "None", const float StartTime = 0.0f, float BlendSpeed = 0);
-    	
+	
+	UFUNCTION(BlueprintCallable)
+	void PlaySoundBlend(const TArray<USoundCue*>& Sound, const float StartTime = 0.0f, float BlendSpeed = 0, USoundConcurrency* Concurrency=  nullptr, const float PitchMultiplier = 0);
+	UFUNCTION(BlueprintCallable)
+	void BlendOutSound(USoundCue* Sound, float BlendSpeed = 0);
     
     private:
 		static bool IsMatchingType(const FSoundRow* row, const ESoundUse Type);
@@ -99,10 +103,20 @@ public:
     	UFUNCTION()
     	void BlendMusicIn(USoundCue* Sound, const float Volume, const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency, float
 	                      BlendSpeed);
-
+		
+		UFUNCTION()
+	    void BlendMusicInMulti(const TArray<USoundCue*>& Sound, const float Volume, const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency, float
+					  BlendSpeed);
+	
 		UPROPERTY()
     	TObjectPtr<UDataTable> SoundDataTable;
 		UPROPERTY()
     	TWeakObjectPtr<UAudioComponent> CurrentMusicComponent;
+	
+		UFUNCTION()
+		void DereferenceSound(USoundCue* Sound);
+		UPROPERTY()
+		TArray<TWeakObjectPtr<UAudioComponent>> MusicComponents;
+		
 	
 };

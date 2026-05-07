@@ -155,6 +155,33 @@ void USoundSubsystem::PlayRandomMusicBlend(const FName SubType, const FName Map,
 	GetWorld()->GetTimerManager().SetTimer(DelegateHandle, Delegate, BlendSpeed, false);
 }
 
+void USoundSubsystem::PlaySoundBlend(const TArray<USoundCue*>& Sound, const float StartTime, float BlendSpeed,
+	USoundConcurrency* Concurrency, const float PitchMultiplier)
+{
+	USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
+	
+	FTimerDelegate Delegate;
+	Delegate.BindUFunction(this, "BlendMusicIn", Sound, 
+		Save->MusicVolume, PitchMultiplier, 
+		StartTime, Concurrency, BlendSpeed);
+	FTimerHandle DelegateHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelegateHandle, Delegate, BlendSpeed, false);
+}
+
+void USoundSubsystem::BlendOutSound(USoundCue* Sound, float BlendSpeed)
+{
+	for (auto& comp : MusicComponents)
+	{
+		if (!comp.IsValid()) continue;
+		if (comp->GetSound() != Sound) continue;
+		comp->FadeOut(BlendSpeed, 0);
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "DereferenceSound", Sound);
+		FTimerHandle DelegateHandle;
+		GetWorld()->GetTimerManager().SetTimer(DelegateHandle, Delegate, BlendSpeed, false);
+	}
+}
+
 bool USoundSubsystem::IsMatchingType(const FSoundRow* row, const ESoundUse Type)
 {
 	return row->Type == Type || row->Type == ESoundUse::Any;
@@ -206,4 +233,36 @@ void USoundSubsystem::BlendMusicIn(USoundCue* Sound, const float Volume, const f
 	true
 	));
 	CurrentMusicComponent.Pin()->FadeIn(BlendSpeed, Volume);
+}
+
+void USoundSubsystem::BlendMusicInMulti(const TArray<USoundCue*>& Sound, const float Volume,
+	const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency, float BlendSpeed)
+{
+	for (USoundCue* sound : Sound)
+	{
+		MusicComponents.Add(TWeakObjectPtr<UAudioComponent>(UGameplayStatics::CreateSound2D
+			(
+			GetWorld(),
+			sound,
+			Volume,
+			PitchMultiplier,
+			StartTime,
+			Concurrency,
+		false,
+		true
+			))
+		);
+		CurrentMusicComponent.Pin()->FadeIn(BlendSpeed, Volume);
+	}
+}
+
+void USoundSubsystem::DereferenceSound(USoundCue* Sound)
+{
+	for (auto& comp : MusicComponents)
+	{
+		if (!comp.IsValid()) continue;
+		if (comp->GetSound() != Sound) continue;
+		MusicComponents.Remove(comp);
+		return;
+	}
 }
