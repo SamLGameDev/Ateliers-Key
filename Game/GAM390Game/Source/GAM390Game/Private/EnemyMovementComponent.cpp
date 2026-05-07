@@ -21,6 +21,7 @@ UEnemyMovementComponent::UEnemyMovementComponent(const FObjectInitializer& Objec
 	bIgnorePitch = false;
 	bIgnoreRoll = false;
 	GravityScale = 5.f;
+	WalkableAngle = 0.7f;
 	ResetMoveState();
 }
 
@@ -46,6 +47,16 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	{
 		return;
 	}
+
+	if (!IsMovingOnGround())
+	{
+		MovementMode = Falling;
+	}
+	else
+	{
+		MovementMode = Walking;
+	}
+	
 	HandlePendingLaunch();
 	
 	if (MovementMode == Falling)
@@ -62,6 +73,10 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		{
 			HandleImpact(Hit, DeltaTime, Delta);
 			SlideAlongSurface(Delta, 1.f - Hit.Time, Hit.Normal, Hit);
+			if (Hit.ImpactNormal.Z >= WalkableAngle)
+			{
+				MovementMode = Walking;
+			}
 		}
 	}
 	else if (MovementMode == Walking)
@@ -91,12 +106,19 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	
 			FHitResult Hit;
 			SafeMoveUpdatedComponent(Delta, Rotation, true, Hit);
-
 			// If we bumped into something, try to slide along it
 			if (Hit.IsValidBlockingHit())
 			{
 				HandleImpact(Hit, DeltaTime, Delta);
 				SlideAlongSurface(Delta, 1.f - Hit.Time, Hit.Normal, Hit);
+				if (Hit.ImpactNormal.Z < WalkableAngle)
+				{
+					MovementMode = Falling;
+				}
+			}
+			else
+			{
+				MovementMode = Falling;
 			}
 	
 			if (!bPositionCorrected)
@@ -127,6 +149,31 @@ void UEnemyMovementComponent::Launch(const FVector& LaunchVel, bool bXYOverride,
 		PendingLaunchVelocity = FinalVel;
 	}
 }
+
+void UEnemyMovementComponent::RequestPathMove(const FVector& MoveInput)
+{
+	if (!IsFalling())
+	{
+		Super::RequestPathMove(MoveInput);
+	}	
+}
+
+void UEnemyMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
+{
+	if (IsFalling()) return;
+	Super::RequestDirectMove(MoveVelocity, bForceMaxSpeed);
+}
+
+bool UEnemyMovementComponent::IsFalling() const
+{
+	return MovementMode == Falling;
+}
+
+bool UEnemyMovementComponent::IsMovingOnGround() const
+{
+	return Super::IsMovingOnGround();
+}
+
 bool UEnemyMovementComponent::ResolvePenetrationImpl(const FVector& Adjustment, const FHitResult& Hit,
                                                      const FQuat& NewRotation)
 {
