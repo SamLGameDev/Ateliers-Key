@@ -18,12 +18,6 @@ FVirtualCursor::FVirtualCursor(const UCommonUIActionRouterBase& InActionRouter) 
 void FVirtualCursor::Tick(const float DeltaTime, FSlateApplication& SlateApp, TSharedRef<ICursor> Cursor)
 {
 	FCommonAnalogCursor::Tick(DeltaTime, SlateApp, Cursor);
-	const TSharedRef<FSlateUser> SlateUser = SlateApp.GetUser(GetOwnerUserIndex()).ToSharedRef();
-	const FVector2D NewPosition = CalculateTickedCursorPosition(DeltaTime, SlateApp, SlateUser);
-
-	UCommonInputSubsystem& InputSubsystem = ActionRouter.GetInputSubsystem();
-	InputSubsystem.SetCursorPosition(NewPosition, true);
-	GEngine->AddOnScreenDebugMessage(-1, 0.001, FColor::Green, GetAnalogValues(EAnalogStick::Left).ToString());
 }
 
 TSharedRef<FCommonAnalogCursor> UVirtualCursorActionRouter::MakeAnalogCursor() const
