@@ -58,7 +58,9 @@ void ABP_Player::BeginPlay()
 {
 	Super::BeginPlay();
 	VirtualCursor = CreateWidget(GetWorld(), VirtualCursorClass);
+	SetUpInputActions();
 	SwitchToCoreMap();
+
 }
 
 void ABP_Player::SetUpMenuControls()
@@ -69,9 +71,6 @@ void ABP_Player::SetUpMenuControls()
 
 void ABP_Player::SetUpInputActions()
 {
-	SetUpHackingActions();
-	SetUpHackSelectionActions();
-
 	SetUpMenuControls();
 }
 
@@ -311,7 +310,7 @@ void ABP_Player::SwitchToMenuControls()
 
 	playerController->bShowMouseCursor = true;
 	
-	VirtualCursor->AddToViewport();
+	VirtualCursor->AddToViewport(99999999);
 	
 	SimulateUIMouseClick();
 	
@@ -338,11 +337,6 @@ void ABP_Player::MoveCursorForGamepad(const FInputActionValue& Value)
 	const FVector2D adjustment = Value.Get<FVector2D>();
 	GetWorld()->GetFirstPlayerController()->SetMouseLocation(adjustment.X + MouseX, adjustment.Y + MouseY);
 	VirtualCursor->SetPositionInViewport({adjustment.X + MouseX, adjustment.Y + MouseY});
-	
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1,5.0f, FColor::Yellow, FString::Printf(TEXT("Cursor Location: %.5f, %.5f"), MouseX, MouseY));
-	}
 }
 
 void ABP_Player::SimulateUIMouseClick()
