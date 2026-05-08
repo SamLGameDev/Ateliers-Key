@@ -193,5 +193,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UAbility*> UnlockedAbilities;
 	
-
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> VirtualCursorClass;
+	
+	
+	UPROPERTY()
+	UUserWidget* VirtualCursor;
+	
 };

@@ -43,6 +43,8 @@ void ABP_Player::SwitchToCoreMap()
 
 	input->RemoveMappingContext(MenuMap);
 	
+	VirtualCursor->RemoveFromParent();
+	
 	//SimulateUIMouseClick();
 	playerController->bShowMouseCursor = false;
 
@@ -55,6 +57,7 @@ void ABP_Player::SwitchToCoreMap()
 void ABP_Player::BeginPlay()
 {
 	Super::BeginPlay();
+	VirtualCursor = CreateWidget(GetWorld(), VirtualCursorClass);
 	SwitchToCoreMap();
 }
 
@@ -307,8 +310,11 @@ void ABP_Player::SwitchToMenuControls()
 	SwitchMap(MenuMap, input);
 
 	playerController->bShowMouseCursor = true;
-
+	
+	VirtualCursor->AddToViewport();
+	
 	SimulateUIMouseClick();
+	
 
 }
 
@@ -331,6 +337,12 @@ void ABP_Player::MoveCursorForGamepad(const FInputActionValue& Value)
 	GetWorld()->GetFirstPlayerController()->GetMousePosition(MouseX, MouseY);
 	const FVector2D adjustment = Value.Get<FVector2D>();
 	GetWorld()->GetFirstPlayerController()->SetMouseLocation(adjustment.X + MouseX, adjustment.Y + MouseY);
+	VirtualCursor->SetPositionInViewport({adjustment.X + MouseX, adjustment.Y + MouseY});
+	
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.0f, FColor::Yellow, FString::Printf(TEXT("Cursor Location: %.5f, %.5f"), MouseX, MouseY));
+	}
 }
 
 void ABP_Player::SimulateUIMouseClick()
