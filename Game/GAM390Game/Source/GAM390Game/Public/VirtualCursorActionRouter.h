@@ -15,6 +15,7 @@ public:
 	virtual void Initialize() override; 
 	FVirtualCursor(const UCommonUIActionRouterBase& InActionRouter);
 	virtual void Tick(const float DeltaTime, FSlateApplication& SlateApp, TSharedRef<ICursor> Cursor) override;
+private:
 };
 
 /**
