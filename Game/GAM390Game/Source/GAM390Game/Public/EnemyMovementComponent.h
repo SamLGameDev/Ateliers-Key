@@ -6,6 +6,13 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "EnemyMovementComponent.generated.h"
 
+UENUM(BlueprintType, BlueprintType)
+enum EEnemyMovementMode : uint8
+{
+	Walking,
+	Falling
+};
+
 /**
  * 
  */
@@ -94,13 +101,8 @@ protected:
 	FVector NewFallVelocity(const FVector& InitialVelocity, FVector Gravity, float DeltaTime);
 
 	static constexpr FVector GetGravityDirection() {return FVector::DownVector;}
-	
-	enum EMovementMode : uint8
-	{
-		Walking,
-		Falling
-	};
-	
-	EMovementMode MovementMode = Walking;
+
+	UPROPERTY(VisibleAnywhere)
+	TEnumAsByte<EEnemyMovementMode> MovementMode = Walking;
 	
 };

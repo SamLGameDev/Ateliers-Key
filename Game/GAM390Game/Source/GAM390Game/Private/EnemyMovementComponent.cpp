@@ -47,16 +47,6 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	{
 		return;
 	}
-
-	if (!IsMovingOnGround())
-	{
-		MovementMode = Falling;
-	}
-	else
-	{
-		MovementMode = Walking;
-	}
-	
 	HandlePendingLaunch();
 	
 	if (MovementMode == Falling)
@@ -71,12 +61,12 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		SafeMoveUpdatedComponent(Delta, PawnOwner->GetActorRotation(), true, Hit);
 		if (Hit.IsValidBlockingHit())
 		{
-			HandleImpact(Hit, DeltaTime, Delta);
-			SlideAlongSurface(Delta, 1.f - Hit.Time, Hit.Normal, Hit);
 			if (Hit.ImpactNormal.Z >= WalkableAngle)
 			{
 				MovementMode = Walking;
 			}
+			HandleImpact(Hit, DeltaTime, Delta);
+			SlideAlongSurface(Delta, 1.f - Hit.Time, Hit.Normal, Hit);
 		}
 	}
 	else if (MovementMode == Walking)
@@ -87,7 +77,7 @@ void UEnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		}
 		bPositionCorrected = false;
 		// Move actor
-	
+		
 		FVector Delta = Velocity * DeltaTime;
 
 		FRotator newRotation = FMath::Lerp<FRotator>(PawnOwner->GetActorRotation(), Controller->GetDesiredRotation(), RotationSpeed * DeltaTime);
