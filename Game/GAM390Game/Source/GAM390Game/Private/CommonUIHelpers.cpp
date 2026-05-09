@@ -5,14 +5,25 @@
 
 #include "CommonInputSubsystem.h"
 
-void UCommonUIHelpers::SetCursorPosition(const FVector2D& Positon, UObject* WorldContextObject)
+void UCommonUIHelpers::SimulateUIMouseClick(UObject* WorldContextObject)
 {
-	APlayerController* controller = WorldContextObject->GetWorld()->GetFirstPlayerController();
-	UCommonInputSubsystem* subsystem = ULocalPlayer::GetSubsystem<UCommonInputSubsystem>(controller->GetLocalPlayer());
-	subsystem->SetCursorPosition(Positon, false);
-}
+	FSlateApplication& app = FSlateApplication::Get();
 
-FVector2D UCommonUIHelpers::GetCursorPosition(UObject* WorldContextObject)
-{
-	return FSlateApplication::Get().GetCursorPos();
+	float mouseX, mouseY;
+	WorldContextObject->GetWorld()->GetFirstPlayerController()->GetMousePosition(mouseX, mouseY);
+	
+	FPointerEvent MouseEvent(
+		0,
+		app.CursorPointerIndex,
+		app.GetCursorPos(),
+		app.GetLastCursorPos(),
+		app.GetPressedMouseButtons(),
+		EKeys::LeftMouseButton,
+		0,
+		app.GetPlatformApplication()->GetModifierKeys()
+	);
+	TSharedPtr<FGenericWindow, ESPMode::ThreadSafe> NullWindow;
+	app.ProcessMouseButtonDownEvent(NullWindow, MouseEvent);
+
+	app.ProcessMouseButtonUpEvent(MouseEvent);
 }

@@ -9,19 +9,10 @@ void FVirtualCursor::Initialize()
 {
 	FCommonAnalogCursor::Initialize();
 	bIsAnalogMovementEnabled = true;
+	Mode = AnalogCursorMode::Direct;
 }
 
-FVirtualCursor::FVirtualCursor(const UCommonUIActionRouterBase& InActionRouter) : FCommonAnalogCursor(InActionRouter)
-{
-}
-
-const float AnalogScrollUpdatePeriod = 0.1f;
-const float ScrollDeadZone = 0.2f;
-
-void FVirtualCursor::Tick(const float DeltaTime, FSlateApplication& SlateApp, TSharedRef<ICursor> Cursor)
-{
-	FCommonAnalogCursor::Tick(DeltaTime, SlateApp, Cursor);
-}
+FVirtualCursor::FVirtualCursor(const UCommonUIActionRouterBase& InActionRouter) : FCommonAnalogCursor(InActionRouter){}
 
 TSharedRef<FCommonAnalogCursor> UVirtualCursorActionRouter::MakeAnalogCursor() const
 {

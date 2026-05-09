@@ -15,11 +15,6 @@ class GAM390GAME_API UCommonUIHelpers : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "CommonUIHelpers", meta=(WorldContext = WorldContextObject))
-	static void SetCursorPosition(const FVector2D& Positon, UObject* WorldContextObject);
-
-	UFUNCTION(BlueprintCallable, Category = "CommonUIHelpers", meta=(WorldContext = WorldContextObject), BlueprintPure)
-	static FVector2D GetCursorPosition(UObject* WorldContextObject);
-	
-	
+	UFUNCTION(BlueprintCallable, Category = "CommonUIHelpers", meta = (WorldContext = WorldContextObject))
+	static void SimulateUIMouseClick(UObject* WorldContextObject);
 };
