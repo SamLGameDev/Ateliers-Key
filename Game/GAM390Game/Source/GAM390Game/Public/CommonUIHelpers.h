@@ -16,5 +16,13 @@ class GAM390GAME_API UCommonUIHelpers : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "CommonUIHelpers", meta = (WorldContext = WorldContextObject))
+	static void SimulateUIMouseClickAtCursor(UObject* WorldContextObject);
+
+	
+	/**
+	 * Generates a click event at screen space 0, 0
+	 * @param WorldContextObject 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "CommonUIHelpers", meta = (WorldContext = WorldContextObject))
 	static void SimulateUIMouseClick(UObject* WorldContextObject);
 };
