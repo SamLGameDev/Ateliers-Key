@@ -21,8 +21,6 @@ void ULockEntity::CancelExecution()
 void ULockEntity::StartExecution(AActor* Target)
 {
 	APawn* target = Cast<APawn>(Target);
-	UE_LOG(LogTemp, Warning, TEXT("EndLockCall"));
-
 	if (AController* controller = target->GetController())
 	{
 		TargetController = Cast<ABaseEnemyController>(controller);
@@ -31,7 +29,6 @@ void ULockEntity::StartExecution(AActor* Target)
 		{
 			return;
 		}
-		UE_LOG(LogTemp, Warning, TEXT("StartedLock"));
 		TargetForLock = Target;
 		TargetForLock->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(OverlayMat);
 		StopId = TargetController->StopAIForDuration(Duration);
@@ -42,7 +39,6 @@ void ULockEntity::StartExecution(AActor* Target)
 		GetWorld()->GetTimerManager().SetTimer(CancelHandle, CancelDel, Duration, false);
 		
 	}
-	UE_LOG(LogTemp, Warning, TEXT("EndLockCall"));
 }
 
 void ULockEntity::StartPlayerLock(APawn* Player)
