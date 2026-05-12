@@ -34,7 +34,7 @@ void ULifeSteal::CancelExecution()
 	
 	if (!TargetForDrain) return;
 	
-	TargetForDrain->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
+	TargetMesh->SetOverlayMaterial(nullptr);
 	
 	DamageSystem->OnEndGainingTempHealth.Broadcast();
 	
@@ -55,7 +55,22 @@ void ULifeSteal::StartExecution(AActor* Target)
 	if (!TargetDS->canUseSiphonOnEnemy) return;
 	
 	TargetForDrain = Target;
-	TargetForDrain->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(OverlayMat);
+	
+	TArray<USkeletalMeshComponent*> SkeletalMeshComponents;
+	Target->GetComponents<USkeletalMeshComponent>(SkeletalMeshComponents);
+	TargetMesh = nullptr;
+	for (auto& SkeletalMeshComponent : SkeletalMeshComponents)
+	{
+		if (SkeletalMeshComponent->ComponentHasTag("Body"))
+		{
+			TargetMesh = SkeletalMeshComponent;
+			break;
+		}
+	}
+	
+	checkf(TargetMesh, TEXT("Found no mesh for lifesteal with tag Body"));
+	
+	TargetMesh->SetOverlayMaterial(OverlayMat);
 	FTimerDelegate LifeStealDel;
 
 	LifeStealDel.BindUFunction(this, FName("LifeSteal"), TargetDS, Duration);

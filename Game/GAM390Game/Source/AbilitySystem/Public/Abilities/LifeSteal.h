@@ -15,7 +15,7 @@ class ABILITYSYSTEM_API ULifeSteal : public UAbility
 
 public:
 	// Sets default values for this component's properties
-	ULifeSteal();
+	ULifeSteal(); 
 	
 protected:
 	// Called when the game starts
@@ -47,6 +47,9 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<AActor> TargetForDrain;
+	
+	UPROPERTY()
+	TObjectPtr<USkeletalMeshComponent> TargetMesh;
 	
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	UMaterial* OverlayMat;

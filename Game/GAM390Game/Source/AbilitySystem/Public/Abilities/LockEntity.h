@@ -50,4 +50,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	UMaterial* OverlayMat;
 	
+	UPROPERTY()
+	TObjectPtr<USkeletalMeshComponent> TargetMesh;
+	
 };

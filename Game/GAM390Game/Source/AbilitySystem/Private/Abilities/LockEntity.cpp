@@ -15,7 +15,7 @@ void ULockEntity::CancelExecution()
 	}
 	TargetController->RequestAiCanMove(StopId);
 	if (!TargetForLock) return;
-	TargetForLock->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
+	TargetMesh->SetOverlayMaterial(nullptr);
 }
 
 void ULockEntity::StartExecution(AActor* Target)
@@ -30,7 +30,21 @@ void ULockEntity::StartExecution(AActor* Target)
 			return;
 		}
 		TargetForLock = Target;
-		TargetForLock->GetComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(OverlayMat);
+		TArray<USkeletalMeshComponent*> SkeletalMeshComponents;
+		Target->GetComponents<USkeletalMeshComponent>(SkeletalMeshComponents);
+		TargetMesh = nullptr;
+		for (auto& SkeletalMeshComponent : SkeletalMeshComponents)
+		{
+			if (SkeletalMeshComponent->ComponentHasTag("Body"))
+			{
+				TargetMesh = SkeletalMeshComponent;
+				break;
+			}
+		}
+	
+		checkf(TargetMesh, TEXT("Found no mesh for lockEntity with tag Body"));
+	
+		TargetMesh->SetOverlayMaterial(OverlayMat);
 		StopId = TargetController->StopAIForDuration(Duration);
 		FTimerDelegate CancelDel;
 

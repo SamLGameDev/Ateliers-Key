@@ -33,5 +33,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability", meta = (AllowPrivateAccess = "true"))
 	UMaterial* OverlayMat;
 	
-
+	UPROPERTY()
+	TObjectPtr<USkeletalMeshComponent> TargetMesh;
 };
