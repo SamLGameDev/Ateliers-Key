@@ -122,6 +122,20 @@ void USoundSubsystem::GetRandomSound(TArray<FSoundRow*>& Rows, const ESoundUse T
 	FilterRows(Rows, Type, SubType, Map);
 }
 
+void USoundSubsystem::PlayAmbientSoundBlend(const USoundCue* Sound, const float StartTime, float BlendSpeed,
+	USoundConcurrency* Concurrency, const float PitchMultiplier)
+{
+		
+	USettingsSave* Save = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("settings", 0));
+	BlendMusicDown(BlendSpeed, AmbientComponent);
+	FTimerDelegate Delegate;
+	Delegate.BindUFunction(this, "BlendAmbientIn", Sound, 
+		Save->MusicVolume, PitchMultiplier, 
+		StartTime, Concurrency, BlendSpeed);
+	FTimerHandle DelegateHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelegateHandle, Delegate, BlendSpeed, false);
+}
+
 void USoundSubsystem::SyncVolume() const
 {
 	if (CurrentMusicComponent.IsValid())
@@ -210,6 +224,17 @@ void USoundSubsystem::FilterRows(TArray<FSoundRow*>& Rows, const ESoundUse Type,
 	Rows = FilteredRows;
 }
 
+
+
+void USoundSubsystem::BlendMusicDown(const float BlendSpeed, TWeakObjectPtr<UAudioComponent> Comp)
+{
+	if (Comp.IsValid())
+	{
+		Comp->FadeOut(BlendSpeed, 0);
+	}
+}
+
+
 void USoundSubsystem::BlendMusicDown(const float BlendSpeed) const
 {
 	if (CurrentMusicComponent.IsValid())
@@ -233,6 +258,23 @@ void USoundSubsystem::BlendMusicIn(USoundCue* Sound, const float Volume, const f
 	true
 	));
 	CurrentMusicComponent.Pin()->FadeIn(BlendSpeed, Volume);
+}
+
+void USoundSubsystem::BlendAmbientIn(USoundCue* Sound, const float Volume, const float PitchMultiplier,
+								   const float StartTime, USoundConcurrency* Concurrency, const float BlendSpeed)
+{
+	CurrentMusicComponent = TWeakObjectPtr<UAudioComponent>(UGameplayStatics::CreateSound2D
+	(
+		GetWorld(),
+		Sound,
+		Volume,
+		PitchMultiplier,
+		StartTime,
+		Concurrency,
+	false,
+	true
+	));
+	AmbientComponent.Pin()->FadeIn(BlendSpeed, Volume);
 }
 
 void USoundSubsystem::BlendMusicInMulti(const TArray<USoundCue*>& Sound, const float Volume,

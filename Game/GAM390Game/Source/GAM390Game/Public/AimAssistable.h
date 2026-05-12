@@ -25,4 +25,7 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GAM390Game|AimAssistable")
 	USkeletalMeshComponent* GetMesh();
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GAM390Game|AimAssistable")
+	bool ShouldAimAssist();
 };
