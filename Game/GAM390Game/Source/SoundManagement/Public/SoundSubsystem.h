@@ -79,6 +79,10 @@ public:
 	void StopMusic();
     
 	void GetRandomSound(TArray<FSoundRow*>& Rows, const ESoundUse Type, const FName& SubType, const FName& Map) const;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayAmbientSoundBlend(const USoundCue* Sound, const float StartTime = 0.0f, float BlendSpeed = 0, USoundConcurrency* Concurrency=  nullptr, const float PitchMultiplier = 0);
+	
 	
 	void SyncVolume() const;
     	
@@ -98,13 +102,17 @@ public:
 		static bool IsMatchingMap(const FSoundRow* row, const FName Map);
 
 		static void FilterRows(TArray<FSoundRow*>& Rows, const ESoundUse Type, const FName& SubType, const FName& Map);
-    	UFUNCTION()
+	static void BlendMusicDown(float BlendSpeed, TWeakObjectPtr<UAudioComponent> Comp);
+	UFUNCTION()
     	void BlendMusicDown(float BlendSpeed) const;
     	UFUNCTION()
     	void BlendMusicIn(USoundCue* Sound, const float Volume, const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency, float
 	                      BlendSpeed);
-		
-		UFUNCTION()
+	UFUNCTION()
+	void BlendAmbientIn(USoundCue* Sound, float Volume, float PitchMultiplier, float StartTime,
+	                    USoundConcurrency* Concurrency, float BlendSpeed);
+
+	UFUNCTION()
 	    void BlendMusicInMulti(const TArray<USoundCue*>& Sound, const float Volume, const float PitchMultiplier, const float StartTime, USoundConcurrency* Concurrency, float
 					  BlendSpeed);
 	
@@ -117,6 +125,9 @@ public:
 		void DereferenceSound(USoundCue* Sound);
 		UPROPERTY()
 		TArray<TWeakObjectPtr<UAudioComponent>> MusicComponents;
+	
+	UPROPERTY()
+	TWeakObjectPtr<UAudioComponent> AmbientComponent;
 		
 	
 };
