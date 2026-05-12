@@ -73,5 +73,29 @@ TSharedPtr<SWidget> UWidgetRichTextDecorator::CreateWidget(const FTextRunInfo& R
         return SNullWidget::NullWidget;
     }
 
-    return Widget->TakeWidget();
+    // Get alignment metadata
+    const FString* Alignment = RunInfo.MetaData.Find(TEXT("align"));
+
+    EHorizontalAlignment HAlign = HAlign_Left;
+
+    if (Alignment)
+    {
+        if (Alignment->Equals(TEXT("center"), ESearchCase::IgnoreCase))
+        {
+            HAlign = HAlign_Center;
+        }
+        else if (Alignment->Equals(TEXT("right"), ESearchCase::IgnoreCase))
+        {
+            HAlign = HAlign_Right;
+        }
+    }
+
+    return SNew(SHorizontalBox)
+
+        + SHorizontalBox::Slot()
+        .HAlign(HAlign)
+        .AutoWidth()
+        [
+            Widget->TakeWidget()
+        ];
 }
