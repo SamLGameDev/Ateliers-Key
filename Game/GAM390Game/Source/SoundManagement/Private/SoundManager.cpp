@@ -39,3 +39,8 @@ void USoundManager::PlayRandomMusicBlend(const UObject* WorldContextObject, cons
 	subsystem->PlayRandomMusicBlend(SubType, Map, StartTime, BlendSpeed);
 }
 
+float USoundManager::GetPlaybackTime(const UAudioComponent* Component)
+{
+	return Component->TimeAudioComponentPlayed;
+}
+

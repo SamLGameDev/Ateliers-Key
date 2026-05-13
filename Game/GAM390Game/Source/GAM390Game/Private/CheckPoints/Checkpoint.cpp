@@ -65,6 +65,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 		
 		for (const auto& weapon : player->EquipedWeapons)
 		{
+			if (!weapon) continue;
 			if (weapon->ActorHasTag("AssaultRifle"))
 			{
 				checkpoint.bHasAssultRifle = true;
@@ -86,6 +87,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 		
 		for (const auto& world : WorldsToLoad)
 		{
+			if (!world) continue;
 			checkpoint.WorldsToLoad.Add(world->GetName());
 		}
 		if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
@@ -124,6 +126,7 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	for (const auto& weapon : Player->EquipedWeapons)
 	{
+		if (!weapon) continue;
 		if (weapon->ActorHasTag("AssaultRifle"))
 		{
 			save->bHasAssultRifle = true;
@@ -143,6 +146,7 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 
 	for (const auto& ability : Player->UnlockedAbilities)
 	{
+		if (!ability) continue;
 		if (ability->IsA(ULifeSteal::StaticClass()))
 		{
 			save->bHasLifeSteal = true;

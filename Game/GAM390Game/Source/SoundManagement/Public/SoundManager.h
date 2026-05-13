@@ -35,4 +35,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	static void PlayRandomMusicBlend(const UObject* WorldContextObject, const FName SubType = "None", const FName Map = "None", const float StartTime = 0.0f, const float BlendSpeed = 1);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static float GetPlaybackTime(const UAudioComponent* Component);
 };
