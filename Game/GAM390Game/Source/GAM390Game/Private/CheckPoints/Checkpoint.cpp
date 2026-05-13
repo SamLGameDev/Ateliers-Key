@@ -46,10 +46,10 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 		checkpoint.RestartRotation = GetActorRotation();
 		checkpoint.CombatEncounters = {CombatEncounter};
 		
-		if (sSubsystem->LoadedSave && sSubsystem->LoadedSave->HitCheckpoint.Contains(GetName()))
+		if (save && save->HitCheckpoint.Contains(GetName()))
 		{
-			checkpoint.CheckpointQuest = sSubsystem->LoadedSave->Quest;
-			checkpoint.CheckpointQuestStage = sSubsystem->LoadedSave->QuestStage;
+			checkpoint.CheckpointQuest = save->Quest;
+			checkpoint.CheckpointQuestStage = save->QuestStage;
 		}
 		else
 		{
