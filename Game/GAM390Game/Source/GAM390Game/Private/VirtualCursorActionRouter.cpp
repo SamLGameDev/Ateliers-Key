@@ -18,3 +18,4 @@ TSharedRef<FCommonAnalogCursor> UVirtualCursorActionRouter::MakeAnalogCursor() c
 {
 	return FVirtualCursor::CreateAnalogCursor<FVirtualCursor>(*this);
 }
+

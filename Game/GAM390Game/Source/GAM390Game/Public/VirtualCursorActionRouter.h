@@ -20,6 +20,8 @@ class GAM390GAME_API UVirtualCursorActionRouter : public UCommonUIActionRouterBa
 
 protected:
 	virtual TSharedRef<FCommonAnalogCursor> MakeAnalogCursor() const override;
+
+
 };
 class FVirtualCursor : public FCommonAnalogCursor
 {
