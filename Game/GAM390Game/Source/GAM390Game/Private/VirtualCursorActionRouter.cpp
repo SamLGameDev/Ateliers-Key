@@ -4,6 +4,7 @@
 #include "VirtualCursorActionRouter.h"
 
 #include "CommonInputSubsystem.h"
+#include "CommonUI/Private/Input/UIActionRouterTypes.h"
 
 void FVirtualCursor::Initialize()
 {
@@ -18,4 +19,11 @@ TSharedRef<FCommonAnalogCursor> UVirtualCursorActionRouter::MakeAnalogCursor() c
 {
 	return FVirtualCursor::CreateAnalogCursor<FVirtualCursor>(*this);
 }
+
+void UVirtualCursorActionRouter::AddScrollable(UWidget* widget)
+{
+	RegisterScrollRecipient(*widget);
+}
+
+
 

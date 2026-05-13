@@ -20,8 +20,12 @@ class GAM390GAME_API UVirtualCursorActionRouter : public UCommonUIActionRouterBa
 
 protected:
 	virtual TSharedRef<FCommonAnalogCursor> MakeAnalogCursor() const override;
+	
+	UFUNCTION(BlueprintCallable)
+	void AddScrollable(UWidget* widget);
+	
 
-
+public:
 };
 class FVirtualCursor : public FCommonAnalogCursor
 {
