@@ -105,7 +105,7 @@ void UDamageSystem::TakeDamage(const FDamageInfo& DamageInfo, AActor* Source) {
 
 		if (CurrentHealth <= 0.0f) {
 			IsDead = true;
-			OnDeath.Broadcast();
+			OnDeath.Broadcast(GetOwner());
 		}
 		else {
 			OnDamageResponse.Broadcast(DamageInfo.DamageResponse, Source);
