@@ -23,6 +23,10 @@ https://github.falmouth.ac.uk/Games-Academy/blank-unreal-project Authored by Fal
 
 8. [Terms of use](#terms-of-use)
 
+## References
+Military Weapons Dark - Adia Entertainment - Found at https://www.fab.com/listings/480fc7b6-4b4b-42b4-829a-9690b16dcff2
+Realistic Starter VFX Pack Vol 2 - FX Cat UA - Found at https://www.fab.com/listings/ac2818b3-7d35-4cf5-a1af-cbf8ff5c61c1
+
 
 ## Project description
 
