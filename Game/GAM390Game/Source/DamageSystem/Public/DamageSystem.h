@@ -104,7 +104,13 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool canUseSiphonOnEnemy;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	bool bCanUseFreezeOnEnemy;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	bool bCanUsePuppetryOnEnemy;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool IsInvincible;
 
