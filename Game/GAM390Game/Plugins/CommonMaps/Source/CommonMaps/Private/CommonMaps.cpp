@@ -1,11 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "CommonMaps.h"
 #include "CommonMapsSettings.h"
+
+#if WITH_EDITOR
 #include "ISettingsModule.h"
+#endif
 
 void FCommonMapsModule::StartupModule()
 {
+#if WITH_EDITOR
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
 		SettingsModule->RegisterSettings(
@@ -17,14 +19,17 @@ void FCommonMapsModule::StartupModule()
 			GetMutableDefault<UCommonMapsSettings>()
 		);
 	}
+#endif
 }
 
 void FCommonMapsModule::ShutdownModule()
 {
+#if WITH_EDITOR
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
 		SettingsModule->UnregisterSettings("Project", "Plugins", "Common Maps");
 	}
+#endif
 }
 
 IMPLEMENT_MODULE(FCommonMapsModule, CommonMaps)
