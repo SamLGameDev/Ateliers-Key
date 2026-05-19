@@ -12,7 +12,7 @@ public class GAM390GameTarget : TargetRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
 		
 		ProjectDefinitions.Add("UE_PROJECT_STEAMSHIPPINGID=4759400");
-		ProjectDefinitions.Add("UE_PROJECT_STEAMGAMEDESC=Atelier's Key");
+		ProjectDefinitions.Add("UE_PROJECT_STEAMGAMEDESC=Ateliers Key");
 		ProjectDefinitions.Add("UE_PROJECT_STEAMGAMEDIR=AteliersKey");
 		ProjectDefinitions.Add("UE_PROJECT_STEAMPRODUCTNAME=4759400");
 		
