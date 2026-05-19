@@ -33,6 +33,9 @@ public:
 	bool bHasShotgun = false;
 	UPROPERTY(BlueprintReadWrite)
 	bool bHasSniper = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	int killedEnemies;
 	
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FString> WorldsToLoad;
@@ -57,6 +60,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	UAtelierSaveGame* GetSaveGame();
+
+	UFUNCTION(BlueprintCallable, Category = "Save")
+	void AddToKilledEnemies(int32 Amount);
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnCheckpointSave OnCheckpointSave;

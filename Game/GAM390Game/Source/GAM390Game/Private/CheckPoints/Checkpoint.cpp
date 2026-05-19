@@ -83,6 +83,10 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 			}
 		}
 
+		UGI_SanctumSettings* gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
+		sSubsystem->GetSaveGame()->killedEnemies = gameInstance->EnemyKills;
+		
+		checkpoint.killedEnemies = sSubsystem->GetSaveGame()->killedEnemies;
 		checkpoint.WorldsToLoad.Empty();
 		
 		for (const auto& world : WorldsToLoad)
@@ -99,7 +103,7 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 void ACheckpoint::AddToKilledEnemies(int32 Amount)
 {
 	USaveSubsystem* sSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
-	sSubsystem->GetSaveGame()->killedEnemies += Amount;
+	sSubsystem->GetSaveGame()->killedEnemies = Amount;
 }
 
 void ACheckpoint::SaveToSlot(ABP_Player* Player)
@@ -170,7 +174,6 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 		};
 	}
 
-	save->killedEnemies = sSubsystem->GetSaveGame()->killedEnemies;
 	save->QuestStage = sSubsystem->CurrentCheckpoint.CheckpointQuestStage;
 	save->Quest = sSubsystem->CurrentCheckpoint.CheckpointQuest;
 	

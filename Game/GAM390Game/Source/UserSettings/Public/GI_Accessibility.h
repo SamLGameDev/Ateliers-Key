@@ -47,6 +47,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	float CameraFov;
 
+	UPROPERTY(BlueprintReadWrite)
+	int EnemyKills;
+
 	virtual void Init() override;
 
 	void SyncSubtitlesSettings();
