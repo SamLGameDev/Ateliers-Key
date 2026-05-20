@@ -7,7 +7,7 @@
 #include "DamageInfo.h"
 #include "DamageSystem.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, DeadEntity);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDeath, AActor*, DeadEntity, AActor*, Killer);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBlocked);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHeal);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageResponse, EDamageResponse, DamageResponse, AActor*, Source);
