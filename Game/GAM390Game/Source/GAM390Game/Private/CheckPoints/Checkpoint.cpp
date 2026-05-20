@@ -85,7 +85,9 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 
 		UGI_SanctumSettings* gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
 		sSubsystem->GetSaveGame()->killedEnemies = gameInstance->EnemyKills;
-		
+		sSubsystem->GetSaveGame()->pickedUpLoreItems = gameInstance->pickedUpLoreItems;
+
+		checkpoint.pickedUpLoreItems = sSubsystem->GetSaveGame()->pickedUpLoreItems;
 		checkpoint.killedEnemies = sSubsystem->GetSaveGame()->killedEnemies;
 		checkpoint.WorldsToLoad.Empty();
 		

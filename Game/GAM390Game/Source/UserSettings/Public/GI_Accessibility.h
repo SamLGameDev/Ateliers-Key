@@ -48,7 +48,10 @@ public:
 	float CameraFov;
 
 	UPROPERTY(BlueprintReadWrite)
-	int EnemyKills;
+	int EnemyKills = 0;
+
+	UPROPERTY(BlueprintReadWrite)
+	int pickedUpLoreItems = 0;
 
 	virtual void Init() override;
 

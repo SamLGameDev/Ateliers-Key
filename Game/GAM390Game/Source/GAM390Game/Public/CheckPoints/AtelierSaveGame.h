@@ -42,6 +42,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite)
 	int killedEnemies;
+
+	UPROPERTY(BlueprintReadWrite)
+	int pickedUpLoreItems;
 	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 QuestStage;
