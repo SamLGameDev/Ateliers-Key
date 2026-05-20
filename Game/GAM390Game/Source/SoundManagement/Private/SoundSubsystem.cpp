@@ -4,6 +4,7 @@
 #include "SoundSubsystem.h"
 #include "GI_Accessibility.h"
 #include "SettingsSave.h"
+#include "Kismet/GameplayStatics.h"
 #include "Sound/SoundClass.h"
 
 

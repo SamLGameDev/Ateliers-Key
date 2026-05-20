@@ -11,7 +11,7 @@ public class GAM390Game : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GeneralUtilities", "VariableStores", "ProcEnemies", "DamageSystem", "LevelManagers", "Subtitles", "Menus", "Hacking", "UMG", "Slate", "SlateCore", "SoundManagement", "TimeManagementExtended", "AbilitySystem", "AI", "NavigationSystem", "UserSettings", "QuestSystem", "CommonInput" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+        PrivateDependencyModuleNames.AddRange(new string[] { "DiscordPartnerSDK" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

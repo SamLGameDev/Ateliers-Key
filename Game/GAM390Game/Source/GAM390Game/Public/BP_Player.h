@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Hacks/HackEffect.h"
 #include "Ability.h"
+#include "DiscordLocalPlayerSubsystem.h"
 #include "BP_Player.generated.h"
 
 class UInputMappingContext;
@@ -17,6 +18,8 @@ class UEnhancedInputComponent;
 class UHackEffectStore;
 class UGUI_HackSelector;
 class UTimeDialationToken;
+
+DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
 class GAM390GAME_API ABP_Player : public ACharacter

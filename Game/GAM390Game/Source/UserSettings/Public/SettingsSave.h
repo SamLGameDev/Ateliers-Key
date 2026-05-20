@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "DiscordLocalPlayerSubsystem.h"
 #include "SettingsSave.generated.h"
 
 /**
@@ -37,4 +38,13 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite)
 	float FOVValue;
+
+	UPROPERTY(SaveGame)
+	FString DiscordAccessToken;
+
+	UPROPERTY(SaveGame)
+	FString DiscordRefreshToken;
+
+	UPROPERTY(SaveGame)
+	EDiscordAuthorizationTokenType DiscordTokenType;
 };

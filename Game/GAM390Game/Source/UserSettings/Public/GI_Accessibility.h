@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Kismet/GameplayStatics.h"
+#include "DiscordLocalPlayerSubsystem.h" 
 #include "GI_Accessibility.generated.h"
 
 static TAutoConsoleVariable<int32> CVarSavingEnabled(
@@ -21,7 +21,6 @@ class USERSETTINGS_API UGI_SanctumSettings : public UGameInstance
 {
 	GENERATED_BODY()
 
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bSubtitlesEnabled;
@@ -34,6 +33,36 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ControllerVibration;
+
+	UFUNCTION()
+	void OnDiscordStatusChanged(
+		EDiscordClientStatus Status,
+		EDiscordClientError Error,
+		int32 ErrorDetail
+	);
+
+	UFUNCTION(BlueprintCallable, Category="Discord")
+	void SetDiscordPresence(FString State, FString Details);
+
+	UFUNCTION(BlueprintCallable, Category="Discord")
+	void SetDiscordPresenceDetailsOnly(FString Details);
+
+	UFUNCTION()
+	void OnDiscordLogMessage(FString Message, EDiscordLoggingSeverity Severity);
+
+	void OnDiscordAuthorizeCompleted(UDiscordClientResult* Result, FString Code, FString RedirectUri);
+	void OnDiscordTokenExchange(UDiscordClientResult* Result, FString AccessToken, FString RefreshToken,
+		EDiscordAuthorizationTokenType TokenType, int32 ExpiresIn, FString Scope);
+	void OnDiscordTokenUpdated(UDiscordClientResult* Result);
+
+	UFUNCTION(BlueprintCallable, Category="Discord")
+	void DiscordConnect();
+
+	UPROPERTY()
+	UDiscordAuthorizationCodeVerifier* CodeVerifier;
+
+	UPROPERTY()
+	UDiscordLocalPlayerSubsystem* Discord;
 
 	UPROPERTY(BlueprintReadOnly)
 	float CameraSensitivity;

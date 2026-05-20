@@ -19,6 +19,9 @@
 #include "Hackable.h"
 #include "Engine/UserInterfaceSettings.h"
 
+DEFINE_LOG_CATEGORY(LogTemplateCharacter);
+
+#define APPLICATION_ID 1506692667524907119
 
 // Sets default values
 ABP_Player::ABP_Player()
@@ -60,7 +63,6 @@ void ABP_Player::BeginPlay()
 	VirtualCursor = CreateWidget(GetWorld(), VirtualCursorClass);
 	SetUpInputActions();
 	SwitchToCoreMap();
-
 }
 
 void ABP_Player::SetUpMenuControls()
