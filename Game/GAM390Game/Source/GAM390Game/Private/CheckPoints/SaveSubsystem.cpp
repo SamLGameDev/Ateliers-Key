@@ -28,13 +28,6 @@ void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	OnCheckpointLoad.Broadcast();
 }
 
-void USaveSubsystem::AddToKilledEnemies(int32 Amount)
-{
-	UAtelierSaveGame* save = GetSaveGame();
-	if (!save) return;
-	save->killedEnemies = Amount;
-}
-
 UAtelierSaveGame* USaveSubsystem::GetSaveGame()
 {
 	if (LoadedSave) return LoadedSave;

@@ -100,12 +100,6 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 	}
 }
 
-void ACheckpoint::AddToKilledEnemies(int32 Amount)
-{
-	USaveSubsystem* sSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
-	sSubsystem->GetSaveGame()->killedEnemies = Amount;
-}
-
 void ACheckpoint::SaveToSlot(ABP_Player* Player)
 {
 	if (CVarSavingEnabled.GetValueOnAnyThread() == 0) return;
