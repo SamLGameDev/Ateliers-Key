@@ -40,6 +40,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bHasShotgun;
 	
+	UPROPERTY(BlueprintReadWrite)
+	int killedEnemies;
+	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 QuestStage;
 	

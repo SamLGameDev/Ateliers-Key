@@ -47,4 +47,3 @@ UAtelierSaveGame* USaveSubsystem::GetSaveGame()
 	}
 	return LoadedSave;
 }
-
