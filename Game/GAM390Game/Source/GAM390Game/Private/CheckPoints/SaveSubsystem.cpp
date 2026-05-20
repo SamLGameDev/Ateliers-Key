@@ -32,7 +32,7 @@ void USaveSubsystem::AddToKilledEnemies(int32 Amount)
 {
 	UAtelierSaveGame* save = GetSaveGame();
 	if (!save) return;
-	save->killedEnemies += Amount;
+	save->killedEnemies = Amount;
 }
 
 UAtelierSaveGame* USaveSubsystem::GetSaveGame()
