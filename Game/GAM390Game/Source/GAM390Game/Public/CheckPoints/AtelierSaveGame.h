@@ -41,7 +41,7 @@ public:
 	bool bHasShotgun;
 	
 	UPROPERTY(BlueprintReadWrite)
-	int killedEnemies;
+	int killedEnemies = 0;
 
 	UPROPERTY(BlueprintReadWrite)
 	int pickedUpLoreItems;

@@ -175,9 +175,9 @@ void ACheckpoint::SaveToSlot(ABP_Player* Player)
 	
 	save->HitCheckpoint.Add(GetName());
 	
-	GetWorld()->GetSubsystem<USaveSubsystem>()->OnCheckpointSave.Broadcast();
-	TObjectPtr<UGI_SanctumSettings> gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
-	const FString& slotName = gameInstance->GetSaveSlot();
+	USaveSubsystem* saveSubsystem = GetWorld()->GetSubsystem<USaveSubsystem>();
+	saveSubsystem->OnCheckpointSave.Broadcast();
+	const FString& slotName = saveSubsystem->GetSaveSlot();
 	
 	
 

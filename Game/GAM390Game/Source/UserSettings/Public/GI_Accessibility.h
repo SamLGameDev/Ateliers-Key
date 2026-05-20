@@ -38,12 +38,6 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	float CameraSensitivity;
 
-	UFUNCTION(BlueprintCallable)
-	void SetSaveSlot(const FString& SlotName);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	FString GetSaveSlot();
-
 	UPROPERTY(BlueprintReadOnly)
 	float CameraFov;
 
@@ -65,11 +59,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UPrimaryDataAsset> PoolingConfig;
-
-protected:
-
-	UPROPERTY(BlueprintReadOnly)
-	FString CurrentSaveSlot = "Save0";
-
-	
 };

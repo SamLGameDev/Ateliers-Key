@@ -64,6 +64,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UAtelierSaveGame* GetSaveGame();
 	
+	UFUNCTION(BlueprintCallable)
+	void SetSaveSlot(const FString& SlotName);
+	UFUNCTION(BlueprintCallable)
+	FString GetSaveSlot();
+	
+	UFUNCTION(BlueprintCallable)
+	void DeleteSaveSlot(const uint8& Slot);
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnCheckpointSave OnCheckpointSave;
 	
@@ -78,5 +86,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	FCheckpointInfo CurrentCheckpoint;
+	
+protected:
+	static FString CurrentSaveSlot;
+
+	
 
 };

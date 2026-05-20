@@ -6,15 +6,7 @@
 #include "SettingsSave.h"
 #include "Kismet/GameplayStatics.h"
 
-void UGI_SanctumSettings::SetSaveSlot(const FString& SlotName)
-{
-	CurrentSaveSlot = SlotName;
-}
 
-FString UGI_SanctumSettings::GetSaveSlot()
-{
-	return CVarSavingEnabled.GetValueOnAnyThread() == 1 ? CurrentSaveSlot : "SavingDisabled";
-}
 
 void UGI_SanctumSettings::Init()
 {
