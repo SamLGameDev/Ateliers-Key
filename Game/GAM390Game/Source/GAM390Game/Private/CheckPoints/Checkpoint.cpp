@@ -84,11 +84,13 @@ void ACheckpoint::SetAsCurrentCheckpoint(UPrimitiveComponent* OverlappedComponen
 		}
 
 		UGI_SanctumSettings* gameInstance = Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
-		sSubsystem->GetSaveGame()->killedEnemies = gameInstance->EnemyKills;
+		sSubsystem->GetSaveGame()->killedEnemies = gameInstance->killedEnemies;
 		sSubsystem->GetSaveGame()->pickedUpLoreItems = gameInstance->pickedUpLoreItems;
+		sSubsystem->GetSaveGame()->numOfDeaths = gameInstance->numOfDeaths;
 
 		checkpoint.pickedUpLoreItems = sSubsystem->GetSaveGame()->pickedUpLoreItems;
 		checkpoint.killedEnemies = sSubsystem->GetSaveGame()->killedEnemies;
+		checkpoint.numOfDeaths = sSubsystem->GetSaveGame()->numOfDeaths;
 		checkpoint.WorldsToLoad.Empty();
 		
 		for (const auto& world : WorldsToLoad)

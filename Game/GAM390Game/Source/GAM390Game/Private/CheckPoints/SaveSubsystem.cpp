@@ -47,7 +47,9 @@ void USaveSubsystem::SetSaveSlot(const FString& SlotName)
 	CurrentSaveSlot = SlotName;
 	UAtelierSaveGame* save = GetSaveGame();
 	UGI_SanctumSettings* gi =  Cast<UGI_SanctumSettings>(GetWorld()->GetGameInstance());
-	gi->EnemyKills = save->killedEnemies;
+	gi->numOfDeaths = save->numOfDeaths;
+	gi->killedEnemies = save->killedEnemies;
+	gi->pickedUpLoreItems = save->pickedUpLoreItems;
 }
 
 FString USaveSubsystem::GetSaveSlot()

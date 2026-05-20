@@ -39,6 +39,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	int pickedUpLoreItems;
+
+	UPROPERTY(BlueprintReadWrite)
+	int numOfDeaths;
 	
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FString> WorldsToLoad;

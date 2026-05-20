@@ -44,7 +44,10 @@ public:
 	int killedEnemies = 0;
 
 	UPROPERTY(BlueprintReadWrite)
-	int pickedUpLoreItems;
+	int pickedUpLoreItems = 0;
+
+	UPROPERTY(BlueprintReadWrite)
+	int numOfDeaths = 0;
 	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 QuestStage;
