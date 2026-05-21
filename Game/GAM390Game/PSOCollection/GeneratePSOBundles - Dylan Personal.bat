@@ -1,0 +1,3 @@
+"Z:\Unreal\Engines\UE_5.6\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" -run=ShaderPipelineCacheTools expand Z:\Unreal\University\2025-2026\GAM360-1-2300927\Game\GAM390Game\PSOCollection\*.rec.upipelinecache Z:\Unreal\University\2025-2026\GAM360-1-2300927\Game\GAM390Game\PSOCollection\*.shk Z:\Unreal\University\2025-2026\GAM360-1-2300927\Game\GAM390Game\PSOCollection\PSO_GAM360-1-2300927_PCD3D_SM6.spc
+
+cmd /k

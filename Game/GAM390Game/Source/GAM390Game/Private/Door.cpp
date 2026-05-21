@@ -1,0 +1,66 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Door.h"
+#include "BP_GeneralFunctions.h"
+#include "Components/SplineComponent.h"
+#include "Camera/CameraShakeBase.h"
+
+// Sets default values
+ADoor::ADoor()
+{
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
+
+	m_RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("m_RootComp"));
+	RootComponent = m_RootComp;
+	
+	MeshRoot = CreateDefaultSubobject<USceneComponent>(TEXT("m_MeshRoot"));
+	MeshRoot->SetupAttachment(RootComponent);
+	
+	Path = CreateDefaultSubobject<USplineComponent>(TEXT("Path"));
+	Path->SetupAttachment(RootComponent);
+
+	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	m_Mesh->SetupAttachment(MeshRoot);
+}
+
+float const ADoor::Fall()
+{
+	FTimerDelegate params;
+	params.BindUFunction(this, NAMEOF(MoveMeshTowardsEnd), 0);
+	GetWorld()->GetTimerManager().SetTimerForNextTick(params);
+	return Path->GetSplineLength() / m_Speed;
+}
+
+const void ADoor::Close()
+{
+	FTransform EndPos;
+	if (Path)
+	{ 
+		EndPos = Path->GetTransformAtDistanceAlongSpline(0, ESplineCoordinateSpace::World);
+	}
+	if (Path && EndPos.IsValid()) {
+		MeshRoot->SetWorldLocation(EndPos.GetLocation());;
+	}
+}
+
+
+void ADoor::MoveMeshTowardsEnd(const float alpha)
+{
+	FTransform EndPos;
+	if (Path)
+	{
+		EndPos = Path->GetTransformAtDistanceAlongSpline(alpha, ESplineCoordinateSpace::World);
+	}
+	if (Path && EndPos.IsValid()) {
+		MeshRoot->SetWorldLocation(EndPos.GetLocation());;
+	}
+	if (alpha >= Path->GetSplineLength()) return;
+	
+	FTimerDelegate params;
+	params.BindUFunction(this, NAMEOF(MoveMeshTowardsEnd), alpha + (m_Speed * GetWorld()->GetDeltaSeconds()));
+	GetWorld()->GetTimerManager().SetTimerForNextTick(params);
+}
+
+

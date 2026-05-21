@@ -1,0 +1,64 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "DamageResponse.h"
+#include "DamageTransmitter.h"
+#include "Chaos/ChaosEngineInterface.h"
+#include "DamageInfo.generated.h"
+
+/**
+ * 
+ */
+USTRUCT(BlueprintType)
+struct DAMAGESYSTEM_API FDamageInfo
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	float Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	EDamageTransmitter DamageType = EDamageTransmitter::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	EDamageResponse DamageResponse = EDamageResponse::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	bool ShouldDamageInvincible;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	bool CanBeBlocked;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	bool CanBeParried;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Info")
+	bool ShouldForceInterrupt;
+
+	EPhysicalSurface HitSurface = SurfaceType_Default;
+
+	FDamageInfo():Amount(0), ShouldDamageInvincible(false), CanBeBlocked(false), CanBeParried(false), ShouldForceInterrupt(false){}
+	
+};
+
+UCLASS(NotPlaceable)
+class DAMAGESYSTEM_API UDamageInfoHelperFuncs : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+public:
+	
+	UFUNCTION(BlueprintCallable, Category = "Damage Info")
+	static EPhysicalSurface GetPhysicalSurface(const FDamageInfo& Info)
+	{
+		return Info.HitSurface;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Damage Info")
+	static void SetPhysicsSurface(UPARAM(ref) FDamageInfo& Info, EPhysicalSurface SurfaceType)
+	{
+		Info.HitSurface = SurfaceType;
+	};
+};
