@@ -56,7 +56,8 @@ void UObjectPoolingSubsystem::ReturnActorToPool(AActor* Actor)
 	IPooledObject::Execute_OnDisable(Actor);
 }
 
-AActor* UObjectPoolingSubsystem::GetActorFromPoolAtTransform(TSubclassOf<AActor> Class, FTransform Transform, AActor* Owner)
+AActor* UObjectPoolingSubsystem::GetActorFromPoolAtTransform(TSubclassOf<AActor> Class,
+	FTransform Transform, AActor* Owner)
 {
 	AActor* actor = GetActorFromPool(Class);
 	actor->SetActorTransform(Transform);
