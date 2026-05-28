@@ -1,0 +1,32 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
+#include "C_BaseHardwareAbility.generated.h"
+
+
+UCLASS(Abstract)
+class ATELIERSKEY_API UC_BaseHardwareAbility : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:	
+	// Sets default values for this component's properties
+	UC_BaseHardwareAbility();
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void EnableAbility();
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
+
+public:	
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+		
+};
