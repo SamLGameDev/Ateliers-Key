@@ -10,6 +10,11 @@ public class GeneralUtilities : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG", "InputCore",
 			"Slate",
-			"SlateCore" });
+			"SlateCore",
+			"HTTP",
+			"Json",
+			"JsonUtilities",
+			"DeveloperSettings"
+		});
 	}
 }
