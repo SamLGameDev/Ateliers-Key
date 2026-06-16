@@ -6,17 +6,18 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "FeedbackSender.generated.h"
 
-/**
- * 
- */
+class UMultiLineEditableText;
+
 UCLASS()
 class GENERALUTILITIES_API UFeedbackSender : public UBlueprintFunctionLibrary
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
+
 public:
-	UFUNCTION(BlueprintCallable, Category = "Feedback")
-	static void SubmitReport(const FString& Category, const FString& Message);
-	
-	UFUNCTION(BlueprintPure, Category = "Feedback")
-	static FText GetGameVersion();
+    UFUNCTION(BlueprintCallable, Category = "Feedback")
+    static void SubmitReport(const FString& Category, const FString& Message,
+                             UMultiLineEditableText* StatusField);
+
+    UFUNCTION(BlueprintPure, Category = "Feedback")
+    static FText GetGameVersion();
 };

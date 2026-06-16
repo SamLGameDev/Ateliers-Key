@@ -1,6 +1,5 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "FeedbackSender.h"
 
 #include "HttpModule.h"
@@ -8,20 +7,23 @@
 #include "Interfaces/IHttpResponse.h"
 #include "FeedbackSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/MultiLineEditableText.h"
+#include "Dom/JsonObject.h"
+#include "Serialization/JsonSerializer.h"
 
-void UFeedbackSender::SubmitReport(const FString& Category, const FString& Message)
+void UFeedbackSender::SubmitReport(const FString& Category, const FString& Message,
+                                   UMultiLineEditableText* StatusField)
 {
-	const FString WebhookUrl = TEXT("https://discord.com/api/webhooks/1515354866447286453/N8IOYKPyywki_kFrxB6v_fsrTn3aWEsX5PQRk9Wu6kZVyK0fBDZfLtlSpeF2sis3S1Lj");
+    const FString WebhookUrl = TEXT("https://discord.com/api/webhooks/1515354866447286453/N8IOYKPyywki_kFrxB6v_fsrTn3aWEsX5PQRk9Wu6kZVyK0fBDZfLtlSpeF2sis3S1Lj");
 
-	// Pull some context automatically so you're not relying on the player to describe their setup
-	const UFeedbackSettings* Settings = GetDefault<UFeedbackSettings>();
+    // Pull some context automatically so you're not relying on the player to describe their setup
+    const UFeedbackSettings* Settings = GetDefault<UFeedbackSettings>();
     const FString BuildVer = Settings ? Settings->VersionName : TEXT("unknown");
-	const FString Platform  = UGameplayStatics::GetPlatformName();
+    const FString Platform  = UGameplayStatics::GetPlatformName();
 
-	int32 Colour = 3447003; // blue, default
+    int32 Colour = 3447003; // blue, default
     if (Category.Equals(TEXT("Bug"), ESearchCase::IgnoreCase))        Colour = 15158332; // red
     else if (Category.Equals(TEXT("Crash"), ESearchCase::IgnoreCase)) Colour = 10038562; // dark red
-    else if (Category.Equals(TEXT("Feedback"), ESearchCase::IgnoreCase)) Colour = 3066993; // green
 
     // Helper to build a field object
     auto MakeField = [](const FString& Name, const FString& Value, bool bInline)
@@ -65,16 +67,31 @@ void UFeedbackSender::SubmitReport(const FString& Category, const FString& Messa
     Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
     Request->SetContentAsString(Payload);
 
+    // Weak ptr so a closed/destroyed menu doesn't leave us writing to freed memory
+    TWeakObjectPtr<UMultiLineEditableText> WeakField = StatusField;
+
     Request->OnProcessRequestComplete().BindLambda(
-        [](FHttpRequestPtr Req, FHttpResponsePtr Resp, bool bOk)
+        [WeakField](FHttpRequestPtr Req, FHttpResponsePtr Resp, bool bOk)
     {
-        if (bOk && Resp.IsValid())
+        const bool bSuccess = bOk && Resp.IsValid()
+            && Resp->GetResponseCode() >= 200 && Resp->GetResponseCode() < 300;
+
+        if (bSuccess)
         {
             UE_LOG(LogTemp, Log, TEXT("Feedback sent: %d"), Resp->GetResponseCode());
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("Feedback failed to send"));
+            UE_LOG(LogTemp, Warning, TEXT("Feedback failed to send (%d)"),
+                Resp.IsValid() ? Resp->GetResponseCode() : -1);
+        }
+
+        // HTTP callbacks fire on the game thread, so touching UMG here is safe
+        if (WeakField.IsValid())
+        {
+            WeakField->SetText(FText::FromString(
+                bSuccess ? TEXT("Thanks! Your feedback was sent.")
+                         : TEXT("Couldn't send — please try again.")));
         }
     });
 
