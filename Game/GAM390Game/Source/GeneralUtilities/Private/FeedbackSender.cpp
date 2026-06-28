@@ -10,9 +10,6 @@
 #include "Serialization/JsonSerializer.h"
 #include "TimerManager.h"
 
-// ----------------------------------------------------
-// FILE-SCOPE COOLDOWN STATE (IMPORTANT FIX)
-// ----------------------------------------------------
 static bool bCooldownActive = false;
 static int32 CooldownRemaining = 0;
 static FTimerHandle CooldownTimerHandle;
@@ -30,20 +27,28 @@ void UFeedbackSender::SubmitReport(
     if (!World)
         return;
 
-    // ---------------- COOLDOWN CHECK ----------------
     if (bCooldownActive)
     {
         if (StatusField)
         {
             StatusField->SetText(FText::FromString(
                 FString::Printf(TEXT("Please wait %d seconds before submitting again."),
-                CooldownRemaining)));
+                    CooldownRemaining)));
         }
         return;
     }
 
-    const FString WebhookUrl =
-        TEXT("https://discord.com/api/webhooks/1515354866447286453/N8IOYKPyywki_kFrxB6v_fsrTn3aWEsX5PQRk9Wu6kZVyK0fBDZfLtlSpeF2sis3S1Lj");
+    FString WebhookUrl;
+
+    if (!GConfig->GetString(
+            TEXT("Feedback"),
+            TEXT("WebhookURL"),
+            WebhookUrl,
+            GGameIni))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Feedback webhook missing in DefaultGame.ini"));
+        return;
+    }
 
     const UFeedbackSettings* Settings = GetDefault<UFeedbackSettings>();
     const FString BuildVer = Settings ? Settings->VersionName : TEXT("unknown");
@@ -74,7 +79,9 @@ void UFeedbackSender::SubmitReport(
     Embed->SetArrayField(TEXT("fields"), Fields);
 
     if (!Message.IsEmpty())
+    {
         Embed->SetStringField(TEXT("description"), Message.Left(4096));
+    }
 
     TArray<TSharedPtr<FJsonValue>> Embeds;
     Embeds.Add(MakeShared<FJsonValueObject>(Embed));
@@ -99,20 +106,23 @@ void UFeedbackSender::SubmitReport(
     Request->OnProcessRequestComplete().BindLambda(
         [WeakField](FHttpRequestPtr Req, FHttpResponsePtr Resp, bool bOk)
         {
-            bool bSuccess =
+            const bool bSuccess =
                 bOk && Resp.IsValid() &&
                 Resp->GetResponseCode() >= 200 &&
                 Resp->GetResponseCode() < 300;
 
+            UE_LOG(LogTemp, Log, TEXT("Feedback send result: %s"),
+                bSuccess ? TEXT("Success") : TEXT("Failed"));
+
             if (WeakField.IsValid())
             {
                 WeakField->SetText(FText::FromString(
-                    bSuccess ? TEXT("Thanks! Feedback sent.")
-                             : TEXT("Failed to send feedback.")));
+                    bSuccess
+                        ? TEXT("Thanks! Your feedback was sent.")
+                        : TEXT("Couldn't send — please try again.")));
             }
         });
 
-    // ---------------- START COOLDOWN ----------------
     constexpr int32 CooldownLength = 15;
 
     bCooldownActive = true;
@@ -142,6 +152,7 @@ void UFeedbackSender::SubmitReport(
                     WeakStatus->SetText(FText::FromString(
                         TEXT("You can now submit another report.")));
                 }
+
                 return;
             }
 
