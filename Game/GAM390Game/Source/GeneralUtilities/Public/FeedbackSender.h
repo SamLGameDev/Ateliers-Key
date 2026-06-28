@@ -1,6 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
@@ -11,13 +9,17 @@ class UMultiLineEditableText;
 UCLASS()
 class GENERALUTILITIES_API UFeedbackSender : public UBlueprintFunctionLibrary
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    UFUNCTION(BlueprintCallable, Category = "Feedback")
-    static void SubmitReport(const FString& Category, const FString& Message,
-                             UMultiLineEditableText* StatusField);
 
-    UFUNCTION(BlueprintPure, Category = "Feedback")
-    static FText GetGameVersion();
+	UFUNCTION(BlueprintCallable, Category="Feedback", meta=(WorldContext="WorldContextObject"))
+	static void SubmitReport(
+		UObject* WorldContextObject,
+		const FString& Category,
+		const FString& Message,
+		UMultiLineEditableText* StatusField);
+
+	UFUNCTION(BlueprintPure, Category="Feedback")
+	static FText GetGameVersion();
 };

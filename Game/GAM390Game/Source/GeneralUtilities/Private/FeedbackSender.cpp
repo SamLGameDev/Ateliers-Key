@@ -1,6 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#include "FeedbackSender.h"
+﻿#include "FeedbackSender.h"
 
 #include "HttpModule.h"
 #include "Interfaces/IHttpRequest.h"
@@ -10,46 +8,73 @@
 #include "Components/MultiLineEditableText.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonSerializer.h"
+#include "TimerManager.h"
 
-void UFeedbackSender::SubmitReport(const FString& Category, const FString& Message,
-                                   UMultiLineEditableText* StatusField)
+// ----------------------------------------------------
+// FILE-SCOPE COOLDOWN STATE (IMPORTANT FIX)
+// ----------------------------------------------------
+static bool bCooldownActive = false;
+static int32 CooldownRemaining = 0;
+static FTimerHandle CooldownTimerHandle;
+
+void UFeedbackSender::SubmitReport(
+    UObject* WorldContextObject,
+    const FString& Category,
+    const FString& Message,
+    UMultiLineEditableText* StatusField)
 {
-    const FString WebhookUrl = TEXT("https://discord.com/api/webhooks/1515354866447286453/N8IOYKPyywki_kFrxB6v_fsrTn3aWEsX5PQRk9Wu6kZVyK0fBDZfLtlSpeF2sis3S1Lj");
+    if (!WorldContextObject)
+        return;
 
-    // Pull some context automatically so you're not relying on the player to describe their setup
+    UWorld* World = WorldContextObject->GetWorld();
+    if (!World)
+        return;
+
+    // ---------------- COOLDOWN CHECK ----------------
+    if (bCooldownActive)
+    {
+        if (StatusField)
+        {
+            StatusField->SetText(FText::FromString(
+                FString::Printf(TEXT("Please wait %d seconds before submitting again."),
+                CooldownRemaining)));
+        }
+        return;
+    }
+
+    const FString WebhookUrl =
+        TEXT("https://discord.com/api/webhooks/1515354866447286453/N8IOYKPyywki_kFrxB6v_fsrTn3aWEsX5PQRk9Wu6kZVyK0fBDZfLtlSpeF2sis3S1Lj");
+
     const UFeedbackSettings* Settings = GetDefault<UFeedbackSettings>();
     const FString BuildVer = Settings ? Settings->VersionName : TEXT("unknown");
-    const FString Platform  = UGameplayStatics::GetPlatformName();
+    const FString Platform = UGameplayStatics::GetPlatformName();
 
-    int32 Colour = 3447003; // blue, default
-    if (Category.Equals(TEXT("Bug"), ESearchCase::IgnoreCase))        Colour = 15158332; // red
-    else if (Category.Equals(TEXT("Crash"), ESearchCase::IgnoreCase)) Colour = 10038562; // dark red
+    int32 Colour = 3447003;
+    if (Category.Equals(TEXT("Bug"), ESearchCase::IgnoreCase)) Colour = 15158332;
+    else if (Category.Equals(TEXT("Crash"), ESearchCase::IgnoreCase)) Colour = 10038562;
+    else if (Category.Equals(TEXT("Feedback"), ESearchCase::IgnoreCase)) Colour = 16777215;
 
-    // Helper to build a field object
     auto MakeField = [](const FString& Name, const FString& Value, bool bInline)
     {
-        TSharedPtr<FJsonObject> F = MakeShared<FJsonObject>();
-        F->SetStringField(TEXT("name"), Name);
-        F->SetStringField(TEXT("value"), Value.IsEmpty() ? TEXT("(none)") : Value.Left(1024));
-        F->SetBoolField(TEXT("inline"), bInline);
-        return TSharedPtr<FJsonValue>(MakeShared<FJsonValueObject>(F));
+        TSharedPtr<FJsonObject> Obj = MakeShared<FJsonObject>();
+        Obj->SetStringField(TEXT("name"), Name);
+        Obj->SetStringField(TEXT("value"), Value.IsEmpty() ? TEXT("(none)") : Value.Left(1024));
+        Obj->SetBoolField(TEXT("inline"), bInline);
+        return MakeShared<FJsonValueObject>(Obj);
     };
 
     TArray<TSharedPtr<FJsonValue>> Fields;
     Fields.Add(MakeField(TEXT("Platform"), Platform, true));
-    Fields.Add(MakeField(TEXT("Build"),    BuildVer, true));
+    Fields.Add(MakeField(TEXT("Build"), BuildVer, true));
 
-    // The embed itself
     TSharedPtr<FJsonObject> Embed = MakeShared<FJsonObject>();
     Embed->SetStringField(TEXT("title"), FString::Printf(TEXT("%s Report"), *Category));
     Embed->SetNumberField(TEXT("color"), Colour);
     Embed->SetStringField(TEXT("timestamp"), FDateTime::UtcNow().ToIso8601());
     Embed->SetArrayField(TEXT("fields"), Fields);
+
     if (!Message.IsEmpty())
-    {
-        // Long text goes in description (4096 limit) rather than a field (1024 limit)
         Embed->SetStringField(TEXT("description"), Message.Left(4096));
-    }
 
     TArray<TSharedPtr<FJsonValue>> Embeds;
     Embeds.Add(MakeShared<FJsonValueObject>(Embed));
@@ -61,39 +86,74 @@ void UFeedbackSender::SubmitReport(const FString& Category, const FString& Messa
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Payload);
     FJsonSerializer::Serialize(Root.ToSharedRef(), Writer);
 
-    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request =
+        FHttpModule::Get().CreateRequest();
+
     Request->SetURL(WebhookUrl);
     Request->SetVerb(TEXT("POST"));
     Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
     Request->SetContentAsString(Payload);
 
-    // Weak ptr so a closed/destroyed menu doesn't leave us writing to freed memory
-    TWeakObjectPtr<UMultiLineEditableText> WeakField = StatusField;
+    TWeakObjectPtr<UMultiLineEditableText> WeakField(StatusField);
 
     Request->OnProcessRequestComplete().BindLambda(
         [WeakField](FHttpRequestPtr Req, FHttpResponsePtr Resp, bool bOk)
+        {
+            bool bSuccess =
+                bOk && Resp.IsValid() &&
+                Resp->GetResponseCode() >= 200 &&
+                Resp->GetResponseCode() < 300;
+
+            if (WeakField.IsValid())
+            {
+                WeakField->SetText(FText::FromString(
+                    bSuccess ? TEXT("Thanks! Feedback sent.")
+                             : TEXT("Failed to send feedback.")));
+            }
+        });
+
+    // ---------------- START COOLDOWN ----------------
+    constexpr int32 CooldownLength = 15;
+
+    bCooldownActive = true;
+    CooldownRemaining = CooldownLength;
+
+    if (StatusField)
     {
-        const bool bSuccess = bOk && Resp.IsValid()
-            && Resp->GetResponseCode() >= 200 && Resp->GetResponseCode() < 300;
+        StatusField->SetText(FText::FromString(
+            FString::Printf(TEXT("Please wait %d seconds..."), CooldownRemaining)));
+    }
 
-        if (bSuccess)
-        {
-            UE_LOG(LogTemp, Log, TEXT("Feedback sent: %d"), Resp->GetResponseCode());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("Feedback failed to send (%d)"),
-                Resp.IsValid() ? Resp->GetResponseCode() : -1);
-        }
+    TWeakObjectPtr<UMultiLineEditableText> WeakStatus(StatusField);
 
-        // HTTP callbacks fire on the game thread, so touching UMG here is safe
-        if (WeakField.IsValid())
+    World->GetTimerManager().SetTimer(
+        CooldownTimerHandle,
+        FTimerDelegate::CreateLambda([World, WeakStatus]()
         {
-            WeakField->SetText(FText::FromString(
-                bSuccess ? TEXT("Thanks! Your feedback was sent.")
-                         : TEXT("Couldn't send — please try again.")));
-        }
-    });
+            CooldownRemaining--;
+
+            if (CooldownRemaining <= 0)
+            {
+                bCooldownActive = false;
+                World->GetTimerManager().ClearTimer(CooldownTimerHandle);
+
+                if (WeakStatus.IsValid())
+                {
+                    WeakStatus->SetText(FText::FromString(
+                        TEXT("You can now submit another report.")));
+                }
+                return;
+            }
+
+            if (WeakStatus.IsValid())
+            {
+                WeakStatus->SetText(FText::FromString(
+                    FString::Printf(TEXT("Please wait %d seconds..."), CooldownRemaining)));
+            }
+
+        }),
+        1.0f,
+        true);
 
     Request->ProcessRequest();
 }
@@ -101,6 +161,5 @@ void UFeedbackSender::SubmitReport(const FString& Category, const FString& Messa
 FText UFeedbackSender::GetGameVersion()
 {
     const UFeedbackSettings* Settings = GetDefault<UFeedbackSettings>();
-    const FString Version = Settings ? Settings->VersionName : TEXT("unknown");
-    return FText::FromString(Version);
+    return FText::FromString(Settings ? Settings->VersionName : TEXT("unknown"));
 }
